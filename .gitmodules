@@ -1,0 +1,3 @@
+[submodule "Soccer-SCD"]
+	path = Soccer-SCD
+	url = https://github.com/zebganzo/Soccer-SCD.git

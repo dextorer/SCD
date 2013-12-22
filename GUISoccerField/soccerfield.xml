@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="soccerfield" default="all">
+  
+  
+  <property file="soccerfield.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
+  <path id="jdk.classpath.1.6">
+    <fileset dir="${jdk.home.1.6}">
+      <include name="../default-java/jre/lib/rhino.jar"/>
+      <include name="../default-java/jre/lib/charsets.jar"/>
+      <include name="../default-java/jre/lib/compilefontconfig.jar"/>
+      <include name="../default-java/jre/lib/jsse.jar"/>
+      <include name="../default-java/jre/lib/resources.jar"/>
+      <include name="../default-java/jre/lib/management-agent.jar"/>
+      <include name="../default-java/jre/lib/javazic.jar"/>
+      <include name="../default-java/jre/lib/jce.jar"/>
+      <include name="../default-java/jre/lib/rt.jar"/>
+      <include name="../default-java/jre/lib/ext/pulse-java.jar"/>
+      <include name="../default-java/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="../default-java/jre/lib/ext/dnsns.jar"/>
+      <include name="../default-java/jre/lib/ext/java-atk-wrapper.jar"/>
+      <include name="../default-java/jre/lib/ext/localedata.jar"/>
+      <include name="../default-java/jre/lib/ext/sunjce_provider.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm4-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module SCDCommunication -->
+  
+  <dirname property="module.scdcommunication.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.scdcommunication" value="${jdk.home.1.6}"/>
+  <property name="module.jdk.bin.scdcommunication" value="${jdk.bin.1.6}"/>
+  <property name="module.jdk.classpath.scdcommunication" value="jdk.classpath.1.6"/>
+  
+  <property name="compiler.args.scdcommunication" value="${compiler.args}"/>
+  
+  <property name="scdcommunication.output.dir" value="${module.scdcommunication.basedir}/../SCDCommunication/bin"/>
+  <property name="scdcommunication.testoutput.dir" value="${module.scdcommunication.basedir}/../SCDCommunication/bin"/>
+  
+  <path id="scdcommunication.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="scdcommunication.module.production.classpath">
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.production.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.scdcommunication">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.scdcommunication">
+    <patternset refid="excluded.from.module.scdcommunication"/>
+  </patternset>
+  
+  <path id="scdcommunication.module.sourcepath">
+    <dirset dir="${module.scdcommunication.basedir}/../SCDCommunication">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.scdcommunication" depends="compile.module.scdcommunication.production,compile.module.scdcommunication.tests" description="Compile module SCDCommunication"/>
+  
+  <target name="compile.module.scdcommunication.production" depends="register.custom.compilers" description="Compile module SCDCommunication; production classes">
+    <mkdir dir="${scdcommunication.output.dir}"/>
+    <javac2 destdir="${scdcommunication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.scdcommunication}/javac">
+      <compilerarg line="${compiler.args.scdcommunication}"/>
+      <bootclasspath refid="scdcommunication.module.bootclasspath"/>
+      <classpath refid="scdcommunication.module.production.classpath"/>
+      <src refid="scdcommunication.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.scdcommunication"/>
+    </javac2>
+    
+    <copy todir="${scdcommunication.output.dir}">
+      <fileset dir="${module.scdcommunication.basedir}/../SCDCommunication/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.scdcommunication.tests" depends="register.custom.compilers,compile.module.scdcommunication.production" description="compile module SCDCommunication; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.scdcommunication" description="cleanup module">
+    <delete dir="${scdcommunication.output.dir}"/>
+    <delete dir="${scdcommunication.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module SoccerField -->
+  
+  <dirname property="module.soccerfield.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.soccerfield" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.soccerfield" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.soccerfield" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.soccerfield" value="${compiler.args}"/>
+  
+  <property name="soccerfield.output.dir" value="${module.soccerfield.basedir}/out/production/SoccerField"/>
+  <property name="soccerfield.testoutput.dir" value="${module.soccerfield.basedir}/out/test/SoccerField"/>
+  
+  <path id="soccerfield.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="soccerfield.module.production.classpath">
+    <path refid="${module.jdk.classpath.soccerfield}"/>
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="soccerfield.runtime.production.module.classpath">
+    <pathelement location="${soccerfield.output.dir}"/>
+    <path refid="scdcommunication.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="soccerfield.module.classpath">
+    <path refid="${module.jdk.classpath.soccerfield}"/>
+    <pathelement location="${soccerfield.output.dir}"/>
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="soccerfield.runtime.module.classpath">
+    <pathelement location="${soccerfield.testoutput.dir}"/>
+    <pathelement location="${soccerfield.output.dir}"/>
+    <path refid="scdcommunication.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.soccerfield">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.soccerfield">
+    <patternset refid="excluded.from.module.soccerfield"/>
+  </patternset>
+  
+  <path id="soccerfield.module.sourcepath">
+    <dirset dir="${module.soccerfield.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.soccerfield" depends="compile.module.soccerfield.production,compile.module.soccerfield.tests" description="Compile module SoccerField"/>
+  
+  <target name="compile.module.soccerfield.production" depends="register.custom.compilers,compile.module.scdcommunication" description="Compile module SoccerField; production classes">
+    <mkdir dir="${soccerfield.output.dir}"/>
+    <javac2 destdir="${soccerfield.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.soccerfield}/javac">
+      <compilerarg line="${compiler.args.soccerfield}"/>
+      <bootclasspath refid="soccerfield.module.bootclasspath"/>
+      <classpath refid="soccerfield.module.production.classpath"/>
+      <src refid="soccerfield.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.soccerfield"/>
+    </javac2>
+    
+    <copy todir="${soccerfield.output.dir}">
+      <fileset dir="${module.soccerfield.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.soccerfield.tests" depends="register.custom.compilers,compile.module.soccerfield.production" description="compile module SoccerField; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.soccerfield" description="cleanup module">
+    <delete dir="${soccerfield.output.dir}"/>
+    <delete dir="${soccerfield.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.scdcommunication, clean.module.soccerfield" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.scdcommunication, compile.module.soccerfield" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
