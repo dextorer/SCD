@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="SoccerField:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SoccerField_jar</output-path>
+    <root id="archive" name="SoccerField.jar">
+      <element id="module-output" name="SoccerField" />
+      <element id="module-output" name="SCDCommunication" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../SCDCommunication/libs/java_websocket.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
