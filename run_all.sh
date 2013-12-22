@@ -23,7 +23,7 @@ ant all
 cd ..
 
 echo "Starting core..\n"
-gnome-terminal -x ./Soccer-SCD/obj/soccer-main
+gnome-terminal -x bash -c "cd Soccer-SCD/; ./obj/soccer-main;"
 
 sleep 1
 
