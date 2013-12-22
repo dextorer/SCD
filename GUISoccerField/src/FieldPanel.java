@@ -6,6 +6,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 /**
@@ -18,13 +19,13 @@ import java.util.Random;
 public class FieldPanel extends JPanel {
 
     private final String SOCCER_FIELD_IMAGE_NAME = "soccer-field.png";
-    private final String SOCCER_FIELD_IMAGE_PATH = this.getClass().getResource("/res/" + SOCCER_FIELD_IMAGE_NAME).getPath();
+    private final InputStream SOCCER_FIELD_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + SOCCER_FIELD_IMAGE_NAME);
 
     private final String BALL_IMAGE_NAME = "ball.png";
-    private final String BALL_IMAGE_PATH = this.getClass().getResource("/res/" + BALL_IMAGE_NAME).getPath();
+    private final InputStream BALL_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + BALL_IMAGE_NAME);
 
     private final String GRID_IMAGE_NAME = "transparent_grid.png";
-    private final String GRID_IMAGE_PATH = this.getClass().getResource("/res/" + GRID_IMAGE_NAME).getPath();
+    private final InputStream GRID_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + GRID_IMAGE_NAME);
 
     private final int PLAYER_PADDING = 3;
 
@@ -46,9 +47,9 @@ public class FieldPanel extends JPanel {
 
         // load image
         try {
-            soccerFieldImage = ImageIO.read(new File(SOCCER_FIELD_IMAGE_PATH));
-            ballImage = ImageIO.read(new File(BALL_IMAGE_PATH));
-            gridImage = ImageIO.read(new File(GRID_IMAGE_PATH));
+            soccerFieldImage = ImageIO.read(SOCCER_FIELD_IMAGE_PATH);
+            ballImage = ImageIO.read(BALL_IMAGE_PATH);
+            gridImage = ImageIO.read(GRID_IMAGE_PATH);
 
             cells = new Cell[COLUMNS_HORIZONTAL_CELLS_NUMBER * ROWS_VERTICAL_CELLS_NUMBER];
 
