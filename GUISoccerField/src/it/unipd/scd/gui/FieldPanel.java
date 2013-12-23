@@ -1,7 +1,14 @@
 package it.unipd.scd.gui;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import it.unipd.scd.model.Coordinate;
+import it.unipd.scd.model.Event;
 import it.unipd.scd.model.Team;
 import it.unipd.scd.model.TeamColor;
+import it.unipd.scd.model.game.MatchEvent;
+import it.unipd.scd.model.motion.CatchEvent;
 import it.unipd.scd.model.motion.MotionEvent;
 
 import javax.imageio.ImageIO;
@@ -14,6 +21,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,6 +58,17 @@ public class FieldPanel extends JPanel {
 
     private Team teamOne;
     private Team teamTwo;
+
+    private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
+    private final String EVENT_TYPE = "type_of_event";
+    private final String EVENT_ID = "event_id";
+    private final String PLAYER_ID = "player_id";
+    private final String PLAYER_NUMBER = "player_number";
+    private final String PLAYER_TEAM = "player_team";
+    private final String FROM_X = "from_x";
+    private final String FROM_Y = "from_y";
+    private final String TO_X = "to_x";
+    private final String TO_Y = "to_y";
 
     public FieldPanel() {
 
@@ -160,6 +179,37 @@ public class FieldPanel extends JPanel {
         t.setRepeats(true);
 
         t.start();
+    }
+
+    public void Deserialize(String payload) {
+        JsonParser parser = new JsonParser();
+        JsonArray buf = parser.parse(payload).getAsJsonArray();
+
+        JsonObject action;
+        String event_type;
+        int player_id, player_number;
+        Team player_team;
+        Coordinate from, to;
+        ArrayList<Event> event = new ArrayList<Event>();
+
+        for (int i = 0; i < buf.size(); i++) {
+            event.clear();
+
+            action = buf.get(i).getAsJsonObject();
+            event_type = action.get(EVENT_TYPE).toString();
+
+            // id number team from to
+            if (event_type.equals("match")) {  // match event
+                Event game = new MatchEvent(action.get(EVENT_ID).toString(), action.get(PLAYER_ID).getAsInt());
+                event.add(game);
+            }
+            else if (event_type.equals("catch")) { // catch event
+                MotionEvent motion = new CatchEvent();
+                player_id = action.get(PLAYER_ID).getAsInt();
+
+              //  motion.initialize();
+            }
+        }
     }
 
     private static class Player {

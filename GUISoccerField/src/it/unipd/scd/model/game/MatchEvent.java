@@ -9,6 +9,14 @@ package it.unipd.scd.model.game;
  */
 public class MatchEvent extends GameEvent {
 
+    String event;
+    int player_id;
+
+    public MatchEvent(String event, int player_id) {
+        this.event = event;
+        this.player_id = player_id;
+    }
+
     @Override
     public void draw() {
 
