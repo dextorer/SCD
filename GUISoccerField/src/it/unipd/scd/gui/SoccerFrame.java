@@ -2,11 +2,17 @@ package it.unipd.scd.gui;
 
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,8 +33,8 @@ public class SoccerFrame extends JFrame {
 
         JPanel buttonPanel = new JPanel();
 
-        JButton button = new JButton("Connect");
-        button.addActionListener(new ActionListener() {
+        JButton connect = new JButton("Connect");
+        connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 SCDComm comm = new SCDComm("localhost", "28000", SCDComm.FIELD_ENDPOINT, new CommInterface() {
@@ -47,7 +53,22 @@ public class SoccerFrame extends JFrame {
             }
         });
 
-        buttonPanel.add(button);
+        JButton start = new JButton("Start");
+        start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                CloseableHttpClient httpclient = HttpClients.createDefault();
+                HttpGet get = new HttpGet("http://localhost:28000/field/newGame");
+                try {
+                    httpclient.execute(get);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        buttonPanel.add(connect);
+        buttonPanel.add(start);
 
         setLayout(new BorderLayout());
         setResizable(false);
@@ -57,8 +78,8 @@ public class SoccerFrame extends JFrame {
         pack();
         setVisible(true);
 
-//        button.doClick();
-        drawTest();
+//        connect.doClick();
+//        drawTest();
     }
 
     public void drawTest() {
