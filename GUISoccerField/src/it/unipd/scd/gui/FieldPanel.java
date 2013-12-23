@@ -1,5 +1,10 @@
 package it.unipd.scd.gui;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -156,6 +161,19 @@ public class FieldPanel extends JPanel {
         t.setRepeats(true);
 
         t.start();
+    }
+
+    public void Deserialize(String payload) {
+        JsonParser parser = new JsonParser();
+        JsonArray buf = parser.parse(payload).getAsJsonArray();
+
+        JsonObject action;
+        String event;
+        for (int i = 0; i < buf.size(); i++) {
+            action = buf.get(i).getAsJsonObject();
+            event = action.get("type_of_event").toString();
+            // id number team from to
+        }
     }
 
     private static class Player {
