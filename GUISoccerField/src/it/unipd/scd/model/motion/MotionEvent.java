@@ -20,10 +20,10 @@ public abstract class MotionEvent extends Event {
     protected Coordinate from;
     protected Coordinate to;
 
-    protected long startTime;
-    protected long endTime;
+    protected double startTime;
+    protected double endTime;
 
-    public void initialize(int id, int number, Team team, Coordinate from, Coordinate to, long start, long end) {
+    public void initialize(int id, int number, Team team, Coordinate from, Coordinate to, double start, double end) {
         this.id = id;
         this.number = number;
         this.team = team;

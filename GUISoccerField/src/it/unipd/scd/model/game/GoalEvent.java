@@ -14,15 +14,17 @@ public class GoalEvent extends GameEvent {
 
     private int id;
     private int number;
-
     private Team team;
     private Coordinate coordinate;
+    private double start_time, end_time;
 
-    public GoalEvent(int id, int number, Team team, Coordinate coord) {
+    public GoalEvent(int id, int number, Team team, Coordinate coord, double start_time, double end_time) {
         this.id = id;
         this.number = number;
         this.team = team;
         this.coordinate = coord;
+        this.start_time = start_time;
+        this.end_time = end_time;
     }
 
     @Override

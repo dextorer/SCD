@@ -9,14 +9,17 @@ package it.unipd.scd.model.game;
  */
 public class MatchEvent extends GameEvent {
 
-    String event;
-    int player_id;
+    private String event;
+    private int player_id;
+    private double start_time, end_time;
 
-    public MatchEvent(String event, int player_id) {
+    public MatchEvent(String event, int player_id, double start_time, double end_time) {
         this.event = event;
         this.player_id = player_id;
-        System.out.println("event: " + event);
-        System.out.println("player id: " + player_id);
+        this.start_time = start_time;
+        this.end_time = end_time;
+      /*  System.out.println("event: " + event);
+        System.out.println("player id: " + player_id); */
     }
 
     @Override
