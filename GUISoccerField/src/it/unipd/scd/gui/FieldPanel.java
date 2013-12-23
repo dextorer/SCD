@@ -31,6 +31,8 @@ import java.util.ArrayList;
  */
 public class FieldPanel extends JPanel {
 
+    public static final int REDRAW_INTERVAL = 60;
+
     private final String SOCCER_FIELD_IMAGE_NAME = "soccer-field.png";
     private final InputStream SOCCER_FIELD_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + SOCCER_FIELD_IMAGE_NAME);
 
@@ -104,7 +106,7 @@ public class FieldPanel extends JPanel {
             teamTwo = new Team("Team Two", TeamColor.BLUE);
 
             // initializing bench warmers
-            players = new Player[2];
+            players = new Player[10];
             players[0] = new Player(12, teamOne, cells[355], false);
             players[1] = new Player(56, teamTwo, cells[750], true);
 

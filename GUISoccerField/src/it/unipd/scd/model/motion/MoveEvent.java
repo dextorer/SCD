@@ -1,5 +1,11 @@
 package it.unipd.scd.model.motion;
 
+import it.unipd.scd.gui.FieldPanel;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dextor
@@ -12,5 +18,15 @@ public class MoveEvent extends MotionEvent {
     @Override
     public void draw() {
 
+
+
+//        Timer t = new Timer(, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//
+//            }
+//        });
+//        t.setRepeats(true);
+//        t.start();
     }
 }
