@@ -1,6 +1,10 @@
+package it.unipd.scd.gui;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
@@ -114,7 +118,7 @@ public class FieldPanel extends JPanel {
                 g2d.fill(circle);
 
                 g2d.setColor(Color.WHITE);
-                g2d.drawString(String.valueOf(p.number), p.position.x -1, p.position.y - 2);
+                g2d.drawString(String.valueOf(p.number), p.position.x - 1, p.position.y - 2);
 
                 if (p.hasBall) {
                     // draw ball
@@ -138,11 +142,20 @@ public class FieldPanel extends JPanel {
 
     public void drawADot() {
 
-        // calculate random cell
-        int randomCell = new Random().nextInt(cells.length);
+        Timer t = new Timer(16, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
 
-        revalidate();
-        repaint();
+                players[0].position.x++;
+
+                revalidate();
+                repaint();
+            }
+        });
+        t.setInitialDelay(1000);
+        t.setRepeats(true);
+
+        t.start();
     }
 
     private static class Player {

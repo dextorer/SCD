@@ -1,3 +1,5 @@
+package it.unipd.scd.gui;
+
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
 
@@ -54,6 +56,9 @@ public class SoccerFrame extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
         pack();
         setVisible(true);
+
+//        button.doClick();
+        drawTest();
     }
 
     public void drawTest() {

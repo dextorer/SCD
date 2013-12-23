@@ -1,3 +1,5 @@
+import it.unipd.scd.gui.SoccerFrame;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dextor
