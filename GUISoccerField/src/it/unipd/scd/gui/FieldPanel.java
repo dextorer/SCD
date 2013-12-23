@@ -1,9 +1,15 @@
 package it.unipd.scd.gui;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unipd.scd.model.Coordinate;
+import it.unipd.scd.model.Event;
+import it.unipd.scd.model.Team;
+import it.unipd.scd.model.TeamColor;
+import it.unipd.scd.model.game.MatchEvent;
+import it.unipd.scd.model.motion.CatchEvent;
+import it.unipd.scd.model.motion.MotionEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,10 +19,9 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,6 +56,8 @@ public class FieldPanel extends JPanel {
 
     private Team teamOne;
     private Team teamTwo;
+
+    private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
 
     public FieldPanel() {
 
@@ -168,11 +175,26 @@ public class FieldPanel extends JPanel {
         JsonArray buf = parser.parse(payload).getAsJsonArray();
 
         JsonObject action;
-        String event;
+        String event_type;
+        int player_id, player_number;
+        Team player_team;
+        Coordinate from, to;
+        ArrayList<Event> event = new ArrayList<Event>();
+
         for (int i = 0; i < buf.size(); i++) {
+            event.clear();
+
             action = buf.get(i).getAsJsonObject();
-            event = action.get("type_of_event").toString();
+            event_type = action.get("type_of_event").toString();
+
             // id number team from to
+            if (event_type.equals("match")) {  // match event
+                Event game = new MatchEvent(action.get("event_id").toString(), action.get("player_id").getAsInt());
+                event.add(game);
+            }
+            else if (event_type.equals("catch")) { // catch event
+                MotionEvent motion = new CatchEvent();
+            }
         }
     }
 
@@ -220,31 +242,6 @@ public class FieldPanel extends JPanel {
             this.y = y;
             hasPlayer = true;
             this.player = player;
-        }
-    }
-
-    private enum TeamColor {
-        RED(Color.RED),
-        BLUE(Color.BLUE);
-
-        public Color color;
-
-        TeamColor(Color color) {
-            this.color = color;
-        }
-
-        public Color getColor() {
-            return color;
-        }
-    }
-
-    private static class Team {
-        public TeamColor color;
-        public String name;
-
-        public Team(String name, TeamColor color) {
-            this.name = name;
-            this.color = color;
         }
     }
 }

@@ -9,6 +9,12 @@ package it.unipd.scd.model.motion;
  */
 public class TackleEvent extends MotionEvent {
 
+    private int otherPlayerId;
+
+    public TackleEvent(int otherPlayerId) {
+        this.otherPlayerId = otherPlayerId;
+    }
+
     @Override
     public void draw() {
 
