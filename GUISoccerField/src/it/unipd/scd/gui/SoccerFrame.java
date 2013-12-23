@@ -2,10 +2,10 @@ package it.unipd.scd.gui;
 
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
-import org.apache.http.client.HttpClient;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import javax.swing.*;
@@ -60,7 +60,19 @@ public class SoccerFrame extends JFrame {
                 CloseableHttpClient httpclient = HttpClients.createDefault();
                 HttpGet get = new HttpGet("http://localhost:28000/field/newGame");
                 try {
-                    httpclient.execute(get);
+                    CloseableHttpResponse response = httpclient.execute(get);
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                get = new HttpGet("http://localhost:28000/field/getParams");
+                try {
+                    CloseableHttpResponse response = httpclient.execute(get);
+                    String content = IOUtils.toString(response.getEntity().getContent());
+                    fieldPanel.initialize(content);
+                    response.close();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

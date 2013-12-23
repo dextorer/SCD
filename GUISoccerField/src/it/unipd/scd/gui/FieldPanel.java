@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,19 +97,31 @@ public class FieldPanel extends JPanel {
             teamOne = new Team("Team One", TeamColor.RED);
             teamTwo = new Team("Team Two", TeamColor.BLUE);
 
-            // initializing bench warmers
-            players = new Player[10];
-            players[0] = new Player(12, teamOne, cells[355], false);
-            players[1] = new Player(56, teamTwo, cells[750], true);
-
-            for (Player p : players) {
-                p.position.hasPlayer = true;
-                p.position.player = p;
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void initialize (String content) {
+        JsonArray jsonedPlayers = new JsonParser().parse(content).getAsJsonObject().get("players").getAsJsonArray();
+        players = new Player[jsonedPlayers.size()];
+
+        for (int i=0; i<jsonedPlayers.size(); i++) {
+            // initializing bench warmers
+
+            JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
+            Team team = (player.get("team").getAsString().compareTo("TEAM_ONE") == 0) ? teamOne : teamTwo;
+
+            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false);
+        }
+
+        for (Player p : players) {
+            p.position.hasPlayer = true;
+            p.position.player = p;
+        }
+
+        repaint();
+        revalidate();
     }
 
     private void setRealCoordinates(Cell input) {
@@ -124,7 +137,7 @@ public class FieldPanel extends JPanel {
         // draw grid
         g2d.drawImage(gridImage, 0, 0, null);
 
-        AffineTransform original = g2d.getTransform();
+//        AffineTransform original = g2d.getTransform();
 
 //        g2d.drawImage(ballImage, 168, 168, null);
 
@@ -155,7 +168,7 @@ public class FieldPanel extends JPanel {
             }
         }
 
-        g2d.setTransform(original);
+//        g2d.setTransform(original);
     }
 
     @Override
