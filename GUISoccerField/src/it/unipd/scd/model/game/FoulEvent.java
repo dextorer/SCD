@@ -1,5 +1,8 @@
 package it.unipd.scd.model.game;
 
+import it.unipd.scd.model.Coordinate;
+import it.unipd.scd.model.Team;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dextor
@@ -8,6 +11,26 @@ package it.unipd.scd.model.game;
  * To change this template use File | Settings | File Templates.
  */
 public class FoulEvent extends GameEvent {
+
+    private int idOne;
+    private int numberOne;
+    private int idTwo;
+    private int numberTwo;
+
+    private Team teamOne;
+    private Team teamTwo;
+
+    private Coordinate coordinate;
+
+    public FoulEvent(int idOne, int numberOne, Team teamOne, int idTwo, int numberTwo, Team teamTwo, Coordinate coord) {
+        this.idOne = idOne;
+        this.idTwo = idTwo;
+        this.numberOne = numberOne;
+        this.numberTwo = numberTwo;
+        this.teamOne = teamOne;
+        this.teamTwo = teamTwo;
+        this.coordinate = coord;
+    }
 
     @Override
     public void draw() {
