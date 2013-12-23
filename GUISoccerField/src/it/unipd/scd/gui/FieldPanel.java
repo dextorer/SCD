@@ -15,7 +15,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -343,6 +342,11 @@ public class FieldPanel extends JPanel {
         }
         draw_this.add(event_array);
         System.out.println("end deserialize");
+    }
+
+    public void setPosition(int id, int x, int y) {
+        players[id].position.x = x;
+        players[id].position.y = y;
     }
 
     private static class Player {

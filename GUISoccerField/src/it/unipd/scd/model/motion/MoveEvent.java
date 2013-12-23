@@ -18,7 +18,7 @@ public class MoveEvent extends MotionEvent {
     @Override
     public void draw() {
 
-
+//        setPosition(id, to.x, to.y);
 
 //        Timer t = new Timer(, new ActionListener() {
 //            @Override
