@@ -21,6 +21,8 @@ public class SoccerFrame extends JFrame {
 
     private static int msgCount = 1;
 
+    boolean done = false;
+
     public SoccerFrame() {
 
         fieldPanel = new FieldPanel();
@@ -34,7 +36,11 @@ public class SoccerFrame extends JFrame {
                 SCDComm comm = new SCDComm("localhost", "28000", SCDComm.FIELD_ENDPOINT, new CommInterface() {
                     @Override
                     public void onMessage(String payload) {
-                        System.out.println("Message " + (msgCount++) + "\n" + payload);
+                        if (!done) {
+                            System.out.println("Message " + (msgCount++) + "\n" + payload);
+                            fieldPanel.deserialize(payload);
+                            done = true;
+                        }
                     }
 
                     @Override

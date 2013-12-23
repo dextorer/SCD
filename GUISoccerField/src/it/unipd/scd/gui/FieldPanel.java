@@ -7,9 +7,8 @@ import it.unipd.scd.model.Coordinate;
 import it.unipd.scd.model.Event;
 import it.unipd.scd.model.Team;
 import it.unipd.scd.model.TeamColor;
-import it.unipd.scd.model.game.MatchEvent;
-import it.unipd.scd.model.motion.CatchEvent;
-import it.unipd.scd.model.motion.MotionEvent;
+import it.unipd.scd.model.game.*;
+import it.unipd.scd.model.motion.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -58,6 +57,7 @@ public class FieldPanel extends JPanel {
     private Team teamTwo;
 
     private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
+    private final String EVENTS_OBJECT = "events";
     private final String EVENT_TYPE = "type_of_event";
     private final String EVENT_ID = "event_id";
     private final String PLAYER_ID = "player_id";
@@ -67,6 +67,15 @@ public class FieldPanel extends JPanel {
     private final String FROM_Y = "from_y";
     private final String TO_X = "to_x";
     private final String TO_Y = "to_y";
+    private final String OTHER_PLAYER = "other_player_id";
+    private final String EVENT_X = "event_coord_x";
+    private final String EVENT_Y = "event_coord_y";
+    private final String FOUL_ID1 = "player_1_id";
+    private final String FOUL_N1 = "player_1_number";
+    private final String FOUL_T1 = "player_1_team";
+    private final String FOUL_ID2 = "player_2_id";
+    private final String FOUL_N2 = "player_2_number";
+    private final String FOUL_T2 = "player_2_team";
 
     public FieldPanel() {
 
@@ -179,35 +188,141 @@ public class FieldPanel extends JPanel {
         t.start();
     }
 
-    public void Deserialize(String payload) {
+    public void deserialize(String payload) {
+        System.out.println("deserialize");
         JsonParser parser = new JsonParser();
-        JsonArray buf = parser.parse(payload).getAsJsonArray();
+        JsonArray buf = parser.parse(payload).getAsJsonObject().get(EVENTS_OBJECT).getAsJsonArray();
 
         JsonObject action;
         String event_type;
         int player_id, player_number;
         Team player_team;
         Coordinate from, to;
-        ArrayList<Event> event = new ArrayList<Event>();
+        ArrayList<Event> event_array = new ArrayList<Event>();
 
         for (int i = 0; i < buf.size(); i++) {
-            event.clear();
-
+            System.out.println("for: " + i);
             action = buf.get(i).getAsJsonObject();
             event_type = action.get(EVENT_TYPE).toString();
 
-            // id number team from to
-            if (event_type.equals("match")) {  // match event
-                Event game = new MatchEvent(action.get(EVENT_ID).toString(), action.get(PLAYER_ID).getAsInt());
-                event.add(game);
-            }
-            else if (event_type.equals("catch")) { // catch event
-                MotionEvent motion = new CatchEvent();
-                player_id = action.get(PLAYER_ID).getAsInt();
+            MotionEvent m = null;
+            Event e = null;
 
-              //  motion.initialize();
+            // id number team from to
+            if (event_type.equals("match"))
+                e = new MatchEvent(action.get(EVENT_ID).toString(), action.get(PLAYER_ID).getAsInt());
+            else
+                if (event_type.equals("catch"))  // catch event
+                    m = new CatchEvent();
+            else
+                if (event_type.equals("shot"))  // shot event
+                    m = new ShotEvent();
+            else
+                if (event_type.equals("tackle")) // tackle event
+                    m = new TackleEvent(action.get(OTHER_PLAYER).getAsInt());
+            else
+                if (event_type.equals("catch")) // catch event
+                    m = new CatchEvent();
+            else
+                if (event_type.equals("move")) // move event
+                    m = new MoveEvent();
+            else
+                if (event_type.equals("unary")) { // unary event
+
+                    if (action.get(PLAYER_TEAM).toString().equals("TEAM_ONE"))
+                        player_team = teamOne;
+                    else
+                        player_team = teamTwo;
+
+                    if (action.get(EVENT_ID).toString().equals("Goal"))
+                        e = new GoalEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+
+                    if (action.get(EVENT_ID).toString().equals("Goal_Kick"))
+                        e = new GoalKickEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+
+                    if (action.get(EVENT_ID).toString().equals("Corner_Kick"))
+                        e = new CornerKickEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+
+                    if (action.get(EVENT_ID).toString().equals("Penalty_Kick"))
+                        e = new PenaltyKickEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+
+                    if (action.get(EVENT_ID).toString().equals("Throw_In"))
+                        e = new ThrowInEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+
+                    if (action.get(EVENT_ID).toString().equals("Free_Kick"))
+                        e = new FreeKickEvent(
+                                action.get(PLAYER_ID).getAsInt(),
+                                action.get(PLAYER_NUMBER).getAsInt(),
+                                player_team,
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                }
+            else
+                if (event_type.equals("binary")) {  // binary event
+                    Team opponent;
+                    if (action.get(FOUL_T1).toString().equals("TEAM_ONE")) {
+                        player_team = teamOne;
+                        opponent = teamTwo;
+                    }
+                    else {
+                        player_team = teamTwo;
+                        opponent = teamOne;
+                    }
+                    e = new FoulEvent(      // foul event
+                            action.get(FOUL_ID1).getAsInt(),
+                            action.get(FOUL_N1).getAsInt(),
+                            player_team,
+                            action.get(FOUL_ID2).getAsInt(),
+                            action.get(FOUL_N2).getAsInt(),
+                            opponent,
+                            new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                }
+
+            if (m != null) {
+                player_id = action.get(PLAYER_ID).getAsInt();
+                player_number = action.get(PLAYER_NUMBER).getAsInt();
+
+                if (action.get(PLAYER_TEAM).toString().equals("TEAM_ONE"))
+                    player_team = teamOne;
+                else
+                    player_team = teamTwo;
+
+                from = new Coordinate(action.get(FROM_X).getAsInt(), action.get(FROM_Y).getAsInt());
+                to = new Coordinate(action.get(TO_X).getAsInt(), action.get(TO_Y).getAsInt());
+
+                m.initialize(player_id, player_number, player_team, from, to);
+                event_array.add(m);
+
+                System.out.println("player id: " + player_id);
+                System.out.println("player number: " + player_number);
+                System.out.println("player team: " + player_team);
+                System.out.println("from: " + from.x + " " + from.y);
+                System.out.println("to: " + to.x + " " + to.y);
             }
+            else
+                event_array.add(e);
         }
+        draw_this.add(event_array);
+        System.out.println("end deserialize");
     }
 
     private static class Player {

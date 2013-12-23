@@ -10,5 +10,4 @@ import it.unipd.scd.model.Event;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class GameEvent extends Event {
-
 }
