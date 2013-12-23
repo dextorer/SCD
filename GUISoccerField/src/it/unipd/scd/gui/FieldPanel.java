@@ -206,7 +206,7 @@ public class FieldPanel extends JPanel {
     }
 
     public void deserialize(String payload) {
-t         JsonObject obj = new JsonParser().parse(payload).getAsJsonObject();
+        JsonObject obj = new JsonParser().parse(payload).getAsJsonObject();
         JsonArray buf = obj.get(EVENTS_OBJECT).getAsJsonArray();
 
         JsonObject action;
