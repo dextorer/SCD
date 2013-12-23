@@ -1,5 +1,9 @@
 package it.unipd.scd.gui;
 
+import it.unipd.scd.model.Team;
+import it.unipd.scd.model.TeamColor;
+import it.unipd.scd.model.motion.MotionEvent;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -8,10 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -202,31 +204,6 @@ public class FieldPanel extends JPanel {
             this.y = y;
             hasPlayer = true;
             this.player = player;
-        }
-    }
-
-    private enum TeamColor {
-        RED(Color.RED),
-        BLUE(Color.BLUE);
-
-        public Color color;
-
-        TeamColor(Color color) {
-            this.color = color;
-        }
-
-        public Color getColor() {
-            return color;
-        }
-    }
-
-    private static class Team {
-        public TeamColor color;
-        public String name;
-
-        public Team(String name, TeamColor color) {
-            this.name = name;
-            this.color = color;
         }
     }
 }
