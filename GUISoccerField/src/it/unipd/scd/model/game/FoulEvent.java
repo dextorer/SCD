@@ -16,13 +16,20 @@ public class FoulEvent extends GameEvent {
     private int numberOne;
     private int idTwo;
     private int numberTwo;
-
     private Team teamOne;
     private Team teamTwo;
-
     private Coordinate coordinate;
+    private double start_time, end_time;
 
-    public FoulEvent(int idOne, int numberOne, Team teamOne, int idTwo, int numberTwo, Team teamTwo, Coordinate coord) {
+    public FoulEvent(int idOne,
+                     int numberOne,
+                     Team teamOne,
+                     int idTwo,
+                     int numberTwo,
+                     Team teamTwo,
+                     Coordinate coord,
+                     double start_time,
+                     double end_time) {
         this.idOne = idOne;
         this.idTwo = idTwo;
         this.numberOne = numberOne;
@@ -30,6 +37,8 @@ public class FoulEvent extends GameEvent {
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.coordinate = coord;
+        this.start_time = start_time;
+        this.end_time = end_time;
     }
 
     @Override

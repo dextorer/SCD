@@ -213,20 +213,23 @@ public class FieldPanel extends JPanel {
         int player_id, player_number;
         Team player_team;
         Coordinate from, to;
-        long startTime, endTime;
+        String startTime, endTime;
         ArrayList<Event> event_array = new ArrayList<Event>();
 
         for (int i = 0; i < buf.size(); i++) {
-            System.out.println("for: " + i);
             action = buf.get(i).getAsJsonObject();
-            event_type = action.get(EVENT_TYPE).toString();
+            event_type = action.get(EVENT_TYPE).getAsString();
 
             MotionEvent m = null;
             Event e = null;
 
             // id number team from to
             if (event_type.equals("match"))
-                e = new MatchEvent(action.get(EVENT_ID).toString(), action.get(PLAYER_ID).getAsInt());
+                e = new MatchEvent(
+                        action.get(EVENT_ID).getAsString(),
+                        action.get(PLAYER_ID).getAsInt(),
+                        Double.parseDouble(action.get(START_TIME).getAsString()),
+                        Double.parseDouble(action.get(END_TIME).getAsString()));
             else
                 if (event_type.equals("catch"))  // catch event
                     m = new CatchEvent();
@@ -245,57 +248,69 @@ public class FieldPanel extends JPanel {
             else
                 if (event_type.equals("unary")) { // unary event
 
-                    if (action.get(PLAYER_TEAM).toString().equals("TEAM_ONE"))
+                    if (action.get(PLAYER_TEAM).getAsString().equals("TEAM_ONE"))
                         player_team = teamOne;
                     else
                         player_team = teamTwo;
 
-                    if (action.get(EVENT_ID).toString().equals("Goal"))
+                    if (action.get(EVENT_ID).getAsString().equals("Goal"))
                         e = new GoalEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).toString().equals("Goal_Kick"))
+                    if (action.get(EVENT_ID).getAsString().equals("Goal_Kick"))
                         e = new GoalKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).toString().equals("Corner_Kick"))
+                    if (action.get(EVENT_ID).getAsString().equals("Corner_Kick"))
                         e = new CornerKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).toString().equals("Penalty_Kick"))
+                    if (action.get(EVENT_ID).getAsString().equals("Penalty_Kick"))
                         e = new PenaltyKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).toString().equals("Throw_In"))
+                    if (action.get(EVENT_ID).getAsString().equals("Throw_In"))
                         e = new ThrowInEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).toString().equals("Free_Kick"))
+                    if (action.get(EVENT_ID).getAsString().equals("Free_Kick"))
                         e = new FreeKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
                                 player_team,
-                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                                new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                                Double.parseDouble(action.get(START_TIME).getAsString()),
+                                Double.parseDouble(action.get(END_TIME).getAsString()));
                 }
             else
                 if (event_type.equals("binary")) {  // binary event
                     Team opponent;
-                    if (action.get(FOUL_T1).toString().equals("TEAM_ONE")) {
+                    if (action.get(FOUL_T1).getAsString().equals("TEAM_ONE")) {
                         player_team = teamOne;
                         opponent = teamTwo;
                     }
@@ -310,14 +325,16 @@ public class FieldPanel extends JPanel {
                             action.get(FOUL_ID2).getAsInt(),
                             action.get(FOUL_N2).getAsInt(),
                             opponent,
-                            new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()));
+                            new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
+                            Double.parseDouble(action.get(START_TIME).getAsString()),
+                            Double.parseDouble(action.get(END_TIME).getAsString()));
                 }
 
             if (m != null) {
                 player_id = action.get(PLAYER_ID).getAsInt();
                 player_number = action.get(PLAYER_NUMBER).getAsInt();
 
-                if (action.get(PLAYER_TEAM).toString().equals("TEAM_ONE"))
+                if (action.get(PLAYER_TEAM).getAsString().equals("TEAM_ONE"))
                     player_team = teamOne;
                 else
                     player_team = teamTwo;
@@ -325,23 +342,24 @@ public class FieldPanel extends JPanel {
                 from = new Coordinate(action.get(FROM_X).getAsInt(), action.get(FROM_Y).getAsInt());
                 to = new Coordinate(action.get(TO_X).getAsInt(), action.get(TO_Y).getAsInt());
 
-                startTime = action.get(START_TIME).getAsLong();
-                endTime = action.get(END_TIME).getAsLong();
+                startTime = action.get(START_TIME).getAsString();
+                endTime = action.get(END_TIME).getAsString();
 
-                m.initialize(player_id, player_number, player_team, from, to, startTime, endTime);
+                m.initialize(player_id, player_number, player_team, from, to, Double.parseDouble(startTime), Double.parseDouble(endTime));
                 event_array.add(m);
 
-                System.out.println("player id: " + player_id);
+            /*    System.out.println("player id: " + player_id);
                 System.out.println("player number: " + player_number);
-                System.out.println("player team: " + player_team);
+                System.out.println("player team: " + player_team.name);
                 System.out.println("from: " + from.x + " " + from.y);
                 System.out.println("to: " + to.x + " " + to.y);
+                System.out.println("start time: " + startTime);
+                System.out.println("end time:" + endTime); */
             }
             else
                 event_array.add(e);
         }
         draw_this.add(event_array);
-        System.out.println("end deserialize");
     }
 
     public void setPosition(int id, int x, int y) {
