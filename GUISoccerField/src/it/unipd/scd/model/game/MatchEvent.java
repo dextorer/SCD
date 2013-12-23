@@ -15,6 +15,8 @@ public class MatchEvent extends GameEvent {
     public MatchEvent(String event, int player_id) {
         this.event = event;
         this.player_id = player_id;
+        System.out.println("event: " + event);
+        System.out.println("player id: " + player_id);
     }
 
     @Override
