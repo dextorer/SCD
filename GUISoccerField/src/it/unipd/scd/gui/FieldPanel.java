@@ -70,6 +70,8 @@ public class FieldPanel extends JPanel {
     private final String FROM_Y = "from_y";
     private final String TO_X = "to_x";
     private final String TO_Y = "to_y";
+    private final String START_TIME = "start_time";
+    private final String END_TIME = "end_time";
     private final String OTHER_PLAYER = "other_player_id";
     private final String EVENT_X = "event_coord_x";
     private final String EVENT_Y = "event_coord_y";
@@ -204,15 +206,15 @@ public class FieldPanel extends JPanel {
     }
 
     public void deserialize(String payload) {
-        System.out.println("deserialize");
-        JsonParser parser = new JsonParser();
-        JsonArray buf = parser.parse(payload).getAsJsonObject().get(EVENTS_OBJECT).getAsJsonArray();
+t         JsonObject obj = new JsonParser().parse(payload).getAsJsonObject();
+        JsonArray buf = obj.get(EVENTS_OBJECT).getAsJsonArray();
 
         JsonObject action;
         String event_type;
         int player_id, player_number;
         Team player_team;
         Coordinate from, to;
+        long startTime, endTime;
         ArrayList<Event> event_array = new ArrayList<Event>();
 
         for (int i = 0; i < buf.size(); i++) {
@@ -324,7 +326,10 @@ public class FieldPanel extends JPanel {
                 from = new Coordinate(action.get(FROM_X).getAsInt(), action.get(FROM_Y).getAsInt());
                 to = new Coordinate(action.get(TO_X).getAsInt(), action.get(TO_Y).getAsInt());
 
-                m.initialize(player_id, player_number, player_team, from, to);
+                startTime = action.get(START_TIME).getAsLong();
+                endTime = action.get(END_TIME).getAsLong();
+
+                m.initialize(player_id, player_number, player_team, from, to, startTime, endTime);
                 event_array.add(m);
 
                 System.out.println("player id: " + player_id);
