@@ -58,6 +58,15 @@ public class FieldPanel extends JPanel {
     private Team teamTwo;
 
     private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
+    private final String EVENT_TYPE = "type_of_event";
+    private final String EVENT_ID = "event_id";
+    private final String PLAYER_ID = "player_id";
+    private final String PLAYER_NUMBER = "player_number";
+    private final String PLAYER_TEAM = "player_team";
+    private final String FROM_X = "from_x";
+    private final String FROM_Y = "from_y";
+    private final String TO_X = "to_x";
+    private final String TO_Y = "to_y";
 
     public FieldPanel() {
 
@@ -185,15 +194,18 @@ public class FieldPanel extends JPanel {
             event.clear();
 
             action = buf.get(i).getAsJsonObject();
-            event_type = action.get("type_of_event").toString();
+            event_type = action.get(EVENT_TYPE).toString();
 
             // id number team from to
             if (event_type.equals("match")) {  // match event
-                Event game = new MatchEvent(action.get("event_id").toString(), action.get("player_id").getAsInt());
+                Event game = new MatchEvent(action.get(EVENT_ID).toString(), action.get(PLAYER_ID).getAsInt());
                 event.add(game);
             }
             else if (event_type.equals("catch")) { // catch event
                 MotionEvent motion = new CatchEvent();
+                player_id = action.get(PLAYER_ID).getAsInt();
+
+              //  motion.initialize();
             }
         }
     }
