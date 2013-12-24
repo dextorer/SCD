@@ -59,21 +59,22 @@ public class SoccerFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 CloseableHttpClient httpclient = HttpClients.createDefault();
-                HttpGet get = new HttpGet("http://localhost:28000/field/newGame");
-                try {
-                    CloseableHttpResponse response = httpclient.execute(get);
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                get = new HttpGet("http://localhost:28000/field/getParams");
+                HttpGet get = new HttpGet("http://localhost:28000/field/getParams");
                 try {
                     CloseableHttpResponse response = httpclient.execute(get);
                     String content = IOUtils.toString(response.getEntity().getContent());
                     fieldPanel.initialize(content);
                     response.close();
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                get = new HttpGet("http://localhost:28000/field/newGame");
+                try {
+                    CloseableHttpResponse response = httpclient.execute(get);
+                    response.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -125,6 +125,8 @@ public class FieldPanel extends JPanel {
         JsonArray jsonedPlayers = new JsonParser().parse(content).getAsJsonObject().get("players").getAsJsonArray();
         players = new Player[jsonedPlayers.size()];
 
+        System.out.println(jsonedPlayers);
+
         for (int i=0; i<jsonedPlayers.size(); i++) {
             // initializing bench warmers
 
@@ -421,7 +423,7 @@ public class FieldPanel extends JPanel {
     }
 
     public static void setPosition(int id, int x, int y) {
-        ref.players[id].position = ref.getCell(x, y);
+        ref.players[id-1].position = ref.getCell(x, y);
     }
 
     public void toggleGrid() {
