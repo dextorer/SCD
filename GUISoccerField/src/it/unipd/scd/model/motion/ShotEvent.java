@@ -1,5 +1,7 @@
 package it.unipd.scd.model.motion;
 
+import it.unipd.scd.model.Player;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dextor

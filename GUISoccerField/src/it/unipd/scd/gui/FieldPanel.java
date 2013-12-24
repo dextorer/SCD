@@ -3,10 +3,8 @@ package it.unipd.scd.gui;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.unipd.scd.model.Coordinate;
+import it.unipd.scd.model.*;
 import it.unipd.scd.model.Event;
-import it.unipd.scd.model.Team;
-import it.unipd.scd.model.TeamColor;
 import it.unipd.scd.model.game.*;
 import it.unipd.scd.model.motion.*;
 
@@ -59,6 +57,10 @@ public class FieldPanel extends JPanel {
     private Team teamTwo;
 
     private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
+
+    private Object lock;
+    private static FieldPanel ref;
+
     private final String EVENTS_OBJECT = "events";
     private final String EVENT_TYPE = "type_of_event";
     private final String EVENT_ID = "event_id";
@@ -80,6 +82,8 @@ public class FieldPanel extends JPanel {
     private final String FOUL_ID2 = "player_2_id";
     private final String FOUL_N2 = "player_2_number";
     private final String FOUL_T2 = "player_2_team";
+
+    private boolean drawGrid;
 
     public FieldPanel() {
 
@@ -107,6 +111,11 @@ public class FieldPanel extends JPanel {
             teamOne = new Team("Team One", TeamColor.RED);
             teamTwo = new Team("Team Two", TeamColor.BLUE);
 
+            lock = new Object();
+            ref = this;
+
+            drawGrid = true;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,7 +131,8 @@ public class FieldPanel extends JPanel {
             JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
             Team team = (player.get("team").getAsString().compareTo("TEAM_ONE") == 0) ? teamOne : teamTwo;
 
-            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false);
+            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
+//            players[i] = new Player(player.get("number").getAsInt(), team, cells[26], false);
         }
 
         for (Player p : players) {
@@ -130,8 +140,44 @@ public class FieldPanel extends JPanel {
             p.position.player = p;
         }
 
-        repaint();
-        revalidate();
+//        repaint();
+//        revalidate();
+    }
+
+    public void startDrawCycle() {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    synchronized (lock) {
+                        while (draw_this.isEmpty()) {
+                            try {
+                                System.out.println("Going to sleep..");
+                                lock.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        System.out.println("The dragon has been awaken!");
+
+                        ArrayList<Event> current = draw_this.get(0);
+                        for (Event e : current) {
+                            System.out.println("Drawing cycle in progress..");
+                            e.draw();
+                        }
+
+                        System.out.println("Drawing cycle done.");
+
+                        repaint();
+                        revalidate();
+
+                        draw_this.remove(0);
+                    }
+                }
+            }
+        };
+        t.start();
     }
 
     private void setRealCoordinates(Cell input) {
@@ -145,7 +191,9 @@ public class FieldPanel extends JPanel {
         g2d.drawImage(soccerFieldImage, 0, 0, null);
 
         // draw grid
-        g2d.drawImage(gridImage, 0, 0, null);
+        if (drawGrid) {
+            g2d.drawImage(gridImage, 0, 0, null);
+        }
 
 //        AffineTransform original = g2d.getTransform();
 
@@ -159,16 +207,18 @@ public class FieldPanel extends JPanel {
 
                 Player p = c.player;
 
-                g2d.setColor(p.team.color.getColor());
-                Ellipse2D.Double circle = new Ellipse2D.Double(p.position.x - PLAYER_PADDING, p.position.y - CELL_PIXEL_SIZE - PLAYER_PADDING, 20, 20);
-                g2d.fill(circle);
+                if (p.onTheField) {
+                    g2d.setColor(p.team.color.getColor());
+                    Ellipse2D.Double circle = new Ellipse2D.Double(p.position.x - PLAYER_PADDING, p.position.y - CELL_PIXEL_SIZE - PLAYER_PADDING, 20, 20);
+                    g2d.fill(circle);
 
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(String.valueOf(p.number), p.position.x - 1, p.position.y - 2);
+                    g2d.setColor(Color.WHITE);
+                    g2d.drawString(String.valueOf(p.number), p.position.x - 1, p.position.y - 2);
 
-                if (p.hasBall) {
-                    // draw ball
-                    g2d.drawImage(ballImage, p.position.x, p.position.y, null);
+                    if (p.hasBall) {
+                        // draw ball
+                        g2d.drawImage(ballImage, p.position.x, p.position.y, null);
+                    }
                 }
             }
             else {
@@ -359,58 +409,24 @@ public class FieldPanel extends JPanel {
             else
                 event_array.add(e);
         }
-        draw_this.add(event_array);
-    }
 
-    public void setPosition(int id, int x, int y) {
-        players[id].position.x = x;
-        players[id].position.y = y;
-    }
-
-    private static class Player {
-
-        public Cell position;
-        public int number;
-        public Team team;
-        public boolean hasBall;
-
-        public Player(int number, Team team, Cell position, boolean hasBall) {
-            this.position = position;
-            this.number = number;
-            this.hasBall = hasBall;
-            this.team = team;
-        }
-
-        public Player(int number, Team team, int x, int y, boolean hasBall) {
-            this.position = new Cell(x,y);
-            this.number = number;
-            this.hasBall = hasBall;
-            this.team = team;
+        synchronized (lock) {
+            draw_this.add(event_array);
+            lock.notify();
         }
     }
 
-    private static class Cell {
+    private Cell getCell (int x, int y) {
+        return cells[y * COLUMNS_HORIZONTAL_CELLS_NUMBER + x];
+    }
 
-        public int x;
-        public int y;
+    public static void setPosition(int id, int x, int y) {
+        ref.players[id].position = ref.getCell(x, y);
+    }
 
-        public boolean hasPlayer;
-        public boolean hasBall;
-
-        public Player player;
-
-        public Cell(int x, int y) {
-            this.x = x;
-            this.y = y;
-            hasPlayer = false;
-            hasBall = false;
-        }
-
-        public Cell(int x, int y, Player player) {
-            this.x = x;
-            this.y = y;
-            hasPlayer = true;
-            this.player = player;
-        }
+    public void toggleGrid() {
+        drawGrid = !drawGrid;
+        repaint();
+        revalidate();
     }
 }

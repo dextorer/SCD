@@ -1,5 +1,7 @@
 package it.unipd.scd.model.game;
 
+import it.unipd.scd.model.Player;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dextor

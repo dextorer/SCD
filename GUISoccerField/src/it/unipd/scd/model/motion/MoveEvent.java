@@ -1,6 +1,7 @@
 package it.unipd.scd.model.motion;
 
 import it.unipd.scd.gui.FieldPanel;
+import it.unipd.scd.model.Player;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +19,7 @@ public class MoveEvent extends MotionEvent {
     @Override
     public void draw() {
 
-//        setPosition(id, to.x, to.y);
+        FieldPanel.setPosition(id, to.x, to.y);
 
 //        Timer t = new Timer(, new ActionListener() {
 //            @Override

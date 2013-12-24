@@ -1,6 +1,7 @@
 package it.unipd.scd.model.game;
 
 import it.unipd.scd.model.Coordinate;
+import it.unipd.scd.model.Player;
 import it.unipd.scd.model.Team;
 
 /**

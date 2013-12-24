@@ -77,11 +77,23 @@ public class SoccerFrame extends JFrame {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                fieldPanel.startDrawCycle();
+
+            }
+        });
+
+        JButton toggleGrid = new JButton("Toggle grid");
+        toggleGrid.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                fieldPanel.toggleGrid();
             }
         });
 
         buttonPanel.add(connect);
         buttonPanel.add(start);
+        buttonPanel.add(toggleGrid);
 
         setLayout(new BorderLayout());
         setResizable(false);
