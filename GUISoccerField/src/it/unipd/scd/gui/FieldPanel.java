@@ -29,7 +29,7 @@ import java.util.Random;
  */
 public class FieldPanel extends JPanel {
 
-    public static final int REDRAW_INTERVAL = 60;
+    //public static final int REDRAW_INTERVAL = 60;
 
     private final String SOCCER_FIELD_IMAGE_NAME = "soccer-field.png";
     private final InputStream SOCCER_FIELD_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + SOCCER_FIELD_IMAGE_NAME);
@@ -52,6 +52,7 @@ public class FieldPanel extends JPanel {
 
     private Cell[] cells;
     private Player[] players;
+    private Cell ballCell;
 
     private Team teamOne;
     private Team teamTwo;
@@ -113,6 +114,9 @@ public class FieldPanel extends JPanel {
 
             lock = new Object();
             ref = this;
+
+            ballCell = getCell(26, 17);
+            ballCell.hasBall = true;
 
             drawGrid = true;
 
@@ -422,9 +426,24 @@ public class FieldPanel extends JPanel {
         return cells[y * COLUMNS_HORIZONTAL_CELLS_NUMBER + x];
     }
 
-    public static void setPosition(int id, int x, int y) {
-        ref.players[id-1].position = ref.getCell(x, y);
+    public static void setPosition (int id, int x, int y) {
+        if (id == 0) {
+            // that's the ball!
+            if (ref.ballCell != null) {
+                ref.ballCell.hasBall = false;
+            }
+
+            ref.ballCell = ref.getCell(x,y);
+            ref.ballCell.hasBall = true;
+        }
+        else {
+            ref.players[id-1].position = ref.getCell(x,y);
+        }
     }
+
+//    public static void setHasBall (int id, boolean hasBall) {
+//        ref.players[id-1].hasBall = hasBall;
+//    }
 
     public void toggleGrid() {
         drawGrid = !drawGrid;
