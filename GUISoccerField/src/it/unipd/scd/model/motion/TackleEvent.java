@@ -1,6 +1,6 @@
 package it.unipd.scd.model.motion;
 
-import it.unipd.scd.model.Player;
+import it.unipd.scd.gui.FieldPanel;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +19,7 @@ public class TackleEvent extends MotionEvent {
 
     @Override
     public void draw() {
-
+        FieldPanel.setHasBall(otherPlayerId, false);
+        FieldPanel.setHasBall(id, true);
     }
 }

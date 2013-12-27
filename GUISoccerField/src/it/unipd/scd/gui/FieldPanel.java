@@ -1,5 +1,6 @@
 package it.unipd.scd.gui;
 
+import animationx.core.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -168,15 +169,16 @@ public class FieldPanel extends JPanel {
                         System.out.println("The dragon has been awaken!");
 
                         ArrayList<Event> current = draw_this.get(0);
+                        System.out.println("Drawing " + current.size() + " events..");
                         for (Event e : current) {
-                            System.out.println("Drawing cycle in progress..");
+//                            System.out.println("Drawing cycle in progress..");
                             e.draw();
                         }
 
-                        System.out.println("Drawing cycle done.");
-
                         repaint();
                         revalidate();
+
+                        System.out.println("Drawing cycle done.");
 
                         draw_this.remove(0);
                     }
@@ -223,13 +225,13 @@ public class FieldPanel extends JPanel {
 
                     if (p.hasBall) {
                         // draw ball
-                        g2d.drawImage(ballImage, p.position.x, p.position.y, null);
+                        g2d.drawImage(ballImage, p.position.x, p.position.y - CELL_PIXEL_SIZE, null);
                     }
                 }
             }
             else {
                 if (c.hasBall) {
-                    g2d.drawImage(ballImage, c.x, c.y, null);
+                    g2d.drawImage(ballImage, c.x, c.y - CELL_PIXEL_SIZE, null);
                 }
             }
         }
@@ -426,24 +428,61 @@ public class FieldPanel extends JPanel {
         return cells[y * COLUMNS_HORIZONTAL_CELLS_NUMBER + x];
     }
 
-    public static void setPosition (int id, int x, int y) {
+    private Cell getCell (int id) {
+        return players[id-1].position;
+    }
+
+    public static void setPosition (final int id, final int x, final int y) {
+
+//        final AnimationUpdateThread thread = new AnimationUpdateThread(Animations.DEFAULT_FRAME_RATE);
+//        final Animation a = new GeneralAnimation(thread, 0.2, AnimationConstants.EASE_IN_OUT);
+//        a.
+
+//        if (id == 0) {
+//            // ball
+//
+//            Cell current = ref.ballCell;
+//
+//            if (ref.ballCell != null) {
+//                ref.ballCell.hasBall = false;
+//            }
+//
+//            ref.ballCell = ref.getCell(x, y);
+//            ref.ballCell.hasBall = true;
+//
+//        }
+//        else {
+//            // player
+//
+//            Cell current = ref.getCell(id);
+//            Cell target = ref.getCell(x,y);
+//
+//
+//
+//        }
+
         if (id == 0) {
             // that's the ball!
             if (ref.ballCell != null) {
                 ref.ballCell.hasBall = false;
             }
 
-            ref.ballCell = ref.getCell(x,y);
+            ref.ballCell = ref.getCell(x, y);
             ref.ballCell.hasBall = true;
         }
         else {
-            ref.players[id-1].position = ref.getCell(x,y);
+            ref.players[id-1].position = ref.getCell(x, y);
         }
     }
 
-//    public static void setHasBall (int id, boolean hasBall) {
-//        ref.players[id-1].hasBall = hasBall;
-//    }
+    private static double lerp(int x1, int x2, double t) {
+        return x1 + (x2 - x1) * t;
+    }
+
+    public static void setHasBall (int id, boolean hasBall) {
+        ref.players[id-1].hasBall = hasBall;
+        ref.ballCell.hasBall = false;
+    }
 
     public void toggleGrid() {
         drawGrid = !drawGrid;
