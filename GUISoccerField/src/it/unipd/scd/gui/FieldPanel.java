@@ -1,6 +1,5 @@
 package it.unipd.scd.gui;
 
-import animationx.core.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,6 +55,9 @@ public class FieldPanel extends JPanel {
 
     private Team teamOne;
     private Team teamTwo;
+
+    private int teamOneGoals;
+    private int teamTwoGoals;
 
     private ArrayList<ArrayList<Event>> draw_this = new ArrayList<ArrayList<Event>>();
 
@@ -138,7 +139,8 @@ public class FieldPanel extends JPanel {
             JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
             Team team = (player.get("team").getAsString().compareTo("TEAM_ONE") == 0) ? teamOne : teamTwo;
 
-            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
+//            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
+            players[i] = new Player(player.get("number").getAsInt(), team, null, false, player.get("on_the_field").getAsBoolean());
 //            players[i] = new Player(player.get("number").getAsInt(), team, cells[26], false);
         }
 
@@ -215,13 +217,19 @@ public class FieldPanel extends JPanel {
 
                 Player p = c.player;
 
-                if (p.onTheField) {
+                if (p.onTheField && p.position != null) {
                     g2d.setColor(p.team.color.getColor());
                     Ellipse2D.Double circle = new Ellipse2D.Double(p.position.x - PLAYER_PADDING, p.position.y - CELL_PIXEL_SIZE - PLAYER_PADDING, 20, 20);
                     g2d.fill(circle);
 
                     g2d.setColor(Color.WHITE);
-                    g2d.drawString(String.valueOf(p.number), p.position.x - 1, p.position.y - 2);
+                    String number = String.valueOf(p.number);
+                    if (number.length() == 2) {
+                        g2d.drawString(number, p.position.x - 1, p.position.y - 2);
+                    }
+                    else {
+                        g2d.drawString(number, p.position.x + 1, p.position.y - 2);
+                    }
 
                     if (p.hasBall) {
                         // draw ball
@@ -282,36 +290,36 @@ public class FieldPanel extends JPanel {
             Event e = null;
 
             // id number team from to
-            if (event_type.equals("match"))
+            if (event_type.toLowerCase().equals("match"))
                 e = new MatchEvent(
                         action.get(EVENT_ID).getAsString(),
                         action.get(PLAYER_ID).getAsInt(),
                         Double.parseDouble(action.get(START_TIME).getAsString()),
                         Double.parseDouble(action.get(END_TIME).getAsString()));
             else
-                if (event_type.equals("catch"))  // catch event
+                if (event_type.toLowerCase().equals("catch"))  // catch event
                     m = new CatchEvent();
             else
-                if (event_type.equals("shot"))  // shot event
+                if (event_type.toLowerCase().equals("shot"))  // shot event
                     m = new ShotEvent();
             else
-                if (event_type.equals("tackle")) // tackle event
+                if (event_type.toLowerCase().equals("tackle")) // tackle event
                     m = new TackleEvent(action.get(OTHER_PLAYER).getAsInt());
             else
-                if (event_type.equals("catch")) // catch event
+                if (event_type.toLowerCase().equals("catch")) // catch event
                     m = new CatchEvent();
             else
-                if (event_type.equals("move")) // move event
+                if (event_type.toLowerCase().equals("move")) // move event
                     m = new MoveEvent();
             else
-                if (event_type.equals("unary")) { // unary event
+                if (event_type.toLowerCase().equals("unary")) { // unary event
 
-                    if (action.get(PLAYER_TEAM).getAsString().equals("TEAM_ONE"))
+                    if (action.get(PLAYER_TEAM).getAsString().toLowerCase().equals("team_one"))
                         player_team = teamOne;
                     else
                         player_team = teamTwo;
 
-                    if (action.get(EVENT_ID).getAsString().equals("Goal"))
+                    if (action.get(EVENT_ID).getAsString().toLowerCase().equals("goal")) {
                         e = new GoalEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -320,7 +328,14 @@ public class FieldPanel extends JPanel {
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
 
-                    if (action.get(EVENT_ID).getAsString().equals("Goal_Kick"))
+                        if (player_team.equals(teamOne)) {
+                            teamOneGoals++;
+                        }
+                        else {
+                            teamTwoGoals++;
+                        }
+                    }
+                    else if (action.get(EVENT_ID).getAsString().toLowerCase().equals("goal_kick")) {
                         e = new GoalKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -328,8 +343,8 @@ public class FieldPanel extends JPanel {
                                 new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
-
-                    if (action.get(EVENT_ID).getAsString().equals("Corner_Kick"))
+                    }
+                    else if (action.get(EVENT_ID).getAsString().toLowerCase().equals("corner_kick")) {
                         e = new CornerKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -337,8 +352,8 @@ public class FieldPanel extends JPanel {
                                 new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
-
-                    if (action.get(EVENT_ID).getAsString().equals("Penalty_Kick"))
+                    }
+                    else if (action.get(EVENT_ID).getAsString().toLowerCase().equals("penalty_kick")) {
                         e = new PenaltyKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -346,8 +361,8 @@ public class FieldPanel extends JPanel {
                                 new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
-
-                    if (action.get(EVENT_ID).getAsString().equals("Throw_In"))
+                    }
+                    else if (action.get(EVENT_ID).getAsString().toLowerCase().equals("throw_in")) {
                         e = new ThrowInEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -355,8 +370,8 @@ public class FieldPanel extends JPanel {
                                 new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
-
-                    if (action.get(EVENT_ID).getAsString().equals("Free_Kick"))
+                    }
+                    else if (action.get(EVENT_ID).getAsString().toLowerCase().equals("free_kick")) {
                         e = new FreeKickEvent(
                                 action.get(PLAYER_ID).getAsInt(),
                                 action.get(PLAYER_NUMBER).getAsInt(),
@@ -364,11 +379,12 @@ public class FieldPanel extends JPanel {
                                 new Coordinate(action.get(EVENT_X).getAsInt(), action.get(EVENT_Y).getAsInt()),
                                 Double.parseDouble(action.get(START_TIME).getAsString()),
                                 Double.parseDouble(action.get(END_TIME).getAsString()));
+                    }
                 }
             else
-                if (event_type.equals("binary")) {  // binary event
+                if (event_type.toLowerCase().equals("binary")) {  // binary event
                     Team opponent;
-                    if (action.get(FOUL_T1).getAsString().equals("TEAM_ONE")) {
+                    if (action.get(FOUL_T1).getAsString().toLowerCase().equals("team_one")) {
                         player_team = teamOne;
                         opponent = teamTwo;
                     }
@@ -392,7 +408,7 @@ public class FieldPanel extends JPanel {
                 player_id = action.get(PLAYER_ID).getAsInt();
                 player_number = action.get(PLAYER_NUMBER).getAsInt();
 
-                if (action.get(PLAYER_TEAM).getAsString().equals("TEAM_ONE"))
+                if (action.get(PLAYER_TEAM).getAsString().toLowerCase().equals("team_one"))
                     player_team = teamOne;
                 else
                     player_team = teamTwo;

@@ -27,13 +27,24 @@ public class SoccerFrame extends JFrame {
 
     private static int msgCount = 1;
 
+    private JButton connect;
+    private JButton start;
+    private JButton toggleGrid;
+    private JPanel buttonPanel;
+    private JTextArea logArea;
+    private JScrollPane logScrollPane;
+
+    private JTextField serverAddress;
+
     public SoccerFrame() {
 
         fieldPanel = new FieldPanel();
+        fieldPanel.setBorder(BorderFactory.createTitledBorder("Game area"));
 
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
 
-        JButton connect = new JButton("Connect");
+        connect = new JButton("Connect");
         connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -54,7 +65,7 @@ public class SoccerFrame extends JFrame {
             }
         });
 
-        JButton start = new JButton("Start");
+        start = new JButton("Start");
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -84,7 +95,7 @@ public class SoccerFrame extends JFrame {
             }
         });
 
-        JButton toggleGrid = new JButton("Toggle grid");
+        toggleGrid = new JButton("Toggle grid");
         toggleGrid.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -96,11 +107,24 @@ public class SoccerFrame extends JFrame {
         buttonPanel.add(start);
         buttonPanel.add(toggleGrid);
 
+        logArea = new JTextArea("Start a new game and check the logs right here", 5, 40);
+        logArea.setEditable(false);
+        logArea.setLineWrap(true);
+        logArea.setWrapStyleWord(true);
+
+        logScrollPane = new JScrollPane(logArea);
+        logScrollPane.setWheelScrollingEnabled(true);
+        logScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        logScrollPane.setBorder(BorderFactory.createTitledBorder("Log"));
+
         setLayout(new BorderLayout());
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        add(buttonPanel, BorderLayout.NORTH);
         add(fieldPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(logScrollPane, BorderLayout.SOUTH);
+
         pack();
         setVisible(true);
 
