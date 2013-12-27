@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,8 +39,8 @@ public class SoccerFrame extends JFrame {
 
     public SoccerFrame() {
 
-        fieldPanel = new FieldPanel();
-        fieldPanel.setBorder(BorderFactory.createTitledBorder("Game area"));
+        fieldPanel = new FieldPanel(this);
+//        fieldPanel.setBorder(BorderFactory.createTitledBorder("Game area"));
 
         buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
@@ -127,13 +128,21 @@ public class SoccerFrame extends JFrame {
 
         pack();
         setVisible(true);
-
+        setTitle("Soccer - A concurrent and distributed game simulation");
 //        connect.doClick();
 //        drawTest();
     }
 
     public void drawTest() {
         fieldPanel.drawADot();
+    }
+
+    public void log(String message) {
+        try {
+            logArea.getDocument().insertString(0, message + "\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
 }

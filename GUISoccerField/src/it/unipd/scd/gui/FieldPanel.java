@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,7 +89,11 @@ public class FieldPanel extends JPanel {
 
     private boolean drawGrid;
 
-    public FieldPanel() {
+    private SoccerFrame container;
+
+    public FieldPanel(SoccerFrame parent) {
+
+        this.container = parent;
 
         // load image
         try {
@@ -121,6 +126,7 @@ public class FieldPanel extends JPanel {
             ballCell.hasBall = true;
 
             drawGrid = true;
+//            setSize(new Dimension(742, 490));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,14 +145,16 @@ public class FieldPanel extends JPanel {
             JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
             Team team = (player.get("team").getAsString().compareTo("TEAM_ONE") == 0) ? teamOne : teamTwo;
 
-//            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
-            players[i] = new Player(player.get("number").getAsInt(), team, null, false, player.get("on_the_field").getAsBoolean());
+            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
+//            players[i] = new Player(player.get("number").getAsInt(), team, null, false, player.get("on_the_field").getAsBoolean());
 //            players[i] = new Player(player.get("number").getAsInt(), team, cells[26], false);
         }
 
         for (Player p : players) {
-            p.position.hasPlayer = true;
-            p.position.player = p;
+            if (p.position != null) {
+                p.position.hasPlayer = true;
+                p.position.player = p;
+            }
         }
 
 //        repaint();
@@ -498,6 +506,10 @@ public class FieldPanel extends JPanel {
     public static void setHasBall (int id, boolean hasBall) {
         ref.players[id-1].hasBall = hasBall;
         ref.ballCell.hasBall = false;
+    }
+
+    public static void log(String message) {
+        ref.container.log(message);
     }
 
     public void toggleGrid() {

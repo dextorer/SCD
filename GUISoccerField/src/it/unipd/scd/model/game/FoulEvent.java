@@ -1,5 +1,6 @@
 package it.unipd.scd.model.game;
 
+import it.unipd.scd.gui.FieldPanel;
 import it.unipd.scd.model.Coordinate;
 import it.unipd.scd.model.Player;
 import it.unipd.scd.model.Team;
@@ -44,6 +45,6 @@ public class FoulEvent extends GameEvent {
 
     @Override
     public void draw() {
-
+        FieldPanel.log("Player " + numberOne + " has committed a foul on Player " + numberTwo + ". Not fair, dude!");
     }
 }

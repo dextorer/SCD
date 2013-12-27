@@ -21,5 +21,7 @@ public class TackleEvent extends MotionEvent {
     public void draw() {
         FieldPanel.setHasBall(otherPlayerId, false);
         FieldPanel.setHasBall(id, true);
+
+        FieldPanel.log("Player " + number + " has tackled Player " + otherPlayerId);
     }
 }

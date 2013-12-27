@@ -1,5 +1,6 @@
 package it.unipd.scd.model.game;
 
+import it.unipd.scd.gui.FieldPanel;
 import it.unipd.scd.model.Coordinate;
 import it.unipd.scd.model.Player;
 import it.unipd.scd.model.Team;
@@ -30,6 +31,6 @@ public class FreeKickEvent extends GameEvent {
 
     @Override
     public void draw() {
-
+        FieldPanel.log("As a consequence to the last foul, Player " + number + " will have to shoot a free kick");
     }
 }

@@ -1,5 +1,6 @@
 package it.unipd.scd.model.game;
 
+import it.unipd.scd.gui.FieldPanel;
 import it.unipd.scd.model.Coordinate;
 import it.unipd.scd.model.Player;
 import it.unipd.scd.model.Team;
@@ -30,6 +31,6 @@ public class GoalEvent extends GameEvent {
 
     @Override
     public void draw() {
-
+        FieldPanel.log("Player " + number + " has scored a goal for " + team.name + "! And the crowd goes wild!");
     }
 }
