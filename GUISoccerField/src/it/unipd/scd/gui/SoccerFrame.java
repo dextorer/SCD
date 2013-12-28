@@ -25,13 +25,13 @@ import java.io.IOException;
 public class SoccerFrame extends JFrame {
 
     private FieldPanel fieldPanel;
+    private StatsPanel statsPanel;
+    private JPanel buttonPanel;
 
     private static int msgCount = 1;
-
     private JButton connect;
     private JButton start;
     private JButton toggleGrid;
-    private JPanel buttonPanel;
     private JTextArea logArea;
     private JScrollPane logScrollPane;
 
@@ -44,6 +44,9 @@ public class SoccerFrame extends JFrame {
 
         buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+
+        statsPanel = new StatsPanel();
+        statsPanel.setBorder(BorderFactory.createTitledBorder("Statistics"));
 
         connect = new JButton("Connect");
         connect.addActionListener(new ActionListener() {
@@ -122,8 +125,14 @@ public class SoccerFrame extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        JPanel testContainer = new JPanel();
+        testContainer.setLayout(new BorderLayout());
+        testContainer.add(fieldPanel, BorderLayout.CENTER);
+        testContainer.add(statsPanel, BorderLayout.SOUTH);
+
         add(buttonPanel, BorderLayout.NORTH);
-        add(fieldPanel, BorderLayout.CENTER);
+//        add(fieldPanel, BorderLayout.CENTER);
+        add(testContainer, BorderLayout.CENTER);
         add(logScrollPane, BorderLayout.SOUTH);
 
         pack();

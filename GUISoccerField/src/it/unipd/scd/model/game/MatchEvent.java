@@ -1,7 +1,5 @@
 package it.unipd.scd.model.game;
 
-import it.unipd.scd.model.Player;
-
 /**
  * Created with IntelliJ IDEA.
  * User: dextor
@@ -20,8 +18,6 @@ public class MatchEvent extends GameEvent {
         this.player_id = player_id;
         this.start_time = start_time;
         this.end_time = end_time;
-      /*  System.out.println("event: " + event);
-        System.out.println("player id: " + player_id); */
     }
 
     @Override

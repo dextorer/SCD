@@ -46,5 +46,7 @@ public class FoulEvent extends GameEvent {
     @Override
     public void draw() {
         FieldPanel.log("Player " + numberOne + " has committed a foul on Player " + numberTwo + ". Not fair, dude!");
+
+        FieldPanel.showFoulImage();
     }
 }

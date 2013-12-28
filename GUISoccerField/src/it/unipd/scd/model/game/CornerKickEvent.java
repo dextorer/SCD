@@ -32,5 +32,7 @@ public class CornerKickEvent extends GameEvent {
     @Override
     public void draw() {
         FieldPanel.log("Player " + number + " will now throw a corner kick. Sit tight!");
+
+        FieldPanel.showCornerImage();
     }
 }

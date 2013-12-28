@@ -34,4 +34,8 @@ public abstract class MotionEvent extends Event {
         this.endTime = end;
     }
 
+    public double getStartTime() {
+        return startTime;
+    }
+
 }

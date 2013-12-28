@@ -32,5 +32,7 @@ public class ThrowInEvent extends GameEvent {
     @Override
     public void draw() {
         FieldPanel.log("Player " + number + " is throwing in the ball. Nothing to be worried about.");
+
+        FieldPanel.showThrowInImage();
     }
 }

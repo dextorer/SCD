@@ -32,5 +32,7 @@ public class PenaltyKickEvent extends GameEvent {
     @Override
     public void draw() {
         FieldPanel.log("As a consequence to the latest foul in " + team);
+
+        FieldPanel.showFoulImage();
     }
 }

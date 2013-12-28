@@ -31,6 +31,9 @@ public class GoalEvent extends GameEvent {
 
     @Override
     public void draw() {
+
+        FieldPanel.showGoalImage();
+
         FieldPanel.log("Player " + number + " has scored a goal for " + team.name + "! And the crowd goes wild!");
     }
 }

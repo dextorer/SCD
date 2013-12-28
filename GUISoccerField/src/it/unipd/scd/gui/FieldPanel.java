@@ -18,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,11 +39,35 @@ public class FieldPanel extends JPanel {
     private final String GRID_IMAGE_NAME = "transparent_grid.png";
     private final InputStream GRID_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + GRID_IMAGE_NAME);
 
+    private final String GOAL_IMAGE_NAME = "goal-text.png";
+    private final InputStream GOAL_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + GOAL_IMAGE_NAME);
+
+    private final String FOUL_IMAGE_NAME = "foul-text.png";
+    private final InputStream FOUL_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + FOUL_IMAGE_NAME);
+
+    private final String CORNER_IMAGE_NAME = "corner-text.png";
+    private final InputStream CORNER_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + CORNER_IMAGE_NAME);
+
+    private final String THROW_IN_IMAGE_NAME = "throw-in-text.png";
+    private final InputStream THROW_IN_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + THROW_IN_IMAGE_NAME);
+
+    private final String FIRST_HALF_IMAGE_NAME = "first-half-text.png";
+    private final InputStream FIRST_HALF_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + FIRST_HALF_IMAGE_NAME);
+
+    private final String END_MATCH_IMAGE_NAME = "end-match-text.png";
+    private final InputStream END_MATCH_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + END_MATCH_IMAGE_NAME);
+
     private final int PLAYER_PADDING = 3;
 
     private BufferedImage soccerFieldImage;
     private BufferedImage ballImage;
     private BufferedImage gridImage;
+    private BufferedImage goalImage;
+    private BufferedImage foulImage;
+    private BufferedImage cornerImage;
+    private BufferedImage throwInImage;
+    private BufferedImage firstHalfImage;
+    private BufferedImage endMatchImage;
 
     private final int CELL_PIXEL_SIZE = 14;
     private final int COLUMNS_HORIZONTAL_CELLS_NUMBER = 53;
@@ -91,6 +114,9 @@ public class FieldPanel extends JPanel {
 
     private SoccerFrame container;
 
+    private boolean showImage;
+    private BufferedImage currentImage;
+
     public FieldPanel(SoccerFrame parent) {
 
         this.container = parent;
@@ -100,6 +126,12 @@ public class FieldPanel extends JPanel {
             soccerFieldImage = ImageIO.read(SOCCER_FIELD_IMAGE_PATH);
             ballImage = ImageIO.read(BALL_IMAGE_PATH);
             gridImage = ImageIO.read(GRID_IMAGE_PATH);
+            goalImage = ImageIO.read(GOAL_IMAGE_PATH);
+            foulImage = ImageIO.read(FOUL_IMAGE_PATH);
+            cornerImage = ImageIO.read(CORNER_IMAGE_PATH);
+            throwInImage = ImageIO.read(THROW_IN_IMAGE_PATH);
+            firstHalfImage = ImageIO.read(FIRST_HALF_IMAGE_PATH);
+            endMatchImage = ImageIO.read(END_MATCH_IMAGE_PATH);
 
             cells = new Cell[COLUMNS_HORIZONTAL_CELLS_NUMBER * ROWS_VERTICAL_CELLS_NUMBER];
 
@@ -126,7 +158,6 @@ public class FieldPanel extends JPanel {
             ballCell.hasBall = true;
 
             drawGrid = true;
-//            setSize(new Dimension(742, 490));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,17 +168,13 @@ public class FieldPanel extends JPanel {
         JsonArray jsonedPlayers = new JsonParser().parse(content).getAsJsonObject().get("players").getAsJsonArray();
         players = new Player[jsonedPlayers.size()];
 
-        System.out.println(jsonedPlayers);
-
         for (int i=0; i<jsonedPlayers.size(); i++) {
             // initializing bench warmers
 
             JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
             Team team = (player.get("team").getAsString().compareTo("TEAM_ONE") == 0) ? teamOne : teamTwo;
 
-            players[i] = new Player(player.get("number").getAsInt(), team, cells[new Random().nextInt(cells.length)], false, player.get("on_the_field").getAsBoolean());
-//            players[i] = new Player(player.get("number").getAsInt(), team, null, false, player.get("on_the_field").getAsBoolean());
-//            players[i] = new Player(player.get("number").getAsInt(), team, cells[26], false);
+            players[i] = new Player(player.get("number").getAsInt(), team, getCell(player.get("id").getAsInt(), 0), false, player.get("on_the_field").getAsBoolean());
         }
 
         for (Player p : players) {
@@ -157,14 +184,18 @@ public class FieldPanel extends JPanel {
             }
         }
 
-//        repaint();
-//        revalidate();
+        repaint();
+        revalidate();
     }
 
     public void startDrawCycle() {
         Thread t = new Thread() {
             @Override
             public void run() {
+
+                double lastTimestamp = -1;
+                boolean first = true;
+
                 while (true) {
                     synchronized (lock) {
                         while (draw_this.isEmpty()) {
@@ -181,7 +212,21 @@ public class FieldPanel extends JPanel {
                         ArrayList<Event> current = draw_this.get(0);
                         System.out.println("Drawing " + current.size() + " events..");
                         for (Event e : current) {
-//                            System.out.println("Drawing cycle in progress..");
+
+                            if (e instanceof MotionEvent) {
+                                double time = ((MotionEvent) e).getStartTime();
+                                if (first) {
+                                    first = false;
+                                    lastTimestamp = time;
+                                }
+
+                                if (time - lastTimestamp > 1.0) {
+                                    lastTimestamp = time;
+                                    int minutes = (int) (time / 60);
+                                    StatsPanel.setTime(minutes, (int) time % 60);
+                                }
+                            }
+
                             e.draw();
                         }
 
@@ -236,7 +281,7 @@ public class FieldPanel extends JPanel {
                         g2d.drawString(number, p.position.x - 1, p.position.y - 2);
                     }
                     else {
-                        g2d.drawString(number, p.position.x + 1, p.position.y - 2);
+                        g2d.drawString(number, p.position.x + 3, p.position.y - 2);
                     }
 
                     if (p.hasBall) {
@@ -250,6 +295,12 @@ public class FieldPanel extends JPanel {
                     g2d.drawImage(ballImage, c.x, c.y - CELL_PIXEL_SIZE, null);
                 }
             }
+        }
+
+        if (showImage && goalImage != null) {
+            int coordX = soccerFieldImage.getWidth() / 2 - goalImage.getWidth() / 2;
+            int coordY = soccerFieldImage.getHeight() / 2 - goalImage.getHeight() / 2;
+            g2d.drawImage(currentImage, coordX, coordY, null);
         }
 
 //        g2d.setTransform(original);
@@ -458,33 +509,6 @@ public class FieldPanel extends JPanel {
 
     public static void setPosition (final int id, final int x, final int y) {
 
-//        final AnimationUpdateThread thread = new AnimationUpdateThread(Animations.DEFAULT_FRAME_RATE);
-//        final Animation a = new GeneralAnimation(thread, 0.2, AnimationConstants.EASE_IN_OUT);
-//        a.
-
-//        if (id == 0) {
-//            // ball
-//
-//            Cell current = ref.ballCell;
-//
-//            if (ref.ballCell != null) {
-//                ref.ballCell.hasBall = false;
-//            }
-//
-//            ref.ballCell = ref.getCell(x, y);
-//            ref.ballCell.hasBall = true;
-//
-//        }
-//        else {
-//            // player
-//
-//            Cell current = ref.getCell(id);
-//            Cell target = ref.getCell(x,y);
-//
-//
-//
-//        }
-
         if (id == 0) {
             // that's the ball!
             if (ref.ballCell != null) {
@@ -516,5 +540,162 @@ public class FieldPanel extends JPanel {
         drawGrid = !drawGrid;
         repaint();
         revalidate();
+    }
+
+    private void displayGoalImage() {
+
+        currentImage = goalImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displayFoulImage() {
+
+        currentImage = foulImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displayCornerImage() {
+
+        currentImage = cornerImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displayThrowInImage() {
+
+        currentImage = throwInImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displayFirstHalfImage() {
+
+        currentImage = firstHalfImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displayEndMatchImage() {
+
+        currentImage = endMatchImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    public static void showGoalImage() {
+        ref.displayGoalImage();
+        StatsPanel.setScore(ref.teamOneGoals, ref.teamTwoGoals);
+    }
+
+    public static void showFoulImage() {
+        ref.displayFoulImage();
+    }
+
+    public static void showCornerImage() {
+        ref.displayCornerImage();
+    }
+
+    public static void showThrowInImage() {
+        ref.displayThrowInImage();
+    }
+
+    public static void showFirstHalfImage() {
+        ref.displayFirstHalfImage();
+    }
+
+    public static void showEndMatchImage() {
+        ref.displayEndMatchImage();
     }
 }

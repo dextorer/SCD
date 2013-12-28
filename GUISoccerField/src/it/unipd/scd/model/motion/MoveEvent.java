@@ -18,16 +18,6 @@ public class MoveEvent extends MotionEvent {
 
     @Override
     public void draw() {
-
         FieldPanel.setPosition(id, to.x, to.y);
-
-//        Timer t = new Timer(, new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//
-//            }
-//        });
-//        t.setRepeats(true);
-//        t.start();
     }
 }
