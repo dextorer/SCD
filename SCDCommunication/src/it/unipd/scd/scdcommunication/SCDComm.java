@@ -35,7 +35,11 @@ public class SCDComm extends WebSocketClient {
 	public void terminateConnection() {
 		this.close();
 	}
-	
+
+    public void terminateConnection(String message) {
+        this.close(1000, message);
+    }
+
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		mInterface.onCommMessage("Connection with the server was closed, please reconnect.\n\nReason: " + reason);

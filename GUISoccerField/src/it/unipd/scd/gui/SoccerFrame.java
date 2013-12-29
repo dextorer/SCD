@@ -1,5 +1,7 @@
 package it.unipd.scd.gui;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
 import org.apache.commons.io.IOUtils;
@@ -13,6 +15,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -29,15 +33,23 @@ public class SoccerFrame extends JFrame {
     private JPanel buttonPanel;
 
     private static int msgCount = 1;
+
     private JButton connect;
     private JButton start;
+    private JButton pause;
     private JButton toggleGrid;
+
     private JTextArea logArea;
     private JScrollPane logScrollPane;
 
-    private JTextField serverAddress;
+    private String host;
+    private String port;
+
+    private SCDComm comm;
 
     public SoccerFrame() {
+
+        readConfig();
 
         fieldPanel = new FieldPanel(this);
 //        fieldPanel.setBorder(BorderFactory.createTitledBorder("Game area"));
@@ -52,7 +64,7 @@ public class SoccerFrame extends JFrame {
         connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                SCDComm comm = new SCDComm("localhost", "28000", SCDComm.FIELD_ENDPOINT, new CommInterface() {
+                comm = new SCDComm(host, port, SCDComm.FIELD_ENDPOINT, new CommInterface() {
                     @Override
                     public void onMessage(String payload) {
                         System.out.println("Message " + (msgCount++) + "\n" + payload);
@@ -75,7 +87,7 @@ public class SoccerFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 CloseableHttpClient httpclient = HttpClients.createDefault();
 
-                HttpGet get = new HttpGet("http://localhost:28000/field/getParams");
+                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/getParams");
                 try {
                     CloseableHttpResponse response = httpclient.execute(get);
                     String content = IOUtils.toString(response.getEntity().getContent());
@@ -86,16 +98,55 @@ public class SoccerFrame extends JFrame {
                     e.printStackTrace();
                 }
 
-                get = new HttpGet("http://localhost:28000/field/newGame");
+                get = new HttpGet("http://" + host + ":" + port + "/field/newGame");
                 try {
                     CloseableHttpResponse response = httpclient.execute(get);
                     response.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                finally {
+                    try {
+                        httpclient.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 fieldPanel.startDrawCycle();
 
+            }
+        });
+
+        pause = new JButton("Pause");
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/pauseGame");
+
+                try {
+                    CloseableHttpResponse response = client.execute(get);
+                    String content = IOUtils.toString(response.getEntity().getContent());
+                    String status = new JsonParser().parse(content).getAsJsonObject().get("status").getAsString();
+                    if (status.toLowerCase().equals("paused")) {
+                        pause.setText("Resume");
+                    }
+                    else {
+                        pause.setText("Pause");
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    get.releaseConnection();
+                    try {
+                        client.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -109,6 +160,7 @@ public class SoccerFrame extends JFrame {
 
         buttonPanel.add(connect);
         buttonPanel.add(start);
+        buttonPanel.add(pause);
         buttonPanel.add(toggleGrid);
 
         logArea = new JTextArea("Start a new game and check the logs right here", 5, 40);
@@ -131,15 +183,42 @@ public class SoccerFrame extends JFrame {
         testContainer.add(statsPanel, BorderLayout.SOUTH);
 
         add(buttonPanel, BorderLayout.NORTH);
-//        add(fieldPanel, BorderLayout.CENTER);
         add(testContainer, BorderLayout.CENTER);
         add(logScrollPane, BorderLayout.SOUTH);
 
         pack();
         setVisible(true);
         setTitle("Soccer - A concurrent and distributed game simulation");
-//        connect.doClick();
-//        drawTest();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // closing connections to the server
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                if (comm != null && comm.isOpen()) {
+                    comm.terminateConnection("field");
+                }
+            }
+        }));
+    }
+
+    private void readConfig() {
+        File f = new File("gui.conf");
+
+        if (!f.exists()) {
+            JOptionPane.showMessageDialog(this, "No configuration file detected! Sticking to default values.");
+            host = "localhost";
+            port = "28000";
+        }
+        else {
+            try {
+                String content = IOUtils.toString(new FileInputStream(f));
+                JsonObject root = new JsonParser().parse(content).getAsJsonObject();
+                host = root.get("host").getAsString();
+                port = root.get("port").getAsString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void drawTest() {

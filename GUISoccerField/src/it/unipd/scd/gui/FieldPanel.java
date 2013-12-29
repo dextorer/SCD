@@ -28,7 +28,10 @@ import java.util.ArrayList;
  */
 public class FieldPanel extends JPanel {
 
-    //public static final int REDRAW_INTERVAL = 60;
+    public enum MatchState {
+        FIRST_HALF,
+        SECOND_HALF;
+    }
 
     private final String SOCCER_FIELD_IMAGE_NAME = "soccer-field.png";
     private final InputStream SOCCER_FIELD_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + SOCCER_FIELD_IMAGE_NAME);
@@ -51,8 +54,14 @@ public class FieldPanel extends JPanel {
     private final String THROW_IN_IMAGE_NAME = "throw-in-text.png";
     private final InputStream THROW_IN_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + THROW_IN_IMAGE_NAME);
 
+    private final String BEGIN_MATCH_IMAGE_NAME = "begin-match-text.png";
+    private final InputStream BEGIN_MATCH_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + BEGIN_MATCH_IMAGE_NAME);
+
     private final String FIRST_HALF_IMAGE_NAME = "first-half-text.png";
     private final InputStream FIRST_HALF_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + FIRST_HALF_IMAGE_NAME);
+
+    private final String SECOND_HALF_IMAGE_NAME = "second-half-text.png";
+    private final InputStream SECOND_HALF_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + SECOND_HALF_IMAGE_NAME);
 
     private final String END_MATCH_IMAGE_NAME = "end-match-text.png";
     private final InputStream END_MATCH_IMAGE_PATH = this.getClass().getClassLoader().getResourceAsStream("res/" + END_MATCH_IMAGE_NAME);
@@ -66,7 +75,9 @@ public class FieldPanel extends JPanel {
     private BufferedImage foulImage;
     private BufferedImage cornerImage;
     private BufferedImage throwInImage;
+    private BufferedImage beginMatchImage;
     private BufferedImage firstHalfImage;
+    private BufferedImage secondHalfImage;
     private BufferedImage endMatchImage;
 
     private final int CELL_PIXEL_SIZE = 14;
@@ -117,6 +128,15 @@ public class FieldPanel extends JPanel {
     private boolean showImage;
     private BufferedImage currentImage;
 
+    private MatchState state;
+
+    private int totalMinutes;
+    private int totalSeconds;
+    private boolean shouldTrackTime;
+
+    private double referenceTimeFirstHalf;
+    private double referenceTimeSecondHalf;
+
     public FieldPanel(SoccerFrame parent) {
 
         this.container = parent;
@@ -130,7 +150,9 @@ public class FieldPanel extends JPanel {
             foulImage = ImageIO.read(FOUL_IMAGE_PATH);
             cornerImage = ImageIO.read(CORNER_IMAGE_PATH);
             throwInImage = ImageIO.read(THROW_IN_IMAGE_PATH);
+            beginMatchImage = ImageIO.read(BEGIN_MATCH_IMAGE_PATH);
             firstHalfImage = ImageIO.read(FIRST_HALF_IMAGE_PATH);
+            secondHalfImage = ImageIO.read(SECOND_HALF_IMAGE_PATH);
             endMatchImage = ImageIO.read(END_MATCH_IMAGE_PATH);
 
             cells = new Cell[COLUMNS_HORIZONTAL_CELLS_NUMBER * ROWS_VERTICAL_CELLS_NUMBER];
@@ -193,8 +215,8 @@ public class FieldPanel extends JPanel {
             @Override
             public void run() {
 
-                double lastTimestamp = -1;
-                boolean first = true;
+//                double firstTimestamp = -1;
+//                boolean first = true;
 
                 while (true) {
                     synchronized (lock) {
@@ -213,25 +235,22 @@ public class FieldPanel extends JPanel {
                         System.out.println("Drawing " + current.size() + " events..");
                         for (Event e : current) {
 
-                            if (e instanceof MotionEvent) {
-                                double time = ((MotionEvent) e).getStartTime();
-                                if (first) {
-                                    first = false;
-                                    lastTimestamp = time;
-                                }
+                            if (shouldTrackTime) {
+                                if (e instanceof MotionEvent) {
+                                    MotionEvent event = (MotionEvent) e;
+                                    double diff = event.getStartTime() - (referenceTimeFirstHalf + referenceTimeSecondHalf);
+                                    totalMinutes = (int) (diff / 60);
+                                    totalSeconds = (int) (diff % 60);
 
-                                if (time - lastTimestamp > 1.0) {
-                                    lastTimestamp = time;
-                                    int minutes = (int) (time / 60);
-                                    StatsPanel.setTime(minutes, (int) time % 60);
+                                    StatsPanel.setTime(totalMinutes, totalSeconds);
                                 }
                             }
 
                             e.draw();
-                        }
 
-                        repaint();
-                        revalidate();
+                            repaint();
+                            revalidate();
+                        }
 
                         System.out.println("Drawing cycle done.");
 
@@ -258,16 +277,11 @@ public class FieldPanel extends JPanel {
             g2d.drawImage(gridImage, 0, 0, null);
         }
 
-//        AffineTransform original = g2d.getTransform();
-
-//        g2d.drawImage(ballImage, 168, 168, null);
-
         // draw other components
-
         for (Cell c : cells) {
             if (c.hasPlayer) {
-                // draw player
 
+                // draw current player
                 Player p = c.player;
 
                 if (p.onTheField && p.position != null) {
@@ -286,7 +300,12 @@ public class FieldPanel extends JPanel {
 
                     if (p.hasBall) {
                         // draw ball
-                        g2d.drawImage(ballImage, p.position.x, p.position.y - CELL_PIXEL_SIZE, null);
+                        if (p.team.equals(teamOne)) {
+                            g2d.drawImage(ballImage, p.position.x + CELL_PIXEL_SIZE / 2, p.position.y - CELL_PIXEL_SIZE, null);
+                        }
+                        else {
+                            g2d.drawImage(ballImage, p.position.x - CELL_PIXEL_SIZE / 2, p.position.y - CELL_PIXEL_SIZE, null);
+                        }
                     }
                 }
             }
@@ -630,9 +649,53 @@ public class FieldPanel extends JPanel {
         t.start();
     }
 
+    private void displayBeginMatchImage() {
+
+        currentImage = beginMatchImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
     private void displayFirstHalfImage() {
 
         currentImage = firstHalfImage;
+        showImage = true;
+
+        repaint();
+        revalidate();
+
+        Timer t = new Timer (3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showImage = false;
+                currentImage = null;
+
+                repaint();
+                revalidate();
+            }
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+
+    private void displaySecondHalfImage() {
+
+        currentImage = secondHalfImage;
         showImage = true;
 
         repaint();
@@ -691,11 +754,38 @@ public class FieldPanel extends JPanel {
         ref.displayThrowInImage();
     }
 
+    public static void showBeginMatchImage() {
+        ref.displayBeginMatchImage();
+    }
+
     public static void showFirstHalfImage() {
         ref.displayFirstHalfImage();
+    }
+
+    public static void showSecondHalfImage() {
+        ref.displaySecondHalfImage();
     }
 
     public static void showEndMatchImage() {
         ref.displayEndMatchImage();
     }
+
+    public static void setMatchState(MatchState state) {
+        ref.state = state;
+    }
+
+    public static MatchState getMatchState() {
+        return ref.state;
+    }
+
+    public static void setTrackTime(boolean track, double baseTime, boolean firstHalf) {
+        ref.shouldTrackTime = track;
+        if (firstHalf && track) {
+            ref.referenceTimeFirstHalf = baseTime;
+        }
+        else {
+            ref.referenceTimeSecondHalf = baseTime;
+        }
+    }
+
 }

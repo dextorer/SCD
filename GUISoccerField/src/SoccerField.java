@@ -1,4 +1,8 @@
+import de.javasoft.plaf.synthetica.SyntheticaBlueIceLookAndFeel;
 import it.unipd.scd.gui.SoccerFrame;
+
+import javax.swing.*;
+import java.text.ParseException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +14,15 @@ import it.unipd.scd.gui.SoccerFrame;
 public class SoccerField {
 
     public static void main(String[] args) {
+
+        try {
+            UIManager.setLookAndFeel(new SyntheticaBlueIceLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         SoccerFrame frame = new SoccerFrame();
     }
 }
