@@ -37,6 +37,8 @@ public class SoccerFrame extends JFrame {
     private JButton connect;
     private JButton start;
     private JButton pause;
+    private JButton quit;
+    private JButton newGame;
     private JButton toggleGrid;
 
     private JTextArea logArea;
@@ -150,6 +152,56 @@ public class SoccerFrame extends JFrame {
             }
         });
 
+        quit = new JButton("Quit");
+        quit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/quit");
+
+                try {
+                    CloseableHttpResponse response = client.execute(get);
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    get.releaseConnection();
+                    try {
+                        client.close();
+                        dispose();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        newGame = new JButton("New game");
+        newGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                CloseableHttpClient client = HttpClients.createDefault();
+                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/newGame");
+
+                try {
+                    CloseableHttpResponse response = client.execute(get);
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    get.releaseConnection();
+                    try {
+                        client.close();
+                        dispose();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         toggleGrid = new JButton("Toggle grid");
         toggleGrid.addActionListener(new ActionListener() {
             @Override
@@ -161,6 +213,7 @@ public class SoccerFrame extends JFrame {
         buttonPanel.add(connect);
         buttonPanel.add(start);
         buttonPanel.add(pause);
+        buttonPanel.add(quit);
         buttonPanel.add(toggleGrid);
 
         logArea = new JTextArea("Start a new game and check the logs right here", 5, 40);
