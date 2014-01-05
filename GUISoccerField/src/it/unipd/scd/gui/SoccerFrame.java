@@ -2,11 +2,13 @@ package it.unipd.scd.gui;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unipd.scd.playersgenerator.GUI;
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -18,6 +20,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +33,8 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class SoccerFrame extends JFrame {
+
+    public static SoccerFrame ref;
 
     private FieldPanel fieldPanel;
     private StatsPanel statsPanel;
@@ -51,6 +59,7 @@ public class SoccerFrame extends JFrame {
 
     public SoccerFrame() {
 
+        ref = this;
         readConfig();
 
         fieldPanel = new FieldPanel(this);
@@ -87,36 +96,8 @@ public class SoccerFrame extends JFrame {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                CloseableHttpClient httpclient = HttpClients.createDefault();
-
-                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/getParams");
-                try {
-                    CloseableHttpResponse response = httpclient.execute(get);
-                    String content = IOUtils.toString(response.getEntity().getContent());
-                    fieldPanel.initialize(content);
-                    response.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                get = new HttpGet("http://" + host + ":" + port + "/field/newGame");
-                try {
-                    CloseableHttpResponse response = httpclient.execute(get);
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    try {
-                        httpclient.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                fieldPanel.startDrawCycle();
-
+                // configure teams
+                GUI.showGUI();
             }
         });
 
@@ -284,6 +265,62 @@ public class SoccerFrame extends JFrame {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void teamsConfCallback(String conf) {
+
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        HttpGet get = null;
+        try {
+            URI uri = new URIBuilder()
+                    .setScheme("http")
+                    .setHost(ref.host)
+                    .setPort(Integer.parseInt(ref.port))
+                    .setPath("/field/setTeamsConf")
+                    .setParameter("conf", URLEncoder.encode(conf, "UTF-8"))
+                    .build();
+            get = new HttpGet(uri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            CloseableHttpResponse response = httpclient.execute(get);
+            response.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        get = new HttpGet("http://" + ref.host + ":" + ref.port + "/field/getParams");
+        try {
+            CloseableHttpResponse response = httpclient.execute(get);
+            String content = IOUtils.toString(response.getEntity().getContent());
+            ref.fieldPanel.initialize(content);
+            response.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        get = new HttpGet("http://" + ref.host + ":" + ref.port + "/field/newGame");
+        try {
+            CloseableHttpResponse response = httpclient.execute(get);
+            response.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ref.fieldPanel.startDrawCycle();
     }
 
 }

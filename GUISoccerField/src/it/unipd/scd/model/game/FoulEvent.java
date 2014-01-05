@@ -47,6 +47,9 @@ public class FoulEvent extends GameEvent {
     public void draw() {
         FieldPanel.log("Player " + numberOne + " has committed a foul on Player " + numberTwo + ". Not fair, dude!");
 
+        FieldPanel.setHasBall(idOne, false);
+        FieldPanel.setHasBall(idTwo, false);
+
         FieldPanel.showFoulImage();
     }
 }

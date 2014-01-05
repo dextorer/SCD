@@ -111,7 +111,8 @@ public class FieldPanel extends JPanel {
     private final String TO_Y = "to_y";
     private final String START_TIME = "start_time";
     private final String END_TIME = "end_time";
-    private final String OTHER_PLAYER = "other_player_id";
+    private final String OTHER_PLAYER_ID = "other_player_id";
+    private final String OTHER_PLAYER_NUMBER = "other_player_number";
     private final String EVENT_X = "event_coord_x";
     private final String EVENT_Y = "event_coord_y";
     private final String FOUL_ID1 = "player_1_id";
@@ -382,7 +383,7 @@ public class FieldPanel extends JPanel {
                     m = new ShotEvent();
             else
                 if (event_type.toLowerCase().equals("tackle")) // tackle event
-                    m = new TackleEvent(action.get(OTHER_PLAYER).getAsInt());
+                    m = new TackleEvent(action.get(OTHER_PLAYER_ID).getAsInt(), action.get(OTHER_PLAYER_NUMBER).getAsInt());
             else
                 if (event_type.toLowerCase().equals("catch")) // catch event
                     m = new CatchEvent();

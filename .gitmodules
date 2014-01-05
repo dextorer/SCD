@@ -1,3 +1,6 @@
 [submodule "Soccer-SCD"]
 	path = Soccer-SCD
 	url = https://github.com/zebganzo/Soccer-SCD.git
+[submodule "Players-Generator"]
+	path = Players-Generator
+	url = https://github.com/neffix/Players-Generator.git

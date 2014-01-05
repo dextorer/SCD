@@ -12,9 +12,11 @@ import it.unipd.scd.gui.FieldPanel;
 public class TackleEvent extends MotionEvent {
 
     private int otherPlayerId;
+    private int otherPlayerNumber;
 
-    public TackleEvent(int otherPlayerId) {
+    public TackleEvent(int otherPlayerId, int otherPlayerNumber) {
         this.otherPlayerId = otherPlayerId;
+        this.otherPlayerNumber = otherPlayerNumber;
     }
 
     @Override
@@ -22,6 +24,6 @@ public class TackleEvent extends MotionEvent {
         FieldPanel.setHasBall(otherPlayerId, false);
         FieldPanel.setHasBall(id, true);
 
-        FieldPanel.log("Player " + number + " has tackled Player " + otherPlayerId);
+        FieldPanel.log("Player " + number + " has tackled Player " + otherPlayerNumber);
     }
 }
