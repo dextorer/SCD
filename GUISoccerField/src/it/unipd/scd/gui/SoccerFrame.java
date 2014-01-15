@@ -2,7 +2,6 @@ package it.unipd.scd.gui;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import it.unipd.scd.playersgenerator.GUI;
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
 import org.apache.commons.io.IOUtils;
@@ -24,6 +23,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.security.Certificate;
+
+import static it.unipd.scd.gui.FieldPanel.getMatchState;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,11 +44,9 @@ public class SoccerFrame extends JFrame {
 
     private static int msgCount = 1;
 
-    private JButton connect;
-    private JButton start;
+    private JButton newGame;
     private JButton pause;
     private JButton quit;
-    private JButton newGame;
     private JButton toggleGrid;
 
     private JTextArea logArea;
@@ -71,33 +71,56 @@ public class SoccerFrame extends JFrame {
         statsPanel = new StatsPanel();
         statsPanel.setBorder(BorderFactory.createTitledBorder("Statistics"));
 
-        connect = new JButton("Connect");
-        connect.addActionListener(new ActionListener() {
+        newGame = new JButton("New game");
+        newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                comm = new SCDComm(host, port, SCDComm.FIELD_ENDPOINT, new CommInterface() {
-                    @Override
-                    public void onMessage(String payload) {
-                        System.out.println("Message " + (msgCount++) + "\n" + payload);
-                        fieldPanel.deserialize(payload);
+
+                if (fieldPanel != null) {
+                    if (getMatchState() == null || getMatchState() == FieldPanel.MatchState.FIRST_HALF) {
+                        // configure teams
+//                      GUI.showGUI();
+//
+                        if (comm == null) {
+                            comm = new SCDComm(host, port, SCDComm.FIELD_ENDPOINT, new CommInterface() {
+                                @Override
+                                public void onMessage(String payload) {
+                                    fieldPanel.deserialize(payload);
+                                }
+
+                                @Override
+                                public void onCommMessage(String message) {}
+                            });
+
+                            comm.initConnection();
+                        }
+
+                        teamsConfCallback(""); // -----------------------------------------------------------------------------
                     }
+                    else {
+                        CloseableHttpClient client = HttpClients.createDefault();
+                        HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/secondHalf");
 
-                    @Override
-                    public void onCommMessage(String message) {
-                        System.out.println("System message: " + message);
+                        try {
+                            CloseableHttpResponse response = client.execute(get);
+                            response.close();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        finally {
+                            get.releaseConnection();
+                            try {
+                                client.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        ref.newGame.setEnabled(false);
+
                     }
-                });
-
-                comm.initConnection();
-            }
-        });
-
-        start = new JButton("Start");
-        start.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                // configure teams
-                GUI.showGUI();
+                }
             }
         });
 
@@ -150,32 +173,7 @@ public class SoccerFrame extends JFrame {
                     get.releaseConnection();
                     try {
                         client.close();
-                        dispose();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        newGame = new JButton("New game");
-        newGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpGet get = new HttpGet("http://" + host + ":" + port + "/field/newGame");
-
-                try {
-                    CloseableHttpResponse response = client.execute(get);
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    get.releaseConnection();
-                    try {
-                        client.close();
-                        dispose();
+                        System.exit(0);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -191,11 +189,11 @@ public class SoccerFrame extends JFrame {
             }
         });
 
-        buttonPanel.add(connect);
-        buttonPanel.add(start);
+//        buttonPanel.add(connect);
+        buttonPanel.add(newGame);
         buttonPanel.add(pause);
         buttonPanel.add(quit);
-        buttonPanel.add(toggleGrid);
+//        buttonPanel.add(toggleGrid);
 
         logArea = new JTextArea("Start a new game and check the logs right here", 5, 40);
         logArea.setEditable(false);
@@ -272,27 +270,28 @@ public class SoccerFrame extends JFrame {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         HttpGet get = null;
-        try {
-            URI uri = new URIBuilder()
-                    .setScheme("http")
-                    .setHost(ref.host)
-                    .setPort(Integer.parseInt(ref.port))
-                    .setPath("/field/setTeamsConf")
-                    .setParameter("conf", URLEncoder.encode(conf, "UTF-8"))
-                    .build();
-            get = new HttpGet(uri);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            CloseableHttpResponse response = httpclient.execute(get);
-            response.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            URI uri = new URIBuilder()
+//                    .setScheme("http")
+//                    .setHost(ref.host)
+//                    .setPort(Integer.parseInt(ref.port))
+//                    .setPath("/field/setTeamsConf")
+//                    .setParameter("conf", URLEncoder.encode(conf, "UTF-8"))
+//                    .build();
+//            get = new HttpGet(uri);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            CloseableHttpResponse response = httpclient.execute(get);
+//            response.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         get = new HttpGet("http://" + ref.host + ":" + ref.port + "/field/getParams");
         try {
@@ -321,6 +320,15 @@ public class SoccerFrame extends JFrame {
         }
 
         ref.fieldPanel.startDrawCycle();
+        ref.newGame.setEnabled(false);
+    }
+
+    public void setStartButtonText(String text) {
+        newGame.setText(text);
+    }
+
+    public void setStartButtonEnabled(Boolean enabled) {
+        newGame.setEnabled(enabled);
     }
 
 }

@@ -180,7 +180,7 @@ public class FieldPanel extends JPanel {
             ballCell = getCell(26, 17);
             ballCell.hasBall = true;
 
-            drawGrid = true;
+            drawGrid = false;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -216,24 +216,17 @@ public class FieldPanel extends JPanel {
             @Override
             public void run() {
 
-//                double firstTimestamp = -1;
-//                boolean first = true;
-
                 while (true) {
                     synchronized (lock) {
                         while (draw_this.isEmpty()) {
                             try {
-                                System.out.println("Going to sleep..");
                                 lock.wait();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
 
-                        System.out.println("The dragon has been awaken!");
-
                         ArrayList<Event> current = draw_this.get(0);
-                        System.out.println("Drawing " + current.size() + " events..");
                         for (Event e : current) {
 
                             if (shouldTrackTime) {
@@ -253,7 +246,21 @@ public class FieldPanel extends JPanel {
                             revalidate();
                         }
 
-                        System.out.println("Drawing cycle done.");
+                        if (players != null) {
+                            for (int i=0; i<players.length; i++) {
+                                Player p = players[i];
+                                if (p.onTheField) {
+                                    if (p.position.y <= ROWS_VERTICAL_CELLS_NUMBER * CELL_PIXEL_SIZE - CELL_PIXEL_SIZE) {
+                                        break;
+                                    }
+
+                                    if (i == players.length-1) {
+                                        resetBallPosition();
+                                        container.setStartButtonEnabled(true);
+                                    }
+                                }
+                            }
+                        }
 
                         draw_this.remove(0);
                     }
@@ -771,8 +778,23 @@ public class FieldPanel extends JPanel {
         ref.displayEndMatchImage();
     }
 
+    public static void setStartButtonText(String text) {
+        ref.container.setStartButtonText(text);
+    }
+
+    public void setStartButtonEnabled(Boolean enabled) {
+        ref.container.setStartButtonEnabled(enabled);
+    }
+
     public static void setMatchState(MatchState state) {
         ref.state = state;
+
+        if (ref.state == MatchState.SECOND_HALF) {
+            ref.container.setStartButtonText("Begin second half");
+        }
+        else {
+            ref.container.setStartButtonText("New game");
+        }
     }
 
     public static MatchState getMatchState() {
@@ -787,6 +809,14 @@ public class FieldPanel extends JPanel {
         else {
             ref.referenceTimeSecondHalf = baseTime;
         }
+    }
+
+    public static void resetBallPosition() {
+        if (ref.ballCell != null) {
+            ref.ballCell.hasBall = false;
+        }
+        ref.ballCell = ref.getCell(26, 17);
+        ref.ballCell.hasBall = true;
     }
 
 }

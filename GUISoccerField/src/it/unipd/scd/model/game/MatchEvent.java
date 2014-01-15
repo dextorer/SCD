@@ -24,17 +24,24 @@ public class MatchEvent extends GameEvent {
 
     @Override
     public void draw() {
+
+        System.out.println("Match Event: " + event.toLowerCase());
+
         if (event.toLowerCase().equals("begin_of_match")) {
             FieldPanel.log("The game begins!");
 
             FieldPanel.showBeginMatchImage();
             FieldPanel.setTrackTime(true, start_time, true);
+
+            FieldPanel.setMatchState(FieldPanel.MatchState.FIRST_HALF);
         }
         else if (event.toLowerCase().equals("end_of_first_half")) {
             FieldPanel.log("End of first half. Get some rest, warriors.");
 
             FieldPanel.showFirstHalfImage();
             FieldPanel.setTrackTime(false, 0, false);
+
+            FieldPanel.setMatchState(FieldPanel.MatchState.SECOND_HALF);
         }
         else if (event.toLowerCase().equals("begin_of_second_half")) {
             FieldPanel.log("On with the second half now!");
@@ -47,6 +54,8 @@ public class MatchEvent extends GameEvent {
 
             FieldPanel.showEndMatchImage();
             FieldPanel.setTrackTime(false, 0, false);
+
+            FieldPanel.setMatchState(FieldPanel.MatchState.FIRST_HALF);
         }
     }
 
