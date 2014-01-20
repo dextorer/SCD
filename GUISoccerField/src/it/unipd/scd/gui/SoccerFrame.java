@@ -2,6 +2,7 @@ package it.unipd.scd.gui;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unipd.scd.playersgenerator.GUI;
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
 import org.apache.commons.io.IOUtils;
@@ -79,8 +80,8 @@ public class SoccerFrame extends JFrame {
                 if (fieldPanel != null) {
                     if (getMatchState() == null || getMatchState() == FieldPanel.MatchState.FIRST_HALF) {
                         // configure teams
-//                      GUI.showGUI();
-//
+                      GUI.showGUI();
+
                         if (comm == null) {
                             comm = new SCDComm(host, port, SCDComm.FIELD_ENDPOINT, new CommInterface() {
                                 @Override
@@ -95,7 +96,7 @@ public class SoccerFrame extends JFrame {
                             comm.initConnection();
                         }
 
-                        teamsConfCallback(""); // -----------------------------------------------------------------------------
+//                        teamsConfCallback(""); // -----------------------------------------------------------------------------
                     }
                     else {
                         CloseableHttpClient client = HttpClients.createDefault();
@@ -270,28 +271,28 @@ public class SoccerFrame extends JFrame {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         HttpGet get = null;
-//        try {
-//
-//            URI uri = new URIBuilder()
-//                    .setScheme("http")
-//                    .setHost(ref.host)
-//                    .setPort(Integer.parseInt(ref.port))
-//                    .setPath("/field/setTeamsConf")
-//                    .setParameter("conf", URLEncoder.encode(conf, "UTF-8"))
-//                    .build();
-//            get = new HttpGet(uri);
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            CloseableHttpResponse response = httpclient.execute(get);
-//            response.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+
+            URI uri = new URIBuilder()
+                    .setScheme("http")
+                    .setHost(ref.host)
+                    .setPort(Integer.parseInt(ref.port))
+                    .setPath("/field/setTeamsConf")
+                    .setParameter("conf", URLEncoder.encode(conf, "UTF-8"))
+                    .build();
+            get = new HttpGet(uri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            CloseableHttpResponse response = httpclient.execute(get);
+            response.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         get = new HttpGet("http://" + ref.host + ":" + ref.port + "/field/getParams");
         try {
