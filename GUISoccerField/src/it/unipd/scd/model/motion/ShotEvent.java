@@ -13,6 +13,6 @@ public class ShotEvent extends MotionEvent {
 
     @Override
     public void draw() {
-        FieldPanel.setHasBall(id, false);
+        FieldPanel.setPlayerHasBall(id, false);
     }
 }

@@ -211,6 +211,18 @@ public class FieldPanel extends JPanel {
         revalidate();
     }
 
+    public void update(String content) {
+        JsonArray jsonedPlayers = new JsonParser().parse(content).getAsJsonObject().get("players").getAsJsonArray();
+
+        for (int i=0; i<jsonedPlayers.size(); i++) {
+            JsonObject player = jsonedPlayers.get(i).getAsJsonObject();
+            players[i].onTheField = player.get("on_the_field").getAsBoolean();
+        }
+
+        repaint();
+        revalidate();
+    }
+
     public void startDrawCycle() {
         Thread t = new Thread() {
             @Override
@@ -357,7 +369,15 @@ public class FieldPanel extends JPanel {
     }
 
     public void deserialize(String payload) {
+
+        System.out.println("PAYLOAD \n" + payload);
+
         JsonObject obj = new JsonParser().parse(payload).getAsJsonObject();
+
+        if (obj.has("players_params")) {
+            update(obj.get("players_params").getAsString());
+        }
+
         JsonArray buf = obj.get(EVENTS_OBJECT).getAsJsonArray();
 
         JsonObject action;
@@ -554,9 +574,12 @@ public class FieldPanel extends JPanel {
         return x1 + (x2 - x1) * t;
     }
 
-    public static void setHasBall (int id, boolean hasBall) {
+    public static void setPlayerHasBall(int id, boolean hasBall) {
         ref.players[id-1].hasBall = hasBall;
-        ref.ballCell.hasBall = false;
+    }
+
+    public static void setCellHasBall(boolean hasBall) {
+        ref.ballCell.hasBall = hasBall;
     }
 
     public static void log(String message) {

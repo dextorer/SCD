@@ -13,7 +13,8 @@ public class CatchEvent extends MotionEvent {
 
     @Override
     public void draw() {
-        FieldPanel.setHasBall(id, true);
+        FieldPanel.setPlayerHasBall(id, true);
+        FieldPanel.setCellHasBall(false);
 
         FieldPanel.log("Player " + number + " has just catched the ball");
     }

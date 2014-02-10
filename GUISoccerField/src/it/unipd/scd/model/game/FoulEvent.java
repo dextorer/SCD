@@ -2,7 +2,6 @@ package it.unipd.scd.model.game;
 
 import it.unipd.scd.gui.FieldPanel;
 import it.unipd.scd.model.Coordinate;
-import it.unipd.scd.model.Player;
 import it.unipd.scd.model.Team;
 
 /**
@@ -47,8 +46,8 @@ public class FoulEvent extends GameEvent {
     public void draw() {
         FieldPanel.log("Player " + numberOne + " has committed a foul on Player " + numberTwo + ". Not fair, dude!");
 
-        FieldPanel.setHasBall(idOne, false);
-        FieldPanel.setHasBall(idTwo, false);
+        FieldPanel.setPlayerHasBall(idOne, false);
+        FieldPanel.setPlayerHasBall(idTwo, false);
 
         FieldPanel.showFoulImage();
     }
