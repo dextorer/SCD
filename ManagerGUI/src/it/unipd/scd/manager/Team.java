@@ -10,19 +10,16 @@ package it.unipd.scd.manager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.java.swing.plaf.motif.resources.motif;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import net.miginfocom.swing.MigLayout;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Team implements ListSelectionListener, ActionListener {
     private final String STATS_OBJECT = "stats";
