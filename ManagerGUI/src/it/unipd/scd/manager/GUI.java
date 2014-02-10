@@ -189,8 +189,11 @@ public class GUI implements ActionListener {
         try {
             CloseableHttpResponse response = httpClient.execute(get);
             String content = IOUtils.toString(response.getEntity().getContent());
-            System.out.println(content);
-            mStatistics = content;
+            if (!content.equals("null")) {
+                //System.out.println(content);
+                mStatistics = content;
+                ShowGUI();
+            }
             response.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -271,6 +274,7 @@ public class GUI implements ActionListener {
         else
             if (e.getActionCommand().equals("conn")) {
                 openConnection();
+                getStatistics();
                 mTeamFrame.getContentPane().remove(mConnect);
                 mTeamFrame.setLayout(new BorderLayout());
                 mTeamFrame.getContentPane().add(mWaitForStart,BorderLayout.CENTER);
