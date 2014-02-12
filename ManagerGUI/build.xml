@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="soccerfield" default="all">
+<project name="managergui" default="all">
   
   
   <property file="build.properties"/>
@@ -79,42 +79,47 @@
     </fileset>
   </path>
   
-  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
+  <property name="jdk.bin.1.7" value="${jdk.home.1.7}/bin"/>
+  <path id="jdk.classpath.1.7">
+    <fileset dir="${jdk.home.1.7}">
+      <include name="jre/lib/jfxrt.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.7}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
   
   
   <!-- Project Libraries -->
   
-  <path id="library.animationx2.5.classpath">
-    <pathelement location="${basedir}/libs/animationx2.5.jar"/>
-  </path>
-  
-  <path id="library.apache-httpclient.classpath">
-    <fileset dir="${basedir}/libs">
-      <patternset refid="library.patterns"/>
-    </fileset>
-  </path>
-  
-  <path id="library.commons-io-2.4.classpath">
-    <pathelement location="${basedir}/libs/commons-io-2.4.jar"/>
-  </path>
-  
-  <path id="library.gson-2.2.4.classpath">
-    <pathelement location="${basedir}/libs/gson-2.2.4.jar"/>
-  </path>
-  
-  <path id="library.lib.classpath">
-    <pathelement location="${basedir}/../Players-Generator/lib/gson-2.2.4.jar"/>
+  <path id="library.libs.classpath">
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-io-2.4.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/fluent-hc-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/gson-2.2.4.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpclient-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpclient-cache-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpcore-4.3.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpmime-4.3.1.jar"/>
     <pathelement location="${basedir}/../Players-Generator/lib/miglayout-4.0-swing.jar"/>
-  </path>
-  
-  <path id="library.synthetica.classpath">
-    <pathelement location="${basedir}/libs/synthetica.jar"/>
-  </path>
-  
-  <path id="library.syntheticablueice.classpath">
-    <pathelement location="${basedir}/libs/syntheticaBlueIce.jar"/>
   </path>
   
   <!-- Modules -->
@@ -203,160 +208,135 @@
   </target>
   
   
-  <!-- Module SoccerField -->
+  <!-- Module ManagerGUI -->
   
-  <dirname property="module.soccerfield.basedir" file="${ant.file}"/>
+  <dirname property="module.managergui.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.soccerfield" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.soccerfield" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.soccerfield" value="${project.jdk.classpath}"/>
+  <property name="module.jdk.home.managergui" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.managergui" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.managergui" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.soccerfield" value="${compiler.args}"/>
+  <property name="compiler.args.managergui" value="${compiler.args}"/>
   
-  <property name="soccerfield.output.dir" value="${module.soccerfield.basedir}/out/production/SoccerField"/>
-  <property name="soccerfield.testoutput.dir" value="${module.soccerfield.basedir}/out/test/SoccerField"/>
+  <property name="managergui.output.dir" value="${module.managergui.basedir}/out/production/ManagerGUI"/>
+  <property name="managergui.testoutput.dir" value="${module.managergui.basedir}/out/test/ManagerGUI"/>
   
-  <path id="soccerfield.module.bootclasspath">
+  <path id="managergui.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="soccerfield.module.production.classpath">
-    <path refid="${module.jdk.classpath.soccerfield}"/>
-    <path refid="library.lib.classpath"/>
+  <path id="managergui.module.production.classpath">
+    <path refid="${module.jdk.classpath.managergui}"/>
+    <path refid="library.libs.classpath"/>
     <pathelement location="${scdcommunication.output.dir}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
-    <path refid="library.apache-httpclient.classpath"/>
-    <path refid="library.gson-2.2.4.classpath"/>
-    <path refid="library.commons-io-2.4.classpath"/>
-    <path refid="library.animationx2.5.classpath"/>
-    <path refid="library.syntheticablueice.classpath"/>
-    <path refid="library.synthetica.classpath"/>
   </path>
   
-  <path id="soccerfield.runtime.production.module.classpath">
-    <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
+  <path id="managergui.runtime.production.module.classpath">
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
     <path refid="scdcommunication.runtime.production.module.classpath"/>
-    <path refid="library.apache-httpclient.classpath"/>
-    <path refid="library.gson-2.2.4.classpath"/>
-    <path refid="library.commons-io-2.4.classpath"/>
-    <path refid="library.animationx2.5.classpath"/>
-    <path refid="library.syntheticablueice.classpath"/>
-    <path refid="library.synthetica.classpath"/>
   </path>
   
-  <path id="soccerfield.module.classpath">
-    <path refid="${module.jdk.classpath.soccerfield}"/>
-    <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
+  <path id="managergui.module.classpath">
+    <path refid="${module.jdk.classpath.managergui}"/>
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
     <pathelement location="${scdcommunication.output.dir}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
-    <path refid="library.apache-httpclient.classpath"/>
-    <path refid="library.gson-2.2.4.classpath"/>
-    <path refid="library.commons-io-2.4.classpath"/>
-    <path refid="library.animationx2.5.classpath"/>
-    <path refid="library.syntheticablueice.classpath"/>
-    <path refid="library.synthetica.classpath"/>
   </path>
   
-  <path id="soccerfield.runtime.module.classpath">
-    <pathelement location="${soccerfield.testoutput.dir}"/>
-    <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
+  <path id="managergui.runtime.module.classpath">
+    <pathelement location="${managergui.testoutput.dir}"/>
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
     <path refid="scdcommunication.runtime.module.classpath"/>
-    <path refid="library.apache-httpclient.classpath"/>
-    <path refid="library.gson-2.2.4.classpath"/>
-    <path refid="library.commons-io-2.4.classpath"/>
-    <path refid="library.animationx2.5.classpath"/>
-    <path refid="library.syntheticablueice.classpath"/>
-    <path refid="library.synthetica.classpath"/>
   </path>
   
   
-  <patternset id="excluded.from.module.players-generator">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  <patternset id="excluded.from.module.soccerfield">
+  <patternset id="excluded.from.module.managergui">
     <patternset refid="ignored.files"/>
   </patternset>
   
-  <patternset id="excluded.from.compilation.soccerfield">
-    <patternset refid="excluded.from.module.players-generator"/>
-    <patternset refid="excluded.from.module.soccerfield"/>
+  <patternset id="excluded.from.compilation.managergui">
+    <patternset refid="excluded.from.module.managergui"/>
   </patternset>
   
-  <path id="soccerfield.module.sourcepath">
-    <dirset dir="${module.soccerfield.basedir}/../Players-Generator">
-      <include name="src"/>
-    </dirset>
-    <dirset dir="${module.soccerfield.basedir}">
+  <path id="managergui.module.sourcepath">
+    <dirset dir="${module.managergui.basedir}">
       <include name="src"/>
     </dirset>
   </path>
   
   
-  <target name="compile.module.soccerfield" depends="compile.module.soccerfield.production,compile.module.soccerfield.tests" description="Compile modules SoccerField"/>
+  <target name="compile.module.managergui" depends="compile.module.managergui.production,compile.module.managergui.tests" description="Compile module ManagerGUI"/>
   
-  <target name="compile.module.soccerfield.production" depends="compile.module.scdcommunication" description="Compile modules SoccerField; production classes">
-    <mkdir dir="${soccerfield.output.dir}"/>
-    <javac destdir="${soccerfield.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.soccerfield}/javac">
-      <compilerarg line="${compiler.args.soccerfield}"/>
-      <bootclasspath refid="soccerfield.module.bootclasspath"/>
-      <classpath refid="soccerfield.module.production.classpath"/>
-      <src refid="soccerfield.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.soccerfield"/>
+  <target name="compile.module.managergui.production" depends="compile.module.scdcommunication" description="Compile module ManagerGUI; production classes">
+    <mkdir dir="${managergui.output.dir}"/>
+    <javac destdir="${managergui.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.managergui}/javac">
+      <compilerarg line="${compiler.args.managergui}"/>
+      <bootclasspath refid="managergui.module.bootclasspath"/>
+      <classpath refid="managergui.module.production.classpath"/>
+      <src refid="managergui.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.managergui"/>
     </javac>
     
-    <copy todir="${soccerfield.output.dir}">
-      <fileset dir="${module.soccerfield.basedir}/../Players-Generator/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.soccerfield.basedir}/src">
+    <copy todir="${managergui.output.dir}">
+      <fileset dir="${module.managergui.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
     </copy>
   </target>
   
-  <target name="compile.module.soccerfield.tests" depends="compile.module.soccerfield.production" description="compile modules SoccerField; test classes" unless="skip.tests"/>
+  <target name="compile.module.managergui.tests" depends="compile.module.managergui.production" description="compile module ManagerGUI; test classes" unless="skip.tests"/>
   
-  <target name="clean.module.soccerfield" description="cleanup module">
-    <delete dir="${soccerfield.output.dir}"/>
-    <delete dir="${soccerfield.testoutput.dir}"/>
+  <target name="clean.module.managergui" description="cleanup module">
+    <delete dir="${managergui.output.dir}"/>
+    <delete dir="${managergui.testoutput.dir}"/>
   </target>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.scdcommunication, clean.module.soccerfield" description="cleanup all"/>
+  <target name="clean" depends="clean.module.scdcommunication, clean.module.managergui" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.scdcommunication, compile.module.soccerfield" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.scdcommunication, compile.module.managergui" description="build all modules"/>
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.soccerfield:jar" value="${basedir}/out/artifacts/SoccerField_jar"/>
+    <property name="artifact.output.managergui:jar" value="${basedir}/out/artifacts/ManagerGUI_jar"/>
     <mkdir dir="${artifacts.temp.dir}"/>
-    <property name="temp.jar.path.SoccerField.jar" value="${artifacts.temp.dir}/SoccerField.jar"/>
+    <property name="temp.jar.path.ManagerGUI.jar" value="${artifacts.temp.dir}/ManagerGUI.jar"/>
   </target>
   
-  <target name="artifact.soccerfield:jar" depends="init.artifacts, compile.module.soccerfield, compile.module.scdcommunication" description="Build &#39;SoccerField:jar&#39; artifact">
-    <property name="artifact.temp.output.soccerfield:jar" value="${artifacts.temp.dir}/SoccerField_jar"/>
-    <mkdir dir="${artifact.temp.output.soccerfield:jar}"/>
-    <jar destfile="${temp.jar.path.SoccerField.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset dir="${soccerfield.output.dir}"/>
+  <target name="artifact.managergui:jar" depends="init.artifacts, compile.module.managergui, compile.module.scdcommunication" description="Build &#39;ManagerGUI:jar&#39; artifact">
+    <property name="artifact.temp.output.managergui:jar" value="${artifacts.temp.dir}/ManagerGUI_jar"/>
+    <mkdir dir="${artifact.temp.output.managergui:jar}"/>
+    <jar destfile="${temp.jar.path.ManagerGUI.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${managergui.output.dir}"/>
       <zipfileset dir="${scdcommunication.output.dir}"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-codec-1.6.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-io-2.4.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-logging-1.1.3.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/fluent-hc-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/gson-2.2.4.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpclient-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpclient-cache-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpcore-4.3.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpmime-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../Players-Generator/lib/miglayout-4.0-swing.jar"/>
       <zipfileset src="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
     </jar>
-    <copy file="${temp.jar.path.SoccerField.jar}" tofile="${artifact.temp.output.soccerfield:jar}/SoccerField.jar"/>
+    <copy file="${temp.jar.path.ManagerGUI.jar}" tofile="${artifact.temp.output.managergui:jar}/ManagerGUI.jar"/>
   </target>
   
-  <target name="build.all.artifacts" depends="artifact.soccerfield:jar" description="Build all artifacts">
-    <mkdir dir="${artifact.output.soccerfield:jar}"/>
-    <copy todir="${artifact.output.soccerfield:jar}">
-      <fileset dir="${artifact.temp.output.soccerfield:jar}"/>
+  <target name="build.all.artifacts" depends="artifact.managergui:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.managergui:jar}"/>
+    <copy todir="${artifact.output.managergui:jar}">
+      <fileset dir="${artifact.temp.output.managergui:jar}"/>
     </copy>
     
     <!-- Delete temporary files -->

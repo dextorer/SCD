@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="java_websocket">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../SCD/SCDCommunication/libs/java_websocket.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../SCDCommunication/libs/java_websocket.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

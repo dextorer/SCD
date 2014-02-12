@@ -22,6 +22,11 @@ cd GUISoccerField
 ant all
 cd ..
 
+echo "Building manager GUI..\n"
+cd ManagerGUI
+ant all
+cd ..
+
 echo "Starting core..\n"
 gnome-terminal -x bash -c "cd Soccer-SCD/; ./obj/soccer-main;"
 
