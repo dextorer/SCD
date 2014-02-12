@@ -79,29 +79,6 @@
     </fileset>
   </path>
   
-  <property name="jdk.bin.1.7" value="${jdk.home.1.7}/bin"/>
-  <path id="jdk.classpath.1.7">
-    <fileset dir="${jdk.home.1.7}">
-      <include name="jre/lib/jfxrt.jar"/>
-      <include name="jre/lib/plugin.jar"/>
-      <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/jfr.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/resources.jar"/>
-      <include name="jre/lib/management-agent.jar"/>
-      <include name="jre/lib/javaws.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/deploy.jar"/>
-      <include name="jre/lib/rt.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-      <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/zipfs.jar"/>
-      <include name="jre/lib/ext/sunec.jar"/>
-      <include name="jre/lib/ext/localedata.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-    </fileset>
-  </path>
-  
   <property name="project.jdk.home" value="${jdk.home.1.7}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
@@ -213,9 +190,9 @@
   <dirname property="module.managergui.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.managergui" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.managergui" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.managergui" value="${project.jdk.classpath}"/>
+  <property name="module.jdk.home.managergui" value="${jdk.home.1.6}"/>
+  <property name="module.jdk.bin.managergui" value="${jdk.bin.1.6}"/>
+  <property name="module.jdk.classpath.managergui" value="jdk.classpath.1.6"/>
   
   <property name="compiler.args.managergui" value="${compiler.args}"/>
   
