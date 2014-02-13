@@ -56,33 +56,6 @@
     <exclude name="**/?*.clj"/>
   </patternset>
   
-  <!-- JDK definitions -->
-  
-  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
-  <path id="jdk.classpath.1.6">
-    <fileset dir="${jdk.home.1.6}">
-      <include name="../default-java/jre/lib/rhino.jar"/>
-      <include name="../default-java/jre/lib/charsets.jar"/>
-      <include name="../default-java/jre/lib/compilefontconfig.jar"/>
-      <include name="../default-java/jre/lib/jsse.jar"/>
-      <include name="../default-java/jre/lib/resources.jar"/>
-      <include name="../default-java/jre/lib/management-agent.jar"/>
-      <include name="../default-java/jre/lib/javazic.jar"/>
-      <include name="../default-java/jre/lib/jce.jar"/>
-      <include name="../default-java/jre/lib/rt.jar"/>
-      <include name="../default-java/jre/lib/ext/pulse-java.jar"/>
-      <include name="../default-java/jre/lib/ext/sunpkcs11.jar"/>
-      <include name="../default-java/jre/lib/ext/dnsns.jar"/>
-      <include name="../default-java/jre/lib/ext/java-atk-wrapper.jar"/>
-      <include name="../default-java/jre/lib/ext/localedata.jar"/>
-      <include name="../default-java/jre/lib/ext/sunjce_provider.jar"/>
-    </fileset>
-  </path>
-  
-  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
-  
   
   <!-- Project Libraries -->
   
@@ -120,14 +93,90 @@
   <!-- Modules -->
   
   
+  <!-- Module Players-Generator -->
+  
+  <dirname property="module.players-generator.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.players-generator" value="${compiler.args}"/>
+  
+  <property name="players-generator.output.dir" value="${module.players-generator.basedir}/out/production/Players-Generator"/>
+  <property name="players-generator.testoutput.dir" value="${module.players-generator.basedir}/out/test/Players-Generator"/>
+  
+  <path id="players-generator.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="players-generator.module.production.classpath">
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="players-generator.runtime.production.module.classpath">
+    <pathelement location="${players-generator.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="players-generator.module.classpath">
+    <pathelement location="${players-generator.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="players-generator.runtime.module.classpath">
+    <pathelement location="${players-generator.testoutput.dir}"/>
+    <pathelement location="${players-generator.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.players-generator">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.players-generator">
+    <patternset refid="excluded.from.module.players-generator"/>
+  </patternset>
+  
+  <path id="players-generator.module.sourcepath">
+    <dirset dir="${module.players-generator.basedir}/../Players-Generator">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.players-generator" depends="compile.module.players-generator.production,compile.module.players-generator.tests" description="Compile module Players-Generator"/>
+  
+  <target name="compile.module.players-generator.production" description="Compile module Players-Generator; production classes">
+    <mkdir dir="${players-generator.output.dir}"/>
+    <javac destdir="${players-generator.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.players-generator}"/>
+      <bootclasspath refid="players-generator.module.bootclasspath"/>
+      <classpath refid="players-generator.module.production.classpath"/>
+      <src refid="players-generator.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.players-generator"/>
+    </javac>
+    
+    <copy todir="${players-generator.output.dir}">
+      <fileset dir="${module.players-generator.basedir}/../Players-Generator/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.players-generator.tests" depends="compile.module.players-generator.production" description="compile module Players-Generator; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.players-generator" description="cleanup module">
+    <delete dir="${players-generator.output.dir}"/>
+    <delete dir="${players-generator.testoutput.dir}"/>
+  </target>
+  
+  
   <!-- Module SCDCommunication -->
   
   <dirname property="module.scdcommunication.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.scdcommunication" value="${jdk.home.1.6}"/>
-  <property name="module.jdk.bin.scdcommunication" value="${jdk.bin.1.6}"/>
-  <property name="module.jdk.classpath.scdcommunication" value="jdk.classpath.1.6"/>
   
   <property name="compiler.args.scdcommunication" value="${compiler.args}"/>
   
@@ -139,7 +188,6 @@
   </path>
   
   <path id="scdcommunication.module.production.classpath">
-    <path refid="${module.jdk.classpath.scdcommunication}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
   </path>
   
@@ -150,7 +198,6 @@
   
   <path id="scdcommunication.module.classpath">
     <pathelement location="${scdcommunication.output.dir}"/>
-    <path refid="${module.jdk.classpath.scdcommunication}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
   </path>
   
@@ -179,7 +226,7 @@
   
   <target name="compile.module.scdcommunication.production" description="Compile module SCDCommunication; production classes">
     <mkdir dir="${scdcommunication.output.dir}"/>
-    <javac destdir="${scdcommunication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.scdcommunication}/javac">
+    <javac destdir="${scdcommunication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.scdcommunication}"/>
       <bootclasspath refid="scdcommunication.module.bootclasspath"/>
       <classpath refid="scdcommunication.module.production.classpath"/>
@@ -208,9 +255,6 @@
   <dirname property="module.soccerfield.basedir" file="${ant.file}"/>
   
   
-  <property name="module.jdk.home.soccerfield" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.soccerfield" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.soccerfield" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.soccerfield" value="${compiler.args}"/>
   
@@ -222,8 +266,6 @@
   </path>
   
   <path id="soccerfield.module.production.classpath">
-    <path refid="${module.jdk.classpath.soccerfield}"/>
-    <path refid="library.lib.classpath"/>
     <pathelement location="${scdcommunication.output.dir}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
     <path refid="library.apache-httpclient.classpath"/>
@@ -232,11 +274,11 @@
     <path refid="library.animationx2.5.classpath"/>
     <path refid="library.syntheticablueice.classpath"/>
     <path refid="library.synthetica.classpath"/>
+    <pathelement location="${players-generator.output.dir}"/>
   </path>
   
   <path id="soccerfield.runtime.production.module.classpath">
     <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
     <path refid="scdcommunication.runtime.production.module.classpath"/>
     <path refid="library.apache-httpclient.classpath"/>
     <path refid="library.gson-2.2.4.classpath"/>
@@ -244,12 +286,11 @@
     <path refid="library.animationx2.5.classpath"/>
     <path refid="library.syntheticablueice.classpath"/>
     <path refid="library.synthetica.classpath"/>
+    <path refid="players-generator.runtime.production.module.classpath"/>
   </path>
   
   <path id="soccerfield.module.classpath">
-    <path refid="${module.jdk.classpath.soccerfield}"/>
     <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
     <pathelement location="${scdcommunication.output.dir}"/>
     <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
     <path refid="library.apache-httpclient.classpath"/>
@@ -258,12 +299,13 @@
     <path refid="library.animationx2.5.classpath"/>
     <path refid="library.syntheticablueice.classpath"/>
     <path refid="library.synthetica.classpath"/>
+    <pathelement location="${players-generator.testoutput.dir}"/>
+    <pathelement location="${players-generator.output.dir}"/>
   </path>
   
   <path id="soccerfield.runtime.module.classpath">
     <pathelement location="${soccerfield.testoutput.dir}"/>
     <pathelement location="${soccerfield.output.dir}"/>
-    <path refid="library.lib.classpath"/>
     <path refid="scdcommunication.runtime.module.classpath"/>
     <path refid="library.apache-httpclient.classpath"/>
     <path refid="library.gson-2.2.4.classpath"/>
@@ -271,36 +313,30 @@
     <path refid="library.animationx2.5.classpath"/>
     <path refid="library.syntheticablueice.classpath"/>
     <path refid="library.synthetica.classpath"/>
+    <path refid="players-generator.runtime.module.classpath"/>
   </path>
   
   
-  <patternset id="excluded.from.module.players-generator">
-    <patternset refid="ignored.files"/>
-  </patternset>
   <patternset id="excluded.from.module.soccerfield">
     <patternset refid="ignored.files"/>
   </patternset>
   
   <patternset id="excluded.from.compilation.soccerfield">
-    <patternset refid="excluded.from.module.players-generator"/>
     <patternset refid="excluded.from.module.soccerfield"/>
   </patternset>
   
   <path id="soccerfield.module.sourcepath">
-    <dirset dir="${module.soccerfield.basedir}/../Players-Generator">
-      <include name="src"/>
-    </dirset>
     <dirset dir="${module.soccerfield.basedir}">
       <include name="src"/>
     </dirset>
   </path>
   
   
-  <target name="compile.module.soccerfield" depends="compile.module.soccerfield.production,compile.module.soccerfield.tests" description="Compile modules SoccerField"/>
+  <target name="compile.module.soccerfield" depends="compile.module.soccerfield.production,compile.module.soccerfield.tests" description="Compile module SoccerField"/>
   
-  <target name="compile.module.soccerfield.production" depends="compile.module.scdcommunication" description="Compile modules SoccerField; production classes">
+  <target name="compile.module.soccerfield.production" depends="compile.module.scdcommunication,compile.module.players-generator" description="Compile module SoccerField; production classes">
     <mkdir dir="${soccerfield.output.dir}"/>
-    <javac destdir="${soccerfield.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.soccerfield}/javac">
+    <javac destdir="${soccerfield.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.soccerfield}"/>
       <bootclasspath refid="soccerfield.module.bootclasspath"/>
       <classpath refid="soccerfield.module.production.classpath"/>
@@ -309,10 +345,6 @@
     </javac>
     
     <copy todir="${soccerfield.output.dir}">
-      <fileset dir="${module.soccerfield.basedir}/../Players-Generator/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
       <fileset dir="${module.soccerfield.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
@@ -320,7 +352,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.soccerfield.tests" depends="compile.module.soccerfield.production" description="compile modules SoccerField; test classes" unless="skip.tests"/>
+  <target name="compile.module.soccerfield.tests" depends="compile.module.soccerfield.production" description="compile module SoccerField; test classes" unless="skip.tests"/>
   
   <target name="clean.module.soccerfield" description="cleanup module">
     <delete dir="${soccerfield.output.dir}"/>
@@ -331,9 +363,9 @@
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.scdcommunication, clean.module.soccerfield" description="cleanup all"/>
+  <target name="clean" depends="clean.module.players-generator, clean.module.scdcommunication, clean.module.soccerfield" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.scdcommunication, compile.module.soccerfield" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.players-generator, compile.module.scdcommunication, compile.module.soccerfield" description="build all modules"/>
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
@@ -342,12 +374,27 @@
     <property name="temp.jar.path.SoccerField.jar" value="${artifacts.temp.dir}/SoccerField.jar"/>
   </target>
   
-  <target name="artifact.soccerfield:jar" depends="init.artifacts, compile.module.soccerfield, compile.module.scdcommunication" description="Build &#39;SoccerField:jar&#39; artifact">
+  <target name="artifact.soccerfield:jar" depends="init.artifacts, compile.module.soccerfield, compile.module.scdcommunication, compile.module.players-generator" description="Build &#39;SoccerField:jar&#39; artifact">
     <property name="artifact.temp.output.soccerfield:jar" value="${artifacts.temp.dir}/SoccerField_jar"/>
     <mkdir dir="${artifact.temp.output.soccerfield:jar}"/>
     <jar destfile="${temp.jar.path.SoccerField.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${soccerfield.output.dir}"/>
       <zipfileset dir="${scdcommunication.output.dir}"/>
+      <zipfileset dir="${players-generator.output.dir}"/>
+      <zipfileset src="${basedir}/libs/gson-2.2.4.jar"/>
+      <zipfileset src="${basedir}/libs/synthetica.jar"/>
+      <zipfileset src="${basedir}/libs/httpcore-4.3.jar"/>
+      <zipfileset src="${basedir}/libs/animationx2.5.jar"/>
+      <zipfileset src="${basedir}/libs/commons-io-2.4.jar"/>
+      <zipfileset src="${basedir}/libs/httpmime-4.3.1.jar"/>
+      <zipfileset src="${basedir}/libs/fluent-hc-4.3.1.jar"/>
+      <zipfileset src="${basedir}/libs/httpclient-4.3.1.jar"/>
+      <zipfileset src="${basedir}/libs/commons-codec-1.6.jar"/>
+      <zipfileset src="${basedir}/libs/syntheticaBlueIce.jar"/>
+      <zipfileset src="${basedir}/libs/commons-logging-1.1.3.jar"/>
+      <zipfileset src="${basedir}/libs/httpclient-cache-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../Players-Generator/lib/gson-2.2.4.jar"/>
+      <zipfileset src="${basedir}/../Players-Generator/lib/miglayout-4.0-swing.jar"/>
       <zipfileset src="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
     </jar>
     <copy file="${temp.jar.path.SoccerField.jar}" tofile="${artifact.temp.output.soccerfield:jar}/SoccerField.jar"/>

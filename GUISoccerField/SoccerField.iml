@@ -14,7 +14,7 @@
     <orderEntry type="library" name="animationx2.5" level="project" />
     <orderEntry type="library" name="syntheticaBlueIce" level="project" />
     <orderEntry type="library" name="synthetica" level="project" />
-    <orderEntry type="module" module-name="Players-Generator" exported="" />
+    <orderEntry type="module" module-name="Players-Generator" />
   </component>
 </module>
 
