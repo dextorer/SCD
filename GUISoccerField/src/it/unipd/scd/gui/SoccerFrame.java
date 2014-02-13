@@ -2,6 +2,7 @@ package it.unipd.scd.gui;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unipd.scd.playersgenerator.ConfigurationCallback;
 import it.unipd.scd.playersgenerator.GUI;
 import it.unipd.scd.scdcommunication.CommInterface;
 import it.unipd.scd.scdcommunication.SCDComm;
@@ -80,7 +81,12 @@ public class SoccerFrame extends JFrame {
                 if (fieldPanel != null) {
                     if (getMatchState() == null || getMatchState() == FieldPanel.MatchState.FIRST_HALF) {
                         // configure teams
-                      GUI.showGUI();
+                      GUI.showGUI(new ConfigurationCallback() {
+                          @Override
+                          public void onConfigurationConfirmed(String data) {
+                              teamsConfCallback(data);
+                          }
+                      });
 
                         if (comm == null) {
                             comm = new SCDComm(host, port, SCDComm.FIELD_ENDPOINT, new CommInterface() {
