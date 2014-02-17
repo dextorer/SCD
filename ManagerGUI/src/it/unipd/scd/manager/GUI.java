@@ -52,6 +52,7 @@ public class GUI implements ActionListener {
     private String mTeam;
     private String mData;
     private String mStatistics;
+    private String mTitleString;
 
     private JLabel mWaitForStart;
     private JButton mConnect;
@@ -97,7 +98,7 @@ public class GUI implements ActionListener {
     }
 
     public void firstScreen() {
-        mTeamFrame = new JFrame("Manage " + mTeam.toLowerCase());
+        mTeamFrame = new JFrame("Manager - " + mTitleString);
         mTeamFrame.setLayout(new FlowLayout());
 
         mConnect = new JButton("Connect");
@@ -151,10 +152,12 @@ public class GUI implements ActionListener {
         if (mField.equals("managerHome")) {
             mField = SCDComm.MANAGER_HOME_ENDPOINT;
             mTeam = "TEAM_ONE";
+            mTitleString = "Team One";
         }
         else {
             mField = SCDComm.MANAGER_VISITORS_ENDPOINT;
             mTeam = "TEAM_TWO";
+            mTitleString = "Team Two";
         }
     }
 
@@ -168,6 +171,10 @@ public class GUI implements ActionListener {
                     mStatistics = payload;
                     ShowGUI();
                 }
+                else
+                    if (obj.has("command")) {
+                        System.exit(0);
+                    }
                 else {
                     deserialize(payload);
                 }
