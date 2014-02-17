@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_scdcommunication" default="compile.module.scdcommunication">
+  <dirname property="module.scdcommunication.basedir" file="${ant.file.module_scdcommunication}"/>
+  
+  <property name="module.jdk.home.scdcommunication" value="${jdk.home.1.6}"/>
+  <property name="module.jdk.bin.scdcommunication" value="${jdk.bin.1.6}"/>
+  <property name="module.jdk.classpath.scdcommunication" value="jdk.classpath.1.6"/>
+  
+  <property name="compiler.args.scdcommunication" value="${compiler.args}"/>
+  
+  <property name="scdcommunication.output.dir" value="${module.scdcommunication.basedir}/bin"/>
+  <property name="scdcommunication.testoutput.dir" value="${module.scdcommunication.basedir}/bin"/>
+  
+  <path id="scdcommunication.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="scdcommunication.module.production.classpath">
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.production.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.scdcommunication">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.scdcommunication">
+    <patternset refid="excluded.from.module.scdcommunication"/>
+  </patternset>
+  
+  <path id="scdcommunication.module.sourcepath">
+    <dirset dir="${module.scdcommunication.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.scdcommunication" depends="compile.module.scdcommunication.production,compile.module.scdcommunication.tests" description="Compile module SCDCommunication"/>
+  
+  <target name="compile.module.scdcommunication.production" depends="register.custom.compilers" description="Compile module SCDCommunication; production classes">
+    <mkdir dir="${scdcommunication.output.dir}"/>
+    <javac2 destdir="${scdcommunication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.scdcommunication}/javac">
+      <compilerarg line="${compiler.args.scdcommunication}"/>
+      <bootclasspath refid="scdcommunication.module.bootclasspath"/>
+      <classpath refid="scdcommunication.module.production.classpath"/>
+      <src refid="scdcommunication.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.scdcommunication"/>
+    </javac2>
+    
+    <copy todir="${scdcommunication.output.dir}">
+      <fileset dir="${module.scdcommunication.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.scdcommunication.tests" depends="register.custom.compilers,compile.module.scdcommunication.production" description="compile module SCDCommunication; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.scdcommunication" description="cleanup module">
+    <delete dir="${scdcommunication.output.dir}"/>
+    <delete dir="${scdcommunication.testoutput.dir}"/>
+  </target>
+</project>

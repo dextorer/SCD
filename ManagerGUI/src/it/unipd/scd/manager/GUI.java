@@ -285,7 +285,7 @@ public class GUI implements ActionListener {
                 mTeamFrame.getContentPane().remove(mConnect);
                 mTeamFrame.setLayout(new BorderLayout());
                 mTeamFrame.getContentPane().add(mWaitForStart,BorderLayout.CENTER);
-                mTeamFrame.revalidate();
+                mTeamFrame.invalidate();
                 mTeamFrame.repaint();
             }
     }

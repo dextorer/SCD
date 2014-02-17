@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Players-Generator/lib/gson-2.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Players-Generator/lib/miglayout-4.0-swing.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

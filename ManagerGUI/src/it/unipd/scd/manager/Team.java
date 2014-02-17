@@ -42,14 +42,14 @@ public class Team implements ListSelectionListener, ActionListener {
     private JPanel mTeamPanel = new JPanel(mVerticalLayout);
 
     // available formation scheme
-    JComboBox<String> mFormationBox = new JComboBox<String>(new String[]{ "3-5-2", "4-4-2", "5-3-2"});
+    JComboBox mFormationBox = new JComboBox(new String[]{ "3-5-2", "4-4-2", "5-3-2"});
     private boolean mFormationChanged = false;
   /*  private JList<String> mList = new JList<String>(new String[]{"Goal Keeper", "Back 1", "Back 2", "Back 3", "Midfielder 1", "Midfielder 2",
                                                             "Midfielder 3", "Midfielder 4", "Midfielder 5", "Forward 1", "Forward 2",
                                                             "Backup 1", "Backup 2", "Backup 3", "Backup 4", "Backup 5", "Backup 6",
                                                             "Backup 7" }); */
-    private JList<String> mList;
-    private DefaultListModel<String> mListModel = new DefaultListModel<String>();
+    private JList mList;
+    private DefaultListModel mListModel = new DefaultListModel();
 
     // panel of the scroll list
     private JScrollPane mPlayersListPanel;
@@ -66,8 +66,8 @@ public class Team implements ListSelectionListener, ActionListener {
     private JLabel mTackle;										        // label 6 (tackle)
     private JLabel mGoalKeeping;    									// label 7 (goal_keeping)
 
-    private JComboBox<String> mInPlayer;
-    private JComboBox<String> mOutPlayer;
+    private JComboBox mInPlayer;
+    private JComboBox mOutPlayer;
     private JButton mSubstitution = new JButton("Substitution");
     private int mInPlayerName;
     private int mOutPlayerName;
@@ -179,7 +179,7 @@ public class Team implements ListSelectionListener, ActionListener {
          ****************************************/
         // Crea la lista dei giocatori e la mette in uno scroll pane
         sortPlayersByRole();
-        mList = new JList<String>(mListModel);
+        mList = new JList(mListModel);
         mList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mList.setSelectedIndex(0);
         mList.addListSelectionListener(this);
@@ -204,10 +204,10 @@ public class Team implements ListSelectionListener, ActionListener {
             in_players[0] = "No Backups Available";
         }
 
-        DefaultComboBoxModel<String> in_model = new DefaultComboBoxModel<String>(in_players);
-        DefaultComboBoxModel<String> out_model = new DefaultComboBoxModel<String>(out_players);
-        mInPlayer = new JComboBox<String>(in_model);
-        mOutPlayer = new JComboBox<String>(out_model);
+        DefaultComboBoxModel in_model = new DefaultComboBoxModel(in_players);
+        DefaultComboBoxModel out_model = new DefaultComboBoxModel(out_players);
+        mInPlayer = new JComboBox(in_model);
+        mOutPlayer = new JComboBox(out_model);
         if (in_players[0].equals("No Backups Available")) {
             mInPlayer.setEnabled(false);
             mOutPlayer.setEnabled(false);
@@ -355,8 +355,8 @@ public class Team implements ListSelectionListener, ActionListener {
     }
 
     private void updatePlayers(String scheme) {
-        DefaultListModel<String> list_model = new DefaultListModel<String>();
-        DefaultComboBoxModel<String> out_model = new DefaultComboBoxModel<String>();
+        DefaultListModel list_model = new DefaultListModel();
+        DefaultComboBoxModel out_model = new DefaultComboBoxModel();
 
         if (scheme.equals("3-5-2")) {
             list_model.addElement("Goal Keeper"); out_model.addElement("Goal Keeper");

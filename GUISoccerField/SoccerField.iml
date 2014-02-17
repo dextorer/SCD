@@ -8,6 +8,13 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SCDCommunication" />
+    <orderEntry type="library" name="apache-httpclient" level="project" />
+    <orderEntry type="library" name="gson-2.2.4" level="project" />
+    <orderEntry type="library" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" name="animationx2.5" level="project" />
+    <orderEntry type="library" name="syntheticaBlueIce" level="project" />
+    <orderEntry type="library" name="synthetica" level="project" />
+    <orderEntry type="module" module-name="Players-Generator" />
   </component>
 </module>
 

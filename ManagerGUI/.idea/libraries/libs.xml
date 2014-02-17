@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/commons-codec-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/commons-logging-1.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/fluent-hc-4.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/gson-2.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/httpclient-4.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/httpclient-cache-4.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/httpcore-4.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../GUISoccerField/libs/httpmime-4.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Players-Generator/lib/miglayout-4.0-swing.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

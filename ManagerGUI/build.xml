@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="managergui" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
+  <path id="jdk.classpath.1.6">
+    <fileset dir="${jdk.home.1.6}">
+      <include name="../default-java/jre/lib/rhino.jar"/>
+      <include name="../default-java/jre/lib/charsets.jar"/>
+      <include name="../default-java/jre/lib/compilefontconfig.jar"/>
+      <include name="../default-java/jre/lib/jsse.jar"/>
+      <include name="../default-java/jre/lib/resources.jar"/>
+      <include name="../default-java/jre/lib/management-agent.jar"/>
+      <include name="../default-java/jre/lib/javazic.jar"/>
+      <include name="../default-java/jre/lib/jce.jar"/>
+      <include name="../default-java/jre/lib/rt.jar"/>
+      <include name="../default-java/jre/lib/ext/pulse-java.jar"/>
+      <include name="../default-java/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="../default-java/jre/lib/ext/dnsns.jar"/>
+      <include name="../default-java/jre/lib/ext/java-atk-wrapper.jar"/>
+      <include name="../default-java/jre/lib/ext/localedata.jar"/>
+      <include name="../default-java/jre/lib/ext/sunjce_provider.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.7}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.libs.classpath">
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-codec-1.6.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-io-2.4.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/commons-logging-1.1.3.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/fluent-hc-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/gson-2.2.4.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpclient-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpclient-cache-4.3.1.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpcore-4.3.jar"/>
+    <pathelement location="${basedir}/../GUISoccerField/libs/httpmime-4.3.1.jar"/>
+    <pathelement location="${basedir}/../Players-Generator/lib/miglayout-4.0-swing.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module SCDCommunication -->
+  
+  <dirname property="module.scdcommunication.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.scdcommunication" value="${jdk.home.1.6}"/>
+  <property name="module.jdk.bin.scdcommunication" value="${jdk.bin.1.6}"/>
+  <property name="module.jdk.classpath.scdcommunication" value="jdk.classpath.1.6"/>
+  
+  <property name="compiler.args.scdcommunication" value="${compiler.args}"/>
+  
+  <property name="scdcommunication.output.dir" value="${module.scdcommunication.basedir}/../SCDCommunication/bin"/>
+  <property name="scdcommunication.testoutput.dir" value="${module.scdcommunication.basedir}/../SCDCommunication/bin"/>
+  
+  <path id="scdcommunication.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="scdcommunication.module.production.classpath">
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.production.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <path refid="${module.jdk.classpath.scdcommunication}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="scdcommunication.runtime.module.classpath">
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.scdcommunication">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.scdcommunication">
+    <patternset refid="excluded.from.module.scdcommunication"/>
+  </patternset>
+  
+  <path id="scdcommunication.module.sourcepath">
+    <dirset dir="${module.scdcommunication.basedir}/../SCDCommunication">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.scdcommunication" depends="compile.module.scdcommunication.production,compile.module.scdcommunication.tests" description="Compile module SCDCommunication"/>
+  
+  <target name="compile.module.scdcommunication.production" description="Compile module SCDCommunication; production classes">
+    <mkdir dir="${scdcommunication.output.dir}"/>
+    <javac destdir="${scdcommunication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.scdcommunication}/javac">
+      <compilerarg line="${compiler.args.scdcommunication}"/>
+      <bootclasspath refid="scdcommunication.module.bootclasspath"/>
+      <classpath refid="scdcommunication.module.production.classpath"/>
+      <src refid="scdcommunication.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.scdcommunication"/>
+    </javac>
+    
+    <copy todir="${scdcommunication.output.dir}">
+      <fileset dir="${module.scdcommunication.basedir}/../SCDCommunication/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.scdcommunication.tests" depends="compile.module.scdcommunication.production" description="compile module SCDCommunication; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.scdcommunication" description="cleanup module">
+    <delete dir="${scdcommunication.output.dir}"/>
+    <delete dir="${scdcommunication.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module ManagerGUI -->
+  
+  <dirname property="module.managergui.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.managergui" value="${jdk.home.1.6}"/>
+  <property name="module.jdk.bin.managergui" value="${jdk.bin.1.6}"/>
+  <property name="module.jdk.classpath.managergui" value="jdk.classpath.1.6"/>
+  
+  <property name="compiler.args.managergui" value="${compiler.args}"/>
+  
+  <property name="managergui.output.dir" value="${module.managergui.basedir}/out/production/ManagerGUI"/>
+  <property name="managergui.testoutput.dir" value="${module.managergui.basedir}/out/test/ManagerGUI"/>
+  
+  <path id="managergui.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="managergui.module.production.classpath">
+    <path refid="${module.jdk.classpath.managergui}"/>
+    <path refid="library.libs.classpath"/>
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="managergui.runtime.production.module.classpath">
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <path refid="scdcommunication.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="managergui.module.classpath">
+    <path refid="${module.jdk.classpath.managergui}"/>
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <pathelement location="${scdcommunication.output.dir}"/>
+    <pathelement location="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+  </path>
+  
+  <path id="managergui.runtime.module.classpath">
+    <pathelement location="${managergui.testoutput.dir}"/>
+    <pathelement location="${managergui.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <path refid="scdcommunication.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.managergui">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.managergui">
+    <patternset refid="excluded.from.module.managergui"/>
+  </patternset>
+  
+  <path id="managergui.module.sourcepath">
+    <dirset dir="${module.managergui.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.managergui" depends="compile.module.managergui.production,compile.module.managergui.tests" description="Compile module ManagerGUI"/>
+  
+  <target name="compile.module.managergui.production" depends="compile.module.scdcommunication" description="Compile module ManagerGUI; production classes">
+    <mkdir dir="${managergui.output.dir}"/>
+    <javac destdir="${managergui.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.managergui}/javac">
+      <compilerarg line="${compiler.args.managergui}"/>
+      <bootclasspath refid="managergui.module.bootclasspath"/>
+      <classpath refid="managergui.module.production.classpath"/>
+      <src refid="managergui.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.managergui"/>
+    </javac>
+    
+    <copy todir="${managergui.output.dir}">
+      <fileset dir="${module.managergui.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.managergui.tests" depends="compile.module.managergui.production" description="compile module ManagerGUI; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.managergui" description="cleanup module">
+    <delete dir="${managergui.output.dir}"/>
+    <delete dir="${managergui.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.scdcommunication, clean.module.managergui" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.scdcommunication, compile.module.managergui" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.managergui:jar" value="${basedir}/out/artifacts/ManagerGUI_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.ManagerGUI.jar" value="${artifacts.temp.dir}/ManagerGUI.jar"/>
+  </target>
+  
+  <target name="artifact.managergui:jar" depends="init.artifacts, compile.module.managergui, compile.module.scdcommunication" description="Build &#39;ManagerGUI:jar&#39; artifact">
+    <property name="artifact.temp.output.managergui:jar" value="${artifacts.temp.dir}/ManagerGUI_jar"/>
+    <mkdir dir="${artifact.temp.output.managergui:jar}"/>
+    <jar destfile="${temp.jar.path.ManagerGUI.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${managergui.output.dir}"/>
+      <zipfileset dir="${scdcommunication.output.dir}"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-codec-1.6.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-io-2.4.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/commons-logging-1.1.3.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/fluent-hc-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/gson-2.2.4.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpclient-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpclient-cache-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpcore-4.3.jar"/>
+      <zipfileset src="${basedir}/../GUISoccerField/libs/httpmime-4.3.1.jar"/>
+      <zipfileset src="${basedir}/../Players-Generator/lib/miglayout-4.0-swing.jar"/>
+      <zipfileset src="${basedir}/../SCDCommunication/libs/java_websocket.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.ManagerGUI.jar}" tofile="${artifact.temp.output.managergui:jar}/ManagerGUI.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.managergui:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.managergui:jar}"/>
+    <copy todir="${artifact.output.managergui:jar}">
+      <fileset dir="${artifact.temp.output.managergui:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
