@@ -210,7 +210,7 @@ public class GUI implements ActionListener {
     public void ShowGUI() {
         mTeamFrame.dispose();
         mFrameWidth = 570;
-        mFrameHeight = 600;
+        mFrameHeight = 650;
         //Create and set up the window for team 1.
         mTeamFrame = new JFrame("Manage " + mTeam.toLowerCase());
         mTeamFrame.setLayout(new FlowLayout());
