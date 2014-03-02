@@ -258,15 +258,26 @@ public class FieldPanel extends JPanel {
                             revalidate();
                         }
 
-                        if (players != null) {
+                        if (players != null && ref.state == MatchState.SECOND_HALF) {
+                            int onTheField = 0;
+
                             for (int i=0; i<players.length; i++) {
+
+//                                if (ref.state == MatchState.SECOND_HALF) {
+//                                    System.out.println("[TIME] End of first half. Start checking!");
+//                                }
+
                                 Player p = players[i];
                                 if (p.onTheField) {
-                                    if (p.position.y <= ROWS_VERTICAL_CELLS_NUMBER * CELL_PIXEL_SIZE - CELL_PIXEL_SIZE) {
+                                    onTheField++;
+//                                    System.out.println("Checking Player " + i + " [" + p.number + "] with position (" + p.position.x + "," + p.position.y + ")");
+                                    if (p.position.y < ROWS_VERTICAL_CELLS_NUMBER * CELL_PIXEL_SIZE - CELL_PIXEL_SIZE) {
+//                                        System.out.println("Breaking now, for Player " + i + " [" + p.number + "]");
                                         break;
                                     }
 
-                                    if (i == players.length-1) {
+                                    if (onTheField == 22) {
+//                                        System.out.println("Ready for round 2");
                                         resetBallPosition();
                                         container.setStartButtonEnabled(true);
                                     }
