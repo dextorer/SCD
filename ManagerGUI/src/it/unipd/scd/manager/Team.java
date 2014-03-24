@@ -74,6 +74,8 @@ public class Team implements ListSelectionListener, ActionListener {
     private boolean mPendingSub = false;
     private int mPendingOutPlayer;
     private int mPendingInPlayer;
+    private int subCount = 0;                                           // A total of three substitution are available
+    private int[] mSubNumbers;
 
     private JButton mApply = new JButton("Apply");
 
@@ -109,6 +111,11 @@ public class Team implements ListSelectionListener, ActionListener {
         }
 
         mFormationScheme = obj.get("formation").getAsString();
+
+        mSubNumbers = new int[mPlayers.size() - TEAM_SIZE];
+        for (int i = 0; i < mSubNumbers.length; i++) {
+            mSubNumbers[i] = -1;
+        }
 
        /* mPlayers.add(new Player(0,0,0,0,0,0,0,0,"Backup"));
         mPlayers.add(new Player(0,0,0,0,0,0,0,0,"Backup"));
@@ -197,7 +204,8 @@ public class Team implements ListSelectionListener, ActionListener {
         if (mPlayers.size() > TEAM_SIZE) {
             in_players = new String[mPlayers.size()-TEAM_SIZE];
             for (int i = 0; i < (mPlayers.size()-TEAM_SIZE); i++)
-                in_players[i] = mPlayers.get(i+TEAM_SIZE).getRole() + " " + (computeRoleIndex(i)+1);
+                // in_players[i] = mPlayers.get(i+TEAM_SIZE).getRole() + " " + (computeRoleIndex(i)+1);
+                in_players[i] = "Backup " + (i+1);
         }
         else {
             in_players = new String[1];
@@ -341,6 +349,7 @@ public class Team implements ListSelectionListener, ActionListener {
                             "Info Message",
                             JOptionPane.INFORMATION_MESSAGE);
                 else {
+                    subCount++;
                     mPendingSub = true;
                     mPendingInPlayer = mPlayers.get(mInPlayerName).getNumber();
                     mPendingOutPlayer = mPlayers.get(mOutPlayerName).getNumber();
@@ -350,6 +359,28 @@ public class Team implements ListSelectionListener, ActionListener {
                     mPlayers.get(mOutPlayerName).setRole(mPlayers.get(mInPlayerName).getRole());
                     mPlayers.get(mInPlayerName).setRole(role);
                   //  System.out.println(mPlayers.get(mOutPlayerName).getRole() + " " + mPlayers.get(mInPlayerName).getRole());
+                    if (subCount == 3) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "This was your last substitution available! \n" +
+                                        "You performed the maximum number of substitutions (3).",
+                                "Info Message",
+                                JOptionPane.WARNING_MESSAGE);
+                        mSubstitution.setEnabled(false);
+                    }
+                    DefaultComboBoxModel in_model = new DefaultComboBoxModel();
+                    // add backup players
+                    if (mPlayers.size() > TEAM_SIZE) {
+                        for (int i = 0; i < (mPlayers.size()-TEAM_SIZE); i++) {
+                            if ( ((i + TEAM_SIZE) != mInPlayerName) && (i != mSubNumbers[i]) ) {
+                                in_model.addElement("Backup " + (i+1));
+                            }
+                            else {
+                                mSubNumbers[i] = i;
+                            }
+                        }
+                    }
+                    mInPlayer.setModel(in_model);
                 }
             }
     }
