@@ -6,13 +6,24 @@
 \addcontentsline{toc}{section}{\protect\numberline{}Il modello}%
 \label{sec:modello}
 
-Paragrafo introduttivo.
+Nel Capitolo~\ref{sec:entita_coinvolte} sono state individuate ed analizzate le entita' che caratterizzano il sistema. La fase successiva, su cui questo capitolo si focalizza, consiste nel definire le interazioni che legano le suddette entita', in maniera tale da poter derivare un modello per il sistema.
 
 \subsection*{Interazione tra giocatori: il controllore}
 \addcontentsline{toc}{subsection}{\protect\numberline{}Interazione tra giocatori: il controllore}%
 \label{sec:modello_interazione_giocatori}
 
-Interazione tra giocatori: il controllore.
+%Interazione tra giocatori: il controllore.
+I giocatori sono gli attori principali del sistema. Un giocatore si sposta dentro e fuori dal campo, e' in grado di compiere diversi tipi di azioni (Sezione~\ref{sec:entita_giocatori}), che decide sia sulla base del proprio stato che dello stato della propria squadra e della partita. Un aspetto fondamentale vede i giocatori, cosi' come avviene nel mondo reale, operare in maniera parallela e concorrente tra di loro: questo implica che i risultati delle loro azioni debbano riflettersi sullo stato di gioco, che come descritto in Sezione~\ref{sec:entita_stato}, detiene tutte le informazioni che definiscono la partita in un dato istante. Si pone pero' un problema: i giocatori, per poter conoscere le informazioni che permetteranno loro di decidere la prossima azione da compiere, i giocatori devono accedere allo stato, che tuttavia e' unico. E' dunque necessario regolamentare l'accesso a tale risorsa, in maniera tale da preservarne la consistenza e la correttezza.\\
+
+L'organo che si occupa di permettere l'interazione tra diversi giocatori e' il \textit{controllore}. In quanto entita' centrale di controllo, i suoi molteplici compiti possono essere raggruppati come segue:
+
+\begin{enumerate}
+	\item Permettere ai giocatori di accedere allo stato, sia per leggerne le informazioni sia per poterle modificare
+	\item Sequenzializzare gli accessi allo stato da parte dei giocatori, al fine di non creare inconsistenze sulle informazioni in esso contenute
+	\item Ricoprire il ruolo di arbitro di gioco ``onnisciente'' (verra' dettagliato in Sezione~\ref{sec:modello_verifica_arbitro})
+\end{enumerate}
+
+Come gia' accennato precedentemente, un giocatore decide la sua prossima mossa sulla base dello stato corrente della partita: ad esempio, trovandosi in possesso della palla nell'area avversaria e senza nessun giocatore a marcarlo, e' ragionevole che il giocatore decida di tirare per provare a realizzare un goal. Al tempo stesso, l'azione che egli compie si ripercuote sullo stato della partita, andandone a modificare una parte: di nuovo, se il giocatore segna, il punteggio della partita cambia e i giocatori ritornano in posizione di partenza per ricominciare il gioco.
 
 \subsection*{Verifica sullo stato di gioco: l'arbitro}
 \addcontentsline{toc}{subsection}{\protect\numberline{}Verifica sullo stato di gioco: l'arbitro}%
