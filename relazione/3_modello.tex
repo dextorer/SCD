@@ -46,6 +46,8 @@ L'arbitro deve quindi essere in grado di controllare tutte le mosse dei giocator
 
 Si ha cosi' che il controllore, descritto nel paragrafo precedente, ricopre anche il ruolo di arbitro. Questa decisione ha delle ripercussioni non solo nello svolgersi del gioco (l'arbitro e' onnisciente), ma anche nell'assegnazione delle risorse di calcolo. Infatti, se l'arbitro fosse soggetto agli stessi vincoli di esecuzione dei giocatori, andrebbe a concorrere assieme a loro per l'esecuzione sulla CPU come task a se stante; questa situazione non si verifica invece nel caso in cui sia il controllore ad essere anche arbitro, essendo l'entita' centrale che si occupa di eseguire a tutti gli effetti le mosse dei giocatori. Maggiori dettagli sull'implementazione dell'arbitro verranno esposti in Sezione~\ref{sec:implemetazione_concorrenza}.
 
+[TODO] aggiungere il fatto che l'arbitro deve gestire anche gli eventi che provengono dalla distribuzione e in che ordine vengono processati gli eventi (vedere documento SCDNOTES)
+
 \subsection*{La palla in movimento: l'entita' e l'agente di movimento}
 \addcontentsline{toc}{subsection}{\protect\numberline{}La palla in movimento: l'entita' e l'agente di movimento}%
 \label{sec:modello_palla_agente_movimento}
