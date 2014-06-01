@@ -74,14 +74,24 @@ Ad ogni modo, la palla e' un'entita' passiva, che non compie azioni proprie ma c
 
 %Modifiche sulle squadre: gli allenatori.
 
-Nel gioco del calcio i giocatori di ciascuna vengono coordinati dal proprio allenatore, che ha il compito di scegliere come disporre i giocatori in campo (la formazione) e di effettuare delle sostituzioni, come conseguenza di un infortunio o piu' semplicemente per una scelta tattica. In questa simulazione i due allenatori rappresentano due componenti distribuite separate, che comunicano con l'unita' centrale di controllo. Ciascun allenatore ha la facolta' di prendere le seguenti decisioni:
+Nel gioco del calcio i giocatori di ciascuna squadra vengono coordinati dal proprio allenatore, che ha il compito di scegliere come disporre i giocatori in campo (la formazione) e di effettuare delle sostituzioni, come conseguenza di un infortunio o piu' semplicemente per una scelta tattica. In questa simulazione i due allenatori rappresentano due componenti distribuite separate, che comunicano con l'unita' centrale di controllo. Ciascun allenatore ha la facolta' di prendere le seguenti decisioni:
 
 \begin{itemize}
 	\item effettuare un cambio di formazione per la propria squadra
 	\item effettuare una sostituzione di un giocatore con un suo compagno presente in panchina
 \end{itemize}
 
-Le decisioni prese da un allenatore hanno come precondizione necessaria il gioco fermo: sara' pertanto l'arbitro a dover esaminare e successivamente accettare le richieste di un allenatore solo quando le condizioni lo permettono.\\
+Le decisioni prese da un allenatore hanno come precondizione necessaria il gioco fermo: sara' pertanto l'arbitro a dover esaminare e successivamente accettare le richieste di un allenatore solo quando le condizioni lo permettono. Nel caso di un semplice cambio di formazione, la decisione dell'allenatore viene applicata sulla squadra, cosicche' i giocatori al proprio turno successivo sappiano che la loro posizione di riferimento e' cambiata. Diverso e piu' complesso e' invece il caso della sostituzione. La sequenza di operazioni che seguono una richiesta di sostituzione si possono schematizzare come segue:
+
+\begin{enumerate}
+	\item L'arbitro riceve la richiesta di sostituzione e, non appena il gioco e' fermo, procede a notificarlo ai giocatori
+	\item Ciascun giocatore, prima di decidere la propria mossa, controlla se l'allenatore ha deciso di sostituirlo con un compagno
+	\item Nel caso del giocatore interessato alla sostituzione, esso si dirige verso la panchina (eventualmente lasciando la palla dove si trova)
+	\item Una volta giunto in panchina, il suo compagno prende il suo posto in campo e si dirige verso la propria posizione di riferimento
+	\item L'arbitro, ad ogni turno, controlla se il giocatore entrante ha raggiunto la posizione di riferimento e, in quel caso, sancisce la ripresa del gioco
+\end{enumerate}
+
+Il comportamento sopra descritto vale anche nel caso di piu' sostituzioni simultanee, che vedono i giocatori uscire ed entrare nel campo allo stesso tempo.\\
 
 Ciascun allenatore ha inoltre una visione meno precisa del gioco e riceve pertanto un sottoinsieme degli eventi che caratterizzano una partita: dal punto di vista decisionale e' infatti poco interessante per un allenatore conoscere ogni singolo movimento di ogni giocatore. Si ha quindi che l'allenatore viene notificato solo in caso di eventi ``salienti'', che come descritto nel Capitolo~\ref{sec:analisi_architetturale}, sono stati denominati \textit{Game Events}.
 
@@ -89,4 +99,6 @@ Ciascun allenatore ha inoltre una visione meno precisa del gioco e riceve pertan
 \addcontentsline{toc}{subsection}{\protect\numberline{}Gestione delle fasi di gioco: entita' di gioco}%
 \label{sec:modello_fasi_game_entity}
 
-Gestione delle fasi di gioco: entita' di gioco.
+%Gestione delle fasi di gioco: entita' di gioco.
+
+[secondo me non va messa qui, e' prettamente implementativa]
