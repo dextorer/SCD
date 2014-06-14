@@ -33,6 +33,8 @@
 \renewcommand\@biblabel[1]{\textbf{#1.}} % Change the square brackets for each bibliography item from '[1]' to '1.'
 \renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
 
+\renewcommand{\contentsname}{Indice} % Rename TOC default title
+
 \renewcommand{\maketitle}{ % Customize the title - do not edit title and author name here, see the TITLE block below
 \begin{flushright} % Right align
 {\LARGE\@title} % Increase the font size of the title
@@ -46,7 +48,7 @@
 \end{flushright}
 }
 
-\setcounter{secnumdepth}{0}
+%\setcounter{tocdepth}{5}
 \usepackage{hyperref} % Enables hyperlinking (e.g., ToC)
 
 %----------------------------------------------------------------------------------------

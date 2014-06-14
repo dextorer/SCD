@@ -2,54 +2,54 @@
 %	INTRODUZIONE
 %----------------------------------------------------------------------------------------
 
-\section*{Introduzione}
-\addcontentsline{toc}{section}{\protect\numberline{}Introduzione}%
+\section{Introduzione}
 \label{sec:introduzione}
 
-Il seguente progetto rappresenta il lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto \`{e} stato tratto da un concorso annuale chiamato \emph{The Ada Way} organizzato da Ada-Europe. In particolare, facciamo riferimento all'edizione 2010/2011 del concorso, anno in cui il tema proposto \`{e} stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente, ma concorrente. L'utente ha la possibilit\`{a} di interagire con la partita in corso fungendo la funzione di allenatore delle squadre. 
+Il seguente progetto e' il frutto del lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto \`{e} stato tratto da un concorso annuale chiamato \emph{The Ada Way} ed organizzato da Ada-Europe. In particolare, viene fatto riferimento all'edizione del concorso 2010/2011, anno in cui il tema proposto \`{e} stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente e al tempo stesso concorrente. L'utente ha la possibilit\`{a} di interagire con la partita in corso, assumendo il ruolo di allenatore delle squadre.\\
 
-Nel seguente documento presentiamo il nostro approccio al problema, concentradoci sulle problematiche di concorrenza e distribuzione che abbiamo incontrato durante lo sviluppo del software.
+Questo documento ha lo scopo di descrivere l'approccio utilizzato per risolvere il problema e si concentra prevalentemente sulle problematiche di concorrenza e distribuzione incontrate durante lo sviluppo del software.
 
-\subsection*{Scopo del progetto}
-\addcontentsline{toc}{subsection}{\protect\numberline{}Scopo del progetto}%
+\subsection{Scopo del progetto}
 \label{sec:scopo_del_progetto}
-Lo scopo del progetto \`{e} realizzare un software che simuli lo svolgimento di una partita secondo il regole del calcio. Nel progetto sar\`{a} presente una componente definita core, nella quale avverranno le dinamiche di concorrenza che andranno a le entit\`{a} in gioco interagire tra di loro, ed alcune componenti di distribuzione che permettono al core ed alle interfacce utente di interagire.
 
-\subsection*{Funzionalita' del software}
-\addcontentsline{toc}{subsection}{\protect\numberline{}Funzionalit\`{a} del software}%
+Lo scopo del progetto consiste nel realizzare un software che simuli lo svolgimento di una partita di calcio secondo il relativo regolamento. Il software \`{e} presenta una componente principale, nella quale avvengono le dinamiche di concorrenza che vedranno le entit\`{a} in gioco interagire tra di loro, ed alcune componenti di distribuzione, che interagiscono con la componente principale e che vengono pilotate dall'utente.
+
+\subsection{Funzionalita' del software}
 \label{sec:funzionalita_del_software}
 
-In questa sezione introduciamo brevemente le funzionalit\`{a} del software. Nelle sezioni successive andremo a darne una descrizione pi\`{u} dettagliata, ponendo particolare attenzione agli aspetti di concorrenza e distribuzione.
+In questa sezione vengono introdotte le funzionalit\`{a} del software di simulazione, che verranno poi dettagliate nei capitoli successivi.
 
-\subsubsection*{Configurazione dei Giocatori}
-\addcontentsline{toc}{subsubsection}{\protect\numberline{}Configurazione dei Giocatori}%
-\label{sec:conf_giocatori}
-All'avvio del software, prima dell'inizio della partita, viene data la possibilit\`{a} di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui vi sono le seguenti caratteristiche fisiche configurabili:
+\subsubsection{La partita}
+\label{sec:partita}
+
+Il software di simulazione permette di giocare una o piu' partite, ciascuna divisa in due tempi, la cui durata \`{e} prefissata e non modificabile dall'utente. L'inizio del secondo tempo e' dettato dalla scelta dell'utente, cosi' da permettergli eventuali modifiche all'assetto delle squadre.\\
+
+Ciascuna squadra \`{e} composta da 11 giocatori in campo e 7 riserve in panchina. Le caratteristiche fisiche di un giocatore sono le seguenti:
 \begin{itemize}
-\item Parata;
-\item Attacco;
-\item Difesa;
-\item Velocit\`{a} ;
-\item Precisione;
-\item Potenza;
-\item Contrasto;
+	\item attacco
+	\item difesa
+	\item parata (valido solo per il portiere)
+	\item velocit\`{a}
+	\item precisione
+	\item potenza
+	\item contrasto
 \end{itemize}
-\noindent La statistica \emph{Parata} \`{e} a disposizione solo del giocatore nel ruolo di portiere. Le suddette caratteristiche andranno ad influenzare le azioni dei giocatori, determinandone il successo o il fallimento. L'interfaccia da la possibilit\`{a} di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse per ogni giocatore. Questa scelta deve essere ponderata perch\`{e} le statistiche non sono pi\`{u} modificabili a partita iniziata. Anche la formazione iniziale della squadra \`{e} configurabile e pu\`{o} essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio.
 
-La partita inizia non appena entrambe le squadre sono state configurate.
+La ``bravura'' di un giocatore e' data dal valore che le suddette caratteristiche assumono: piu' alto il valore, maggiore sara' la bravura del giocatore. Tali valori possono essere configurati prima dell'inizio della partita (Sezione~\ref{sec:conf_giocatori}) e andranno ad influenzare le azioni dei giocatori, determinandone il successo o il fallimento. I giocatori sono controllati esclusivamente dal computer e sono in grado di decidere autonomamente quale azione effettuare, sulla base dello stato in cui si trovano e dello stato generale della partita.\\
 
-\subsubsection*{Intefaccia Grafica della Partita}
-\addcontentsline{toc}{subsubsection}{\protect\numberline{}Intefaccia Grafica della Partita}%
-\label{sec:gui_partita}
-La partita si svolge seguendo le regole standard del calcio, meno la regola del fuorigioco, ed \`{e} divisa in due tempi, la cui durata \`{e} prefissata e non modificabile dall'utente, con un intervallo tra i due.
+Il corretto svolgimento della partita viene garantito dalla presenza di un arbitro, che provvede ad interrompere il gioco non appena si verifica un'infrazione (ad esempio un fallo) e a farlo ripartire non appena le condizioni lo permettono. Inoltre, l'arbitro ha il compito di sancire l'inizio e la fine di ciascun tempo, facendo opportunamente entrare in campo ed uscire in panchina tutti i giocatori.\\
 
-Le squadre in gioco sono composte da 11 giocatori, le cui caratteristiche fisiche sono configurate ad inizio partita come detto nella sezione ~\ref{sec:conf_giocatori}. I giocatori sono interamente controllati dal computer e sono in grado di decidere autonomamente quale azione effettuare sulla base della situazione in cui si trovano.
+E' possibile assistere allo svolgimento della partita attraverso l'interfaccia grafica del campo di gioco, nella quale vengono visualizzate tutte le informazioni piu' importanti relativi alla partita (~\ref{sec:struttura_field}). Lo stato della partita puo' inoltre essere modificato, mettendola in pausa e facendola riprendere in un secondo momento, oppure terminarla prima della fine del tempo regolamentare. A partita terminata, \`{e} possibile iniziarne una nuova.
 
-Il corretto svolgimento della gara viene garantito dalla presenza di un arbitro che provvede ad interrompere il gioco non appena si verifica un'infrazione (fallo, palla uscita dal campo),un goal, una sostituzione di un giocatore, o quando termina il tempo di gioco. L'arbitro si preoccupa anche di dare il permesso di far ripartire il gioco dopo l'avvenimento di una delle suddette interruzioni ad eccezione dell'inizio del secondo tempo che deve essere avviato manualmente.
+\subsubsection{Struttura del software}
+\label{sec:struttura_del_software}
 
-Lo svolgersi dell'incontro pu\`{o} essere seguito tramite l'interfaccia grafica del campo di gioco, nella quale viene riportato il risultato corrente, il timer indicante il tempo rimanente e un semplice log in cui vengono riportati gli eventi principali della partita. Vi \`{e} inoltre la possibilit\`{a} di modificare lo stato della partita, mettendola in pausa per poi riprenderla in un secondo momento, o terminarla prima della fine del tempo regolamentare. A partita terminata, \`{e} possibile iniziarne una nuova.
+Il software di simulazione e' costituito da tre diverse componenti, che prendono il nome (simbolico) di \textit{core}, \textit{field} e \textit{manager}.
 
-\subsubsection*{Interfaccia Grafica dei Manager}
-\addcontentsline{toc}{subsubsection}{\protect\numberline{}Interfaccia Grafica dei Manager}%
-\label{sec:gui_manager} 
-Nonostante i giocatori e l'arbitro siano interamente controllati dal computer, gli allenatori possono influenzarne il comportamento in campo. Tramite le interfacce grafiche degli allenatori \`{e}  possibile decidere eventuali cambi di formazione e sostituzioni da effettuare. Si pu\`{o}  sostituire un giocatore alla volta, fino ad un massimo di tre, mentre i cambi di formazione sono illimitati. Le modifiche apportate dall'allenatore vengono applicate alla squadra alla prima interruzione di partita dovuta ad un evento di gioco, non ad un'interruzione dovuta alla messa in pausa dell'incontro tramite l'interfaccia grafica del campo.
+\paragraph{\textit{Core}} \label{sec:struttura_core} Il \textit{core} e' il modulo centrale del software. Esso contiene tutta la logica di gioco e regola l'interazione tra le diverse entita che lo compongono. E' inoltre responsabile di gestire la comunicazione con i moduli esterni, ovvero \textit{field} e i due \textit{manager}, in quanto non dispone di una propria interfaccia grafica.
+
+\paragraph{\textit{Field}} \label{sec:struttura_field} Questa componente rappresenta l'interfaccia grafica della partita. Attraverso di essa l'utente puo' iniziare una nuova partita, mettere in pausa quella corrente oppure chiudere del tutto la simulazione; in quest'ultimo caso, anche le componenti \textit{core} e le due istanze di \textit{manager} vengono terminate. Inoltre vi e' una rappresentazione grafica molto semplice del campo di gioco, della panchina, dei giocatori e della palla. Viene inoltre riportato il tempo trascorso dall'inizio della partita, unitamente al punteggio corrente delle due squadre. Infine, e' presente un registro di eventi che permette di ripercorrere gli eventi salienti della partita.
+
+\paragraph{\textit{Manager}} \label{sec:struttura_manager} L'ultima componente e' il \textit{manager}, che permette di controllare la rispettiva squadra, decidendo eventuali cambi di formazione e sostituzioni da effettuare. E' possibile sostituire un giocatore alla volta, fino ad un massimo di tre, mentre non c'e' limite ai i cambi di formazione che e' possibile fare. Le modifiche apportate dall'allenatore vengono applicate alla squadra in occasione della prima interruzione di partita dovuta ad un evento di gioco (ovvero, la messa in pausa della partita da parte dell'utente non conta).\\
+
+All'avvio del software, prima dell'inizio della partita, viene data la possibilit\`{a} di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui sono riportate le caratteristiche fisiche configurabili. L'interfaccia da la possibilit\`{a} di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse. Questa scelta deve essere ponderata perche' le statistiche non sono piu' modificabili a partita iniziata. Anche la formazione iniziale della squadra e' configurabile e puo' essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio. La partita inizia non appena entrambe le squadre sono state configurate.
