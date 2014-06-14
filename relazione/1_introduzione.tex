@@ -6,47 +6,50 @@
 \addcontentsline{toc}{section}{\protect\numberline{}Introduzione}%
 \label{sec:introduzione}
 
-Il seguente progetto rappresenta il lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto è stato tratto da un concorso annuale chiamato \emph{The Ada Way} organizzato da Ada-Europe. In particolare, facciamo riferimento all'edizione 2010/2011 del concorso, anno in cui il tema proposto è stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente, ma concorrente. L'utente ha la possibilità di interagire con la partita in corso fungendo la funzione di allenatore delle squadre. \\
+Il seguente progetto rappresenta il lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto \`{e} stato tratto da un concorso annuale chiamato \emph{The Ada Way} organizzato da Ada-Europe. In particolare, facciamo riferimento all'edizione 2010/2011 del concorso, anno in cui il tema proposto \`{e} stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente, ma concorrente. L'utente ha la possibilit\`{a} di interagire con la partita in corso fungendo la funzione di allenatore delle squadre. 
+
 Nel seguente documento presentiamo il nostro approccio al problema, concentradoci sulle problematiche di concorrenza e distribuzione che abbiamo incontrato durante lo sviluppo del software.
 
 \subsection*{Scopo del progetto}
 \addcontentsline{toc}{subsection}{\protect\numberline{}Scopo del progetto}%
 \label{sec:scopo_del_progetto}
-Lo scopo del progetto è realizzare un software che simuli lo svolgimento di una partita di calcio.  [QUI NON SO CHE MINCHIA METTERE PERCHE' RIPETO TUTTO SIA PRIMA CHE DOPO]
+Lo scopo del progetto \`{e} realizzare un software che simuli lo svolgimento di una partita di calcio.  [QUI NON SO CHE MINCHIA METTERE PERCH\`{E} RIPETO TUTTO SIA PRIMA CHE DOPO]
 
 \subsection*{Funzionalita' del software}
 \addcontentsline{toc}{subsection}{\protect\numberline{}Funzionalita' del software}%
 \label{sec:funzionalita_del_software}
 
-In questa sezione introduciamo brevemente le funzionalità del software. Nelle sezioni successive andremo a darne una descrizione più dettagliata, ponendo particolare attenzione agli aspetti di concorrenza e distribuzione.
+In questa sezione introduciamo brevemente le funzionalit\`{a} del software. Nelle sezioni successive andremo a darne una descrizione pi\`{u} dettagliata, ponendo particolare attenzione agli aspetti di concorrenza e distribuzione.
 
 \subsubsection*{Configurazione dei Giocatori}
 \addcontentsline{toc}{subsubsection}{\protect\numberline{}Configurazione dei Giocatori}%
 \label{sec:conf_giocatori}
-All'avvio del software, prima dell'inizio della partita, viene data la possibilità di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui vi sono le seguenti caratteristiche fisiche configurabili:
+All'avvio del software, prima dell'inizio della partita, viene data la possibilit\`{a} di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui vi sono le seguenti caratteristiche fisiche configurabili:
 \begin{itemize}
 \item Parata;
 \item Attacco;
 \item Difesa;
-\item Velocità;
+\item Velocit\`{a} ;
 \item Precisione;
 \item Potenza;
 \item Contrasto;
 \end{itemize}
-\noindent La statistica \emph{Parata} è a disposizione solo del giocatore nel ruolo di portiere. Le suddette caratteristiche andranno ad influenzare le azioni dei giocatori, determinandone il successo o il fallimento. L'interfaccia da la possibilità di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse per ogni giocatore. Questa scelta deve essere ponderata perchè le statistiche non sono più modificabili a partita iniziata. Anche la formazione iniziale della squadra è configurabile e può essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio.\\
+\noindent La statistica \emph{Parata} \`{e} a disposizione solo del giocatore nel ruolo di portiere. Le suddette caratteristiche andranno ad influenzare le azioni dei giocatori, determinandone il successo o il fallimento. L'interfaccia da la possibilit\`{a} di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse per ogni giocatore. Questa scelta deve essere ponderata perch\`{e} le statistiche non sono pi\`{u} modificabili a partita iniziata. Anche la formazione iniziale della squadra \`{e} configurabile e pu\`{o} essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio.
+
 La partita inizia non appena entrambe le squadre sono state configurate.
 
 \subsubsection*{Intefaccia Grafica della Partita}
 \addcontentsline{toc}{subsubsection}{\protect\numberline{}Intefaccia Grafica della Partita}%
 \label{sec:gui_partita}
-La partita si svolge seguendo le regole standard del calcio, meno la regola del fuorigioco, ed è divisa in due tempi, la cui durata è prefissata e non modificabile dall'utente, con un intervallo tra i due.\\
-Lo svolgersi dell'incontro può essere seguito tramite l'interfaccia grafica del campo di gioco, nella quale viene riportato il risultato corrente, il timer indicante il tempo rimanente e un semplice log in cui vengono riportati gli eventi principali della partita. Vi è inoltre la possibilità di modificare lo stato della partita, mettendola in pausa per poi riprenderla in un secondo momento, o terminarla prima della fine del tempo regolamentare. A partita terminata, è possibile iniziarne una nuova.\\
+La partita si svolge seguendo le regole standard del calcio, meno la regola del fuorigioco, ed \`{e} divisa in due tempi, la cui durata \`{e} prefissata e non modificabile dall'utente, con un intervallo tra i due.
 
-Le squadre in gioco sono composte da 11 giocatori, le cui caratteristiche fisiche sono configurate ad inizio partita come detto nella sezione ~\ref{sec:conf_giocatori}. I giocatori sono interamente controllati dal computer e sono in grado di decidere autonomamente quale azione effettuare sulla base della situazione in cui si trovano.\\
+Lo svolgersi dell'incontro pu\`{o} essere seguito tramite l'interfaccia grafica del campo di gioco, nella quale viene riportato il risultato corrente, il timer indicante il tempo rimanente e un semplice log in cui vengono riportati gli eventi principali della partita. Vi \`{e} inoltre la possibilit\`{a} di modificare lo stato della partita, mettendola in pausa per poi riprenderla in un secondo momento, o terminarla prima della fine del tempo regolamentare. A partita terminata, \`{e} possibile iniziarne una nuova.
+
+Le squadre in gioco sono composte da 11 giocatori, le cui caratteristiche fisiche sono configurate ad inizio partita come detto nella sezione ~\ref{sec:conf_giocatori}. I giocatori sono interamente controllati dal computer e sono in grado di decidere autonomamente quale azione effettuare sulla base della situazione in cui si trovano.
 
 Il corretto svolgimento della gara viene garantito dalla presenza di un arbitro che provvede ad interrompere il gioco non appena si verifica un'infrazione (fallo, palla uscita dal campo),un goal, una sostituzione di un giocatore, o quando termina il tempo di gioco. L'arbitro si preoccupa anche di dare il permesso di far ripartire il gioco dopo l'avvenimento di una delle suddette interruzioni ad eccezione dell'inizio del secondo tempo che deve essere avviato manualmente.\\
 
 \subsubsection*{Interfaccia Grafica dei Manager}
 \addcontentsline{toc}{subsubsection}{\protect\numberline{}Interfaccia Grafica dei Manager}%
 \label{sec:gui_manager} 
-Nonostante i giocatori e l'arbitro siano interamente controllati dal computer, gli allenatori possono influenzarne il comportamento in campo. Tramite le interfacce grafiche degli allenatori è possibile decidere eventuali cambi di formazione e sostituzioni da effettuare. Si può sostituire un giocatore alla volta, fino ad un massimo di tre, mentre i cambi di formazione sono illimitati. Le modifiche apportate dall'allenatore vengono applicate alla squadra alla prima interruzione di partita dovuta ad un evento di gioco, non ad un'interruzione dovuta alla messa in pausa dell'incontro tramite l'interfaccia grafica del campo.
+Nonostante i giocatori e l'arbitro siano interamente controllati dal computer, gli allenatori possono influenzarne il comportamento in campo. Tramite le interfacce grafiche degli allenatori \`{e}  possibile decidere eventuali cambi di formazione e sostituzioni da effettuare. Si pu\`{o}  sostituire un giocatore alla volta, fino ad un massimo di tre, mentre i cambi di formazione sono illimitati. Le modifiche apportate dall'allenatore vengono applicate alla squadra alla prima interruzione di partita dovuta ad un evento di gioco, non ad un'interruzione dovuta alla messa in pausa dell'incontro tramite l'interfaccia grafica del campo.
