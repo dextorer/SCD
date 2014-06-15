@@ -36,7 +36,9 @@ La struttura globale degli eventi e' schematizzata in Figura~\ref{fig:event_hier
 
 Ciascuno di questi eventi viene sottoposto all'attenzione dell'arbitro, che ne valida la correttezza nel rispetto delle regole del gioco. Inoltre, come gia' anticipato, questi eventi vengono anche inviati alla parte distribuita, cosi' da poter aggiornare la visualizzazione della partita e per permettere agli allenatori di prendere decisioni tattiche.
 
-\paragraph{GameEvent} Gli eventi che regolano lo svolgimento del gioco rientrano nella categoria di \textit{GameEvent}.
+\paragraph{GameEvent} Gli eventi che regolano lo svolgimento del gioco rientrano nella categoria di \textit{GameEvent}. \\
+
+[TODO] finire la descrizione degli eventi
 
 \subsection{Concorrenza}
 \label{sec:analisi_concorrenza}
@@ -113,10 +115,57 @@ L'entrata in campo come l'uscita e' un altro degli aspetti critici della concorr
 
 Inoltre tale cella viene utilizzata per effettuare le sostituzioni, un giocatore che deve essere sostituito esce fino a raggiungere tale cella, in essa il suo id viene cambiato con quello del nuovo giocatore. Dato che i giocatori non hanno stato, se non l'id che li identifica e con il quale recuperano ad ogni turno le proprie informazioni dal cotroller, modificando tale valore e' equivalente ad averlo sostituito. In questo modo vengono creati solamente 22 giocatori in ogni partita, riutilizzandoli per simulare quelli in panchina.
 
-
 \subsection{Distribuzione}
 \label{sec:analisi_distribuzione}
 
-Distribuzione.
+Dal momento che la componente \textit{Core} non dispone di una propria interfaccia grafica che possa garantire la fruizione e l'interazione dall'esterno, si pone la necessita' di rendere possibile una comunicazione bidirezionale da e per le componenti distribuite, ovvero \textit{Field} e le due istanze di \textit{Manager}. Di seguito verranno quindi analizzate le soluzioni adottate per questo particolare aspetto del software, la cui rispettiva implementazione verra' successivamente trattata nel Capitolo~\ref{sec:implementazione}.
 
+\subsubsection{Il bridge}
+\label{sec:analisi_distribuzione_bridge}
 
+Il modulo che si occupa di consentire alla componente \textit{Core} di accettare comunicazioni dall'esterno, sia in entrata che in uscita, e' chiamato \textit{bridge}. A causa della duplice natura delle comunicazioni possibile, il bridge e' logicamente diviso in due parti: bridge input e bridge output.
+
+\paragraph{Bridge input}\label{sec:analisi_distribuzione_bridge_input} Il bridge input viene utilizzato dalle due componenti distribuite \textit{Field} e \textit{Manager} per comunicare con la componente \textit{Core}, occupandosi quindi di gestire tutte le comunicazioni in ingresso. Per quanto riguarda \textit{Field}, i metodi a sua disposizione permettono di:
+
+\begin{itemize}
+	\item Iniziare una nuova partita
+	\item Mettere in pausa la partita corrente
+	\item Dare il via al secondo tempo, a seguito di un intervallo
+	\item Terminare la simulazione (spegnimento globale del software)
+\end{itemize}
+
+Per quanto riguarda invece la componente \textit{Manager}, e' possibile:
+
+\begin{itemize}
+	\item Recuperare tutte le informazioni relative ad una squadra
+	\item Recuperera tutte le informazioni relative ai giocatori
+	\item Cambiare la formazione della squadra
+	\item Effettuare una sostituzione tra due giocatori
+\end{itemize}
+
+Appare tuttavia evidente che la separazione logica tra le due tipologie di bridge non rispecchia il flusso dei dati trasmessi: infatti, nel caso del bridge input, esso permette alle componenti distribuite sia di richiedere informazioni (e.g. recuperare le statistiche dei giocatori) che di inviare delle informazioni (e.g. cambiare la formazione).\\
+
+\paragraph{Bridge output}\label{sec:analisi_distribuzione_bridge_output} Il bridge output viene invece utilizzato da \textit{Core} per notificare gli avvenimenti della partita, permettendo cosi' a \textit{Field} e \textit{Manager} di disegnare l'interfaccia grafica e di mostrare le relative informazioni. Questo modulo gestisce quindi tutte le comunicazioni in uscita; inoltre, il flusso di dati trasmessi e' solo uscente, a differenza della sua controparte.\\
+
+Alla base del bridge output e' posto un buffer, il cui compito consiste nel raccogliere tutti gli eventi di gioco che vengono generati durante una partita ed inviarli periodicamente alle componenti distribuite. Il contenuto del buffer viene inviato se si verifica una tra tre particolari condizioni. Banalmente, il fatto che il buffer si riempia completamente causa l'invio di tutti gli eventi e un conseguente svuotamento dello stesso. Se invece il buffer non riceve piu' eventi entro un certo periodo di tempo noto a priori, viene inviato il tutto contenuto del buffer (e viene svuotato). Infine, vi sono eventi piu' importanti di altri che devono essere notificati immediatamente (e.g. una fallo): anche in questo caso, il sopraggiungere di uno di questi eventi scaturisce l'invio di tutti gli eventi e lo svuotamento conseguente del buffer.\\
+
+Ad ogni modo, la scelta della dimensione del buffer e' molto importante e determina il throughtput degli eventi e la conseguente ``fluidita\''' della rappresentazione grafica della partita. Tuttavia, un invio piu' frequente di eventi puo' essere causa di una congestione di rete, quindi e' opportuno trovare un buon bilanciamento tra quantita' di eventi inviati e frequenza di invio. A questo proposito, il bridge output applica una sorta di filtraggio degli eventi nel tentativo di unire piu' eventi in uno unico. Questo avviene molto spesso negli eventi di movimento dei giocatori e della palla, che sono in assoluto i piu' frequenti durante una partita. La tecnica che il bridge output adotta e' quella di unificare delle mosse successive di uno stesso giocatore (o della palla) in un unico evento, che ha come punto di partenza quello del primo evento ricevuto e come punto di destinazione quello dell'ultimo evento ricevuto. In questo modo il numero di eventi e' di gran lunga inferiore e garantisce maggior efficienza senza inficiare sulle performance e sul throughtput.
+
+\paragraph{Utilizzo del bridge}\label{sec:analisi_distribuzione_bridge_utilizzo} Il bridge, poiche' risiede all'interno di \textit{Core}, deve essere necessariamente acceduta ed utilizzata da una delle entita' presenti in quella componente. Inoltre, dal momento che le comunicazioni dall'esterno sono asincrone e non predicibili, che l'accesso avvenga serialmente, sia esso in lettura o in scrittura. Per garantire questa caratteristica l'unica entita' che si occupa di interagire con il bridge e' l'arbitro (ai fini della spiegazione lo si consideri come un sotto-modulo del controllore). Per facilitare la comprensione delle interazioni dell'arbitro con il bridge, si consideri la seguente situazione, dove il controllore ha appena eseguito un'azione proveniente da un giocatore e la sottopone all'attenzione dell'arbitro. Quest'ultimo esegue le seguenti operazioni:
+
+\begin{enumerate}
+	\item Controlla se l'azione puo' causare una situazione di gioco fermo (che, si ricorda, permette ad una sostituzione e ad un cambio di formazione di avvenire)
+	\item Interroga il bridge input e controlla se ci sono richieste da parte della distribuzione; in caso affermativo, le esegue, se le condizioni lo permettono
+	\item Valida l'azione del giocatore e aggiunge il rispettivo evento alla coda del buffer di bridge output
+	\item Se tale azione ne causa un'altra (e.g., un goal), l'evento di quest'ultima viene aggiunto alla coda del buffer di bridge output
+\end{enumerate}
+
+L'ordine in cui queste operazioni vengono eseguite rispecchia l'ordine nel quale vengono processate in una vera partita di calcio. Inoltre, essendo l'accesso al bridge riservato al solo arbitro, vengono evitate potenziali inconsistenze sullo stato della partita.\\
+
+L'unica eccezione a questa regola e' costituita dagli eventi della distribuzione che agiscono sullo stato generale del sistema, ovvero la richiesta di una nuova partita, di mettere in pausa quella corrente oppure di terminare la simulazione ed il sistema. In questo caso e' direttamente il bridge input ad impartire il relativo comando, senza quindi aspettare che sia l'arbitro ad accorgersi della richiesta; tale scelta e' stata dettata dal fatto che questa tipologia di richieste ha la massima priorita' sulle altre, in quanto agisce sul sistema stesso.
+
+\subsubsection{Architettura client-server}
+\label{sec:analisi_client_server}
+
+\subsubsection{Architettura publisher-subscriber}
+\label{sec:analisi_client_pusblisher_subscriber}
