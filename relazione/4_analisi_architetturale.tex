@@ -14,7 +14,7 @@ Gli eventi sono l'elemento costituente di una partita. Essi possono essere gener
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.5]{images/event_hierarchy.png}
+	\includegraphics[scale=.2]{images/event_hierarchy.png}
 	\caption{La gerarchia degli eventi che costituiscono una partita.}
 	\label{fig:event_hierarchy}
 \end{figure}
@@ -208,5 +208,15 @@ L'unica eccezione a questa regola e' costituita dagli eventi della distribuzione
 \subsubsection{Architettura client-server}
 \label{sec:analisi_client_server}
 
+La comunicazione tra le componenti distribuite \textit{Field} e \textit{Manager} e la componente centrale \textit{Core} puo' essere vista come una comunicazione tipica di un'architettura di tipo client-server. Generalmente, il server si mette in ascolto di eventuali richieste in ingresso: quando il client effettua una richiesta al server, questo la prende in carico, la elabora e restituisce al client la risposta. Tutto questo avviene mantenendo una connessione attiva tra le due parti, che viene terminata non appena il client riceve la risposta del server.\\
+
+Per poter offrire le funzionalita' descritte in Sezione~\ref{sec:analisi_distribuzione_bridge_input}, \textit{Core} assume il ruolo di server ed ha come client \textit{Field} e le due istanze di \textit{Manager}. All'avvio del software, \textit{Core} si mette a disposizione delle componenti distribuite, rimanendo in ascolto fino al comando di uscita. I client, una volta che \textit{Core} e' avviato, possono aprire una connessione con quest'ultimo, rimanendo in attesa fino a che la loro richiesta non viene soddisfatta ed essi hanno ricevuto la rispettiva risposta.
+
 \subsubsection{Architettura publisher-subscriber}
 \label{sec:analisi_client_pusblisher_subscriber}
+
+L'aspetto che vede \textit{Core} comunicare con le altre componenti e' invece meno comune rispetto alla tipica comunicazione client-server, analizzata nella sezione precedente. Infatti, dal momento che \textit{Core} non offre nessun tipo di interazione diretta con l'utente, e' necessario che le informazioni riguardanti la partita vengano inviate a \textit{Field} (per la visualizzazione e il controllo del software) e ai due \textit{Manager} (per la gestione della squadra).\\
+
+Nonostante una soluzione possibile sia quella di replicare l'approccio precedente, che vedrebbe quindi ciascuna entita' agire sia da server che da client a seconda delle necessita', non rappresenta un approccio scalabile e porterebbe un notevole aumento della complessita' generale del sistema. La soluzione adottata si basa invece su un'architettura di tipo publisher-subscriber. Il suo funzionamento prevede che vi sia un fornitore di contenuti (il produttore), solitamente divisi in canali, al quale le entita' interessate si iscrivono (i consumatori): ogni qual volta il produttore dia origine ad un nuovo contenuto, questo viene mandato sul canale corrispondente a tutti coloro che si sono iscritti agli aggiornamenti per quel particolare contenuto. Sara' poi compito dei consumatori quello di processare correttamente il contenuto di volta in volta ricevuto.\\
+
+Questo particolare approccio risulta particolarmente vantaggioso in quanto mantiene una struttura chiara del sistema e non richiede alcun tipo di meccanismo di interrogazione continua (polling). Inoltre, e' un approccio altamente scalabile e moderatamente trasparente per quel che riguarda il fornitore di contenuti, che ha una lista di iscritti per ciascun canale. E' tuttavia necessario che vi sia una connessione persistente tra produttore e consumatori, pena l'impossibilita' del produttore di contattare direttamente i consumatori all'originarsi di un nuovo contenuto di loro interesse.
