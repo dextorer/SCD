@@ -12,7 +12,7 @@ In questo capitolo verranno presentate le decisioni architetturali inerenti la s
 
 Gli eventi sono l'elemento costituente di una partita. Essi possono essere generati dalle diverse entita' e possono essere raggruppati in diverse categorie. Inoltre, alcuni di questi eventi sono interessano la sola parte concorrente, mentre altri eventi possono viaggiare dalla parte concorrente a quella distribuita e viceversa.
 
-\begin{figure}
+\begin{figure}[htp!]
 	\centering
 	\includegraphics[scale=.2]{images/event_hierarchy.png}
 	\caption{La gerarchia degli eventi che costituiscono una partita.}
@@ -36,9 +36,27 @@ La struttura globale degli eventi e' schematizzata in Figura~\ref{fig:event_hier
 
 Ciascuno di questi eventi viene sottoposto all'attenzione dell'arbitro, che ne valida la correttezza nel rispetto delle regole del gioco. Inoltre, come gia' anticipato, questi eventi vengono anche inviati alla parte distribuita, cosi' da poter aggiornare la visualizzazione della partita e per permettere agli allenatori di prendere decisioni tattiche.
 
-\paragraph{GameEvent} Gli eventi che regolano lo svolgimento del gioco rientrano nella categoria di \textit{GameEvent}. \\
+\paragraph{GameEvent} Gli eventi che regolano lo svolgimento del gioco rientrano nella categoria di \textit{GameEvent}. Essendo una tipologia di evento molto vasta, esso si suddivide ulteriormente in tre specializzazioni: gli \textit{UnaryEvent}, i \textit{BinaryEvent} ed i \textit{MatchEvent}. Le prime due tipologie si riferiscono al fatto che l'evento coinvolge solamente un giocatore (e.g., una rimessa laterale: da qui, unario) oppure due giocatori (e.g. un fallo), mentre la terza tipologia raccoglie tutti gli eventi come l'inizio della partita, la fine del primo tempo, e cosi' via.\\
 
-[TODO] finire la descrizione degli eventi
+\paragraph{UnaryEvent} Tutti gli eventi di gioco che sono raggruppati in questa categoria vanno a coinvolgere un solo giocatore per la ripresa del gioco. Essi rappresentano le seguenti situazioni:
+
+\begin{itemize}
+	\item Rimessa laterale
+	\item Rimessa dal fondo
+	\item Calcio d'angolo
+	\item Calcio di punizione
+	\item Calcio di rigore
+\end{itemize}
+
+Ciascuno di questi eventi prevede che il gioco possa essere sbloccato da un particolare giocatore della squadra interessata e che la palla sia posizionata nella posizione stabilita dall'arbitro. Il gioco puo' riprendere solo se i giocatori sono nella loro posizione di riferimento per quella particolare situazione, prima che la palla venga rimessa in gioco. Inoltre, questi eventi sono generati esclusivamente dall'arbitro, che per ogni azione effettuata controlla lo stato di gioco globale alla ricerca di irregolarita'.
+
+\paragraph{BinaryEvent} Questa particolare categoria vanta un solo evento possibile: il fallo. Questo evento e' infatti l'unico a coinvolgere simultaneamente due giocatori di squadre opposte, e si origina quando il contrasto avviene in maniera irregolare (infortuna il giocatore, oppure compie gesti pericolosi). In questo caso l'arbitro, dopo aver segnalato del fallo, decide le modalita' di ripresa del gioco, ad esempio un calcio di punizione, e genera il rispettivo evento.
+
+\paragraph{MatchEvent} Gli eventi che regolano l'inizio e la fine di ciascun tempo di gioco fanno parte dei \textit{MatchEvent}. Di conseguenza, vi sono quattro possibili varianti: inizio del primo tempo, fine del primo tempo, inizio del secondo tempo, fine del secondo tempo. Questi eventi sono usati sia dai giocatori per capire quale azione dovranno compiere (e.g., ingresso in campo), ma vengono anche inviati alle componenti distribuite per notificare lo svolgersi della partita.
+
+\paragraph{ManagerEvent} Questa classe astratta di eventi, al contrario dei \textit{CoreEvent} che sono generati dalla componente \textit{Core}, vengono generati dalle componenti distribuite, in particolar modo dai due \textit{Manager}. La loro funzione e' quella di notificare all'arbitro una richiesta di sostituzione per un giocatore oppure di cambio di formazione. L'arbitro, una volta ricevuto l'evento, provvedera' ad elaborarlo alla prima occasione utile di gioco fermo.\\
+
+Un \textit{SubstitutionEvent} contiene informazioni quali la squadra interessata, il numero di maglia del giocatore uscente e il numero di maglia del giocatore entrante; un \textit{FormationEvent} invece, oltre alla squadra interessata, fornisce anche una sigla identificativa del nuovo assetto che la squadra dovra' assumere.
 
 \subsection{Concorrenza}
 \label{sec:analisi_concorrenza}
@@ -50,27 +68,29 @@ Il software è stato sviluppato con l'utilizzo del linguaggio Ada, il quale ha u
 \subsubsection{Deadlock, starvation e correttezza}
 \label{sec:analisi_concorrenza_deadlock}
 
-In un sistema concorrente è necessario tenere conto di problematiche come la starvatin ed il deadlock quando si è in presenza di entità che condividono risorse. Nel caso di questo progetto i giocatori devono avere accesso ad uno stato condiviso che gli permetta di prendere decisioni con le quali andare ad aggiornare lo stato stesso.\\
+In un sistema concorrente è necessario tenere conto di problematiche come la starvation ed il deadlock, in particolar modo quando si è in presenza di entità che condividono risorse. Nel caso di questo progetto i giocatori devono avere accesso ad uno stato condiviso che gli permetta di prendere decisioni, con le quali andare poi ad aggiornare lo stato stesso.\\
 
 L'analisi ha evidenziato la necessità di avere un unico luogo in cui mantenere lo stato, ed in fase di modellazione tale problematica è stata risolta ponendo un'unica entità che garantisce mutua esclusione a controlloro dei dati condivisi.\\
 
-Questa decisione rente più semplice garantire l'assenza di deadlock e starvation. Nel secondo caso ogni job ha garanzia di accedere alla risorsa in un tempo finito in quanto le richieste vengono processate con ordinamento FIFO basato sull'orario di arrivo. Per quanto riguarda il deadlock solamente una delle quattro condizioni perchè si verifichi tale condizione. I giocatori eseguono la sequenza di operazioni che caratterizza un turno dividendole tra “online” ed “offline”, cioè solamente le fasi di lettura e di scrittura necessitano dell'utilizzo della risorsa, mentre la parte di intelligenza artificiale viene effettuata in modo autonomo sui dati recuperati. Inoltre solamente la parte di scrittura richiede mutua esclusione. I prerilascio non è inibito ed il suo comportamento non è controllato dal software ma dal sistema operativo operativo sottostante, un job prerilasciato che esta eseguendo la sezione critica di una richiesta in mutua esclusione al suo risveglio deterrà ancora il privilegio sulla risorsa, mentre gli altri job che la richiedono saranno in attesa sul canale esposto. Caso più particolare invece per quanto riguarda attesa circolare ed accumulo di risorse, in questo caso entra in gioco un meccanismo di riaccodamento e rivalutazione delle richieste che viene discusso in seguito, il concetto alla base è che una richiesta che non viene soddisfatta a causa di una risorsa occupata può fallire o riaccodata per essere ritentata di in un secondo momento, in questo caso dopo un numero di tentativi l'operazione viene rivalutata e modificata in una simile che soddisfi comunque le esigenze del giocatore.
+Questa decisione rende più semplice garantire l'assenza di deadlock e di starvation. Nel secondo caso, ogni job ha la garanzia di accedere alla risorsa in un tempo finito, in quanto le richieste vengono processate con ordinamento FIFO basato sul tempo di arrivo. Per quanto riguarda invece il primo caso, e' presente solamente uno dei quattro requisiti che stanno alla base di questa pericolosa condizione. I giocatori eseguono la propria sequenza di operazioni che caratterizza un turno dividendole tra ``online'' ed ``offline'': questo vuol dire che solamente le fasi di lettura e di scrittura necessitano dell'utilizzo della risorsa, mentre la parte di intelligenza artificiale viene effettuata in modo autonomo sui dati recuperati; inoltre, solamente la parte di scrittura richiede mutua esclusione. Il pre-rilascio non è inibito ed il suo comportamento non è controllato dal software, ma dal sistema operativo operativo sottostante: un job pre-rilasciato che sta eseguendo la sezione critica di una richiesta in mutua esclusione deterrà ancora, al suo risveglio, l privilegio sulla risorsa, mentre gli altri job che la richiedono saranno in attesa sul rispettivo canale esposto.\\
+
+Un caso più particolare si ha invece per quanto riguarda attesa circolare ed accumulo di risorse, per cui entra in gioco un meccanismo di riaccodamento e rivalutazione delle richieste che verra' discusso in seguito. Per ora, basti sapere il concetto alla base di tale meccanismo: una richiesta che non viene soddisfatta a causa di una risorsa occupata può fallire o venire riaccodata, cosi' da poter effettuare un nuovo tentativo di esecuzione in un secondo momento. In questo caso, dopo un certo numero di tentativi, l'operazione viene rivalutata e modificata in una simile, che vada comunque a soddisfare le esigenze del giocatore.
 
 \subsubsection{Palla}
 \label{sec:analisi_concorrenza_palla}
 
-La palla consiste in una risorsa protetta che ne detiene la posizione e ne permette l'accesso in mutua esclusione. Supponiamo di tenere tale risorsa all'interno del controllore, cioè permettendo solo ad esso di accederla, in questo caso sia giocatori che agente di movimento devono concorrere per andare a modificare lo stato, quindi anche la posizione della palla, ponendo quindi il moto del pallone allo stesso livello delle decisioni e spostamenti dei giocatori. In queste circostanze verrebbe meno un fattore di realismo secondo cui il pallone è slegato dalla velocità di gioco dei giocatori in campo, esso deve essere libero di muoversi a velocità molto più alte ed anche a gioco fermo, fino a che non sarà l'arbitro a riposizionarla (per fare un esempio) nel punto del fallo o della rimessa. Inoltre accodando la richiesta di movimento della palla durante un tiro insieme alle richieste dei giocatori rende le operazioni prettamente sequenziali, mentre vi sono aspetti in cui il parallelismo aggiunge un livello di indeterminismo al simultatore che lo fa avvicinare al gioco reale.\\
+La palla consiste in una risorsa protetta che ne detiene la posizione e ne permette l'accesso in mutua esclusione. Si supponga di tenere tale risorsa all'interno del controllore, permettendo solo ad esso di accedervi: in questo caso, sia i giocatori che l'agente di movimento devono concorrere per andare a modificare lo stato e, di conseguenza, anche la posizione della palla; il moto del pallone e' quindi posto allo stesso livello delle decisioni e degli spostamenti dei giocatori. In queste circostanze verrebbe meno un fattore di realismo molto importante, tale per cui il pallone è slegato dalla velocità di gioco dei giocatori in campo. Esso deve essere libero di muoversi a velocità molto più alte rispetto ai giocatori e deve poter continuare il proprio moto anche con gioco fermo: in quest'ultimo caso sarà l'arbitro a riposizionarla, ad esempio, in un punto opportuno a seconda dell'irregolarita'. Inoltre, accodando una richiesta di movimento della palla insieme ad altre richieste dei giocatori, si rendono le operazioni strettamente sequenziali, eliminando un livello di indeterminismo desiderabile che e' proprio del parallelismo e che lo avvicina al gioco reale.\\
 
-Un esempio è il tentativo di un giocatore di prendere la pallla in movimento, è ragionevole pensare la sua azione possa fallire perchè magari il tiro è troppo forte, ponendo palla e stato in due luoghi differenti è possibile che mentre il giocatore prova a prendere il pallone che secondo lui si trova in una certa posizione quest'ultima si stata spostata più avanti, rendendo vano il suo tentativo.\\
+Un chiaro esempio di questo aspetto si trova nel tentativo di un giocatore di prendere la pallla in movimento. E' ragionevole pensare che la sua azione possa fallire perche' il tiro è troppo forte. Se invece si pongono la palla e lo stato in due luoghi differenti, diventa possibile uno scenario in cui il giocatore tenta di prendere la palla nell'ultima posizione a lui nota ma quest'ultima nel frattempo si e' spostata.\\
 
-Sulla base delle considerazioni fatte, all'interno dell'architettura e' stato deciso di tenere le informazioni riguardanti la palla slegate rispetto al controllore. Permettendo così sia ad un giocatore che all'agente di movimento di contenderla potenzialmente in modo parallelo, demandando alla risorsa che identifica la palla gestirne gli accessi in mutua conclusione e sotto determinate circostanze.\\
+Sulla base delle considerazioni fatte finora, all'interno dell'architettura e' stato deciso di tenere le informazioni riguardanti la palla slegate rispetto al controllore. In questo modo si permette sia ad un giocatore che all'agente di movimento di contendere la palla in modo potenzialmente parallelo, demandando alla risorsa che identifica la palla gestirne gli accessi in mutua conclusione e sotto determinate circostanze.\\
 
-La struttura della palla e' stata quindi studiata in modo tale da permettere ad un entita' alla volta di poterla controllare, quindi o uno dei giocatori o l'agente di movimento, quest'ultimo si attiverà quando risvegliato da un giocatore e fermato quando un altro conquista il pallone o se il moto che gli era stato impresso si è esaurito. Quest'utlimo aspetto sfrutta la potenza dei canali che permettono accodamento con condizione per attivare e disattivare il task.
+La struttura della palla e' stata quindi studiata in modo tale da permettere ad un entita' alla volta di poterla controllare, sia essa uno dei giocatori oppure l'agente di movimento. Quest'ultimo si attivera' quando risvegliato da un giocatore e sara' fermato quando un altro giocatore conquista il pallone o se il moto che gli era stato impresso si e' esaurito. In particolare, l'attivazione e disattivazione del task sfrutta la potenza dei canali che permettono accodamento con condizione.
 
 \subsubsection{Giocatori}
 \label{sec:analisi_concorrenza_giocatori}
 
-I giocatori dopo una fase di inizializzazione eseguono ad ogni turno un'operazione che va a modificare lo stato di gioco oltre che al proprio. Se ogni giocatore avesse la propria parte di stato, renderebbe complicato la condivisione di esso con le altre entità in gioco, inoltre la necessità di un unico stato centrale rende tali informazioni ridondanti oltre che difficilmente consistenti durante l'esecuzione della simulazione.\\
+I giocatori, dopo una prima fase di inizializzazione, eseguono ad ogni turno un'operazione che va a modificare sia lo stato di gioco che il proprio. Se ogni giocatore avesse la propria parte di stato, la sua condivisione con le altre entita' in gioco sarebbe piu' complicata di quanto necessario; inoltre, la necessità di un unico stato centrale rende tali informazioni ridondanti oltre che difficilmente consistenti durante l'esecuzione della simulazione.\\
 
 \textbf{Task stateless}\\
 

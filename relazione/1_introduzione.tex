@@ -14,42 +14,17 @@ Questo documento ha lo scopo di descrivere l'approccio utilizzato per risolvere 
 
 Lo scopo del progetto consiste nel realizzare un software che simuli lo svolgimento di una partita di calcio secondo il relativo regolamento. Il software \`{e} presenta una componente principale, nella quale avvengono le dinamiche di concorrenza che vedranno le entit\`{a} in gioco interagire tra di loro, ed alcune componenti di distribuzione, che interagiscono con la componente principale e che vengono pilotate dall'utente.
 
-\subsection{Funzionalita' del software}
-\label{sec:funzionalita_del_software}
+\subsection{Struttura del documento}
+\label{sec:struttura_del_documento}
 
-In questa sezione vengono introdotte le funzionalit\`{a} del software di simulazione, che verranno poi dettagliate nei capitoli successivi.
+Il documento assume la seguente struttura:
 
-\subsubsection{La partita}
-\label{sec:partita}
-
-Il software di simulazione permette di giocare una o piu' partite, ciascuna divisa in due tempi, la cui durata \`{e} prefissata e non modificabile dall'utente. L'inizio del secondo tempo e' dettato dalla scelta dell'utente, cosi' da permettergli eventuali modifiche all'assetto delle squadre.\\
-
-Ciascuna squadra \`{e} composta da 11 giocatori in campo e 7 riserve in panchina. Le caratteristiche fisiche di un giocatore sono le seguenti:
 \begin{itemize}
-	\item attacco
-	\item difesa
-	\item parata (valido solo per il portiere)
-	\item velocit\`{a}
-	\item precisione
-	\item potenza
-	\item contrasto
-\end{itemize}
-
-La ``bravura'' di un giocatore e' data dal valore che le suddette caratteristiche assumono: piu' alto il valore, maggiore sara' la bravura del giocatore. Tali valori possono essere configurati prima dell'inizio della partita (Sezione~\ref{sec:conf_giocatori}) e andranno ad influenzare le azioni dei giocatori, determinandone il successo o il fallimento. I giocatori sono controllati esclusivamente dal computer e sono in grado di decidere autonomamente quale azione effettuare, sulla base dello stato in cui si trovano e dello stato generale della partita.\\
-
-Il corretto svolgimento della partita viene garantito dalla presenza di un arbitro, che provvede ad interrompere il gioco non appena si verifica un'infrazione (ad esempio un fallo) e a farlo ripartire non appena le condizioni lo permettono. Inoltre, l'arbitro ha il compito di sancire l'inizio e la fine di ciascun tempo, facendo opportunamente entrare in campo ed uscire in panchina tutti i giocatori.\\
-
-E' possibile assistere allo svolgimento della partita attraverso l'interfaccia grafica del campo di gioco, nella quale vengono visualizzate tutte le informazioni piu' importanti relativi alla partita (~\ref{sec:struttura_field}). Lo stato della partita puo' inoltre essere modificato, mettendola in pausa e facendola riprendere in un secondo momento, oppure terminarla prima della fine del tempo regolamentare. A partita terminata, \`{e} possibile iniziarne una nuova.
-
-\subsubsection{Struttura del software}
-\label{sec:struttura_del_software}
-
-Il software di simulazione e' costituito da tre diverse componenti, che prendono il nome (simbolico) di \textit{core}, \textit{field} e \textit{manager}.
-
-\paragraph{\textit{Core}} \label{sec:struttura_core} Il \textit{core} e' il modulo centrale del software. Esso contiene tutta la logica di gioco e regola l'interazione tra le diverse entita che lo compongono. E' inoltre responsabile di gestire la comunicazione con i moduli esterni, ovvero \textit{field} e i due \textit{manager}, in quanto non dispone di una propria interfaccia grafica.
-
-\paragraph{\textit{Field}} \label{sec:struttura_field} Questa componente rappresenta l'interfaccia grafica della partita. Attraverso di essa l'utente puo' iniziare una nuova partita, mettere in pausa quella corrente oppure chiudere del tutto la simulazione; in quest'ultimo caso, anche le componenti \textit{core} e le due istanze di \textit{manager} vengono terminate. Inoltre vi e' una rappresentazione grafica molto semplice del campo di gioco, della panchina, dei giocatori e della palla. Viene inoltre riportato il tempo trascorso dall'inizio della partita, unitamente al punteggio corrente delle due squadre. Infine, e' presente un registro di eventi che permette di ripercorrere gli eventi salienti della partita.
-
-\paragraph{\textit{Manager}} \label{sec:struttura_manager} L'ultima componente e' il \textit{manager}, che permette di controllare la rispettiva squadra, decidendo eventuali cambi di formazione e sostituzioni da effettuare. E' possibile sostituire un giocatore alla volta, fino ad un massimo di tre, mentre non c'e' limite ai i cambi di formazione che e' possibile fare. Le modifiche apportate dall'allenatore vengono applicate alla squadra in occasione della prima interruzione di partita dovuta ad un evento di gioco (ovvero, la messa in pausa della partita da parte dell'utente non conta).\\
-
-All'avvio del software, prima dell'inizio della partita, viene data la possibilit\`{a} di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui sono riportate le caratteristiche fisiche configurabili. L'interfaccia da la possibilit\`{a} di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse. Questa scelta deve essere ponderata perche' le statistiche non sono piu' modificabili a partita iniziata. Anche la formazione iniziale della squadra e' configurabile e puo' essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio. La partita inizia non appena entrambe le squadre sono state configurate.
+	\item il Capitolo 1 consiste in una breve introduzione al progetto e al suo contesto
+	\item nel Capitolo 2 viene proposta l'analisi delle problema e la successiva definizione di un modello per la soluzione
+	\item nel Capitolo 3 si effettua un'analisi architetturale approfondita della soluzione, volta ad evidenziare le scelte relative agli aspetti di concorrenza e distribuzione
+	\item il Capitolo 4 introduce brevemente l'intelligenza artificiale dei giocatori
+	\item nel Capitolo 5 vengono descritte le scelte implementative adottate
+	\item il Capitolo 6 serve come manuale utente e dettaglia le informazioni relative alla configurazione e all'esecuzione del software
+	\item nel Capitolo 7 sono presentate le conclusioni
+\end{itemize
