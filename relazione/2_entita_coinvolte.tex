@@ -5,67 +5,94 @@
 \section{Analisi}
 \label{sec:analisi}
 
-Come accennato precedentemente il software a lo scopo di creare una simulazione di una partita di calcio. Nella fase di analisi e' stato preso in considerazione lo svolgimento di una partita, i protagonisti che ne fanno parte ed i loro ruoli all'interno del gioco. Dove necessario vengono messe in risalto le interazioni desiderate tra utente e software.
+Il software che questo progetto mira a realizzare ha lo scopo di creare una simulazione di una partita di calcio. Nella fase di analisi e' stata analizzata una partita di gioco reale, al fine di definire tutte le funzionalita' del software di simulazione, individuando cosi' con precisione il problema da risolvere. Verra' quindi delineato un modello per la soluzione, mettendo in luce le entita' coinvolte e il modo in cui esse interagiscono tra loro.
 
-\subsection{La partita}
+\subsection{Struttura del software}
+\label{sec:struttura_del_software}
+
+Il software di simulazione e' costituito da tre diverse componenti, che prendono il nome (simbolico) di \textit{Core}, \textit{Field} e \textit{Manager}.
+
+\paragraph{\textit{Core}} \label{sec:struttura_core} Il \textit{Core} e' il modulo centrale del software. Esso contiene tutta la logica di gioco e regola l'interazione tra le diverse entita che lo compongono. E' inoltre responsabile di gestire la comunicazione con i moduli esterni, ovvero \textit{Field} e i due \textit{Manager}, in quanto non dispone di una propria interfaccia grafica.
+
+\paragraph{\textit{Field}} \label{sec:struttura_field} Questa componente rappresenta l'interfaccia grafica della partita. Attraverso di essa l'utente puo' iniziare una nuova partita, mettere in pausa quella corrente oppure chiudere del tutto la simulazione; in quest'ultimo caso, anche le componenti \textit{Core} e le due istanze di \textit{Manager} vengono terminate. Inoltre vi e' una rappresentazione grafica molto semplice del campo di gioco, della panchina, dei giocatori e della palla. Viene inoltre riportato il tempo trascorso dall'inizio della partita, unitamente al punteggio corrente delle due squadre. Infine, e' presente un registro di eventi che permette di ripercorrere gli eventi salienti della partita.
+
+\paragraph{\textit{Manager}} \label{sec:struttura_manager} L'ultima componente e' il \textit{Manager}, che permette di controllare la rispettiva squadra, decidendo eventuali cambi di formazione e sostituzioni da effettuare. E' possibile sostituire un giocatore alla volta, fino ad un massimo di tre, mentre non c'e' limite ai i cambi di formazione che e' possibile fare. Le modifiche apportate dall'allenatore vengono applicate alla squadra in occasione della prima interruzione di partita dovuta ad un evento di gioco (ovvero, la messa in pausa della partita da parte dell'utente non conta).\\
+
+All'avvio del software, prima dell'inizio della partita, viene data la possibilit\`{a} di configurare la propria squadra e i propri giocatori tramite un'interfaccia grafica dedicata. In essa i giocatori sono ordinati per ruolo, in base alla formazione scelta, e ciascuno di loro ha una scheda a lui dedicata in cui sono riportate le caratteristiche fisiche configurabili. L'interfaccia da la possibilit\`{a} di generarle casualmente per il giocatore selezionato, di generarle casualmente per tutti i giocatori della squadra oppure di inserire manualmente un valore per ciascuna di esse. Questa scelta deve essere ponderata perche' le statistiche non sono piu' modificabili a partita iniziata. Anche la formazione iniziale della squadra e' configurabile e puo' essere scelta fra tre possibili formazioni standard utilizzate nel mondo del calcio. La partita inizia non appena entrambe le squadre sono state configurate.
+
+\subsection{Funzionalita' del software}
+\label{sec:funzionalita_del_software}
+
+In questa sezione vengono introdotte le funzionalit\`{a} del software di simulazione, che verranno poi dettagliate nei capitoli successivi.
+
+\subsubsection{La partita}
 \label{sec:analisi_partita}
 
-La partita suddivisa in due tempi di egual tempo, durante i quali i lo svolgimento del gioco prosegue secondo le regole ufficiali del calcio. All'avvio del progetto l'utente deve essere in grado di poter determinare la formazione delle squadre, quindi i giocatori che scenderanno in campo e le loro posizioni. Una volta concluso il primo tempo, che deve avvenire secondo le tempistiche di gioco in modo automatico, l'utente determina l'inizio del secondo tempo. In ogni momento il software deve mettere a disposizione la possibilita' di fermare il gioco per farlo riprendere in un secondo momento ma anche cancellare la partita per crearne una nuova.
+Il software di simulazione permette di giocare una o piu' partite, ciascuna divisa in due tempi, la cui durata \`{e} prefissata e non modificabile dall'utente. L'inizio del secondo tempo e' dettato dalla scelta dell'utente, cosi' da permettergli eventuali modifiche all'assetto delle squadre. Lo svolgimento di una partita segue le regole ufficiali di base del calcio, eccezione fatta per il fuorigioco, che non viene preso in considerazione. Vi sono due squadre, identificate dai colori rosso e blu. Ciascuna squadra \`{e} composta da 11 giocatori in campo e 7 riserve in panchina, sostituibili attraverso una delle interfacce grafiche offerte all'utente.\\
 
-\subsection{Allenatori e squadra}
-\label{sec:analisi_allenatori}
-
-Gli allenatori sono coloro che tengono sotto controllo le squadre ed i giocatori che sono in campo. Una decisione presa dall'allenatore si ripercuote sul gioco, andando a modificare le posizioni in campo dei giocatori, il loro atteggiamento in fase difensiva ed offensiva. Inoltre, entro le regole di gioco, puo' effettuare delle sostituzioni che stanno effettivamente giocando e quelli in panchina. L'utente agisce sull'allenatore ogni qual volta vuole per effettuare le operazioni appena citate, quindi cambio formazione e giocatori. In questo caso si necessita di una visione generale delle statistiche di ogni giocatore per rendere piu' facile prendere decisioni su quali sostituzioni attuare.
-
-\subsection{I giocatori}
+\subsubsection{I giocatori}
 \label{sec:analisi_giocatori}
 
-I giocatori sono i protagonisti principali all'interno dello svolgimento della partita. Essi devono essere liberi di agire sul campo di gioco ed avere quindi a disposizione una serie di azioni possibili per poter portare la propria squadra alla vittoria.\\
+I giocatori sono gli attori principali all'interno della simulazione di una partita. Essi devono essere liberi di agire sul campo di gioco ed avere quindi a disposizione una serie di azioni possibili, al fine di portare la propria squadra alla vittoria. A ciascun giocatore sono assegnate alcune caratteristiche di gioco che ne determinano la ``bravura'', intesa come la buona riuscita o meno delle azioni che vuole effettuare: tanto piu' alto il valore, tanto piu' ``bravo'' il giocatore in quel particolare aspetto di gioco. Si consideri come esempio un difensore che decide di rubare palla all'attaccante della squadra avversaria: la buona riuscita dell'intervento sara' quindi determinata dalla bravura (un valore alto) nel contrasto del primo e dalla capacita' di scartare del secondo. Tali carattestiche sono riassumibili come segue e possono essere configurati prima dell'inizio della partita (Sezione~\ref{sec:conf_giocatori}):
 
-Prima di tutto, ad ogni giocatore sono assegnate delle caratteristiche di gioco (es. velocita', difesa, potenza, ecc.) che ne determineranno la buona riuscita o meno delle operazioni che vuole effettuare. Alcuni esempi possono meglio spiegare questo aspetto, supponiamo che un difensore voglia rubare palla all'attaccante della squadra avversaria, saranno quindi la bravura nel tackle del primo e la capacita' del secondo di driblare a determinare la buona riuscita o meno dell'intervento. Altro esempio, se due giocatori vogliono arrivare alla stessa posizione, dove magari si trova la palla, quello maggiormente veloce arrivera' per primo.\\
+\begin{itemize}
+	\item attacco
+	\item difesa
+	\item parata (valido solo per il portiere)
+	\item velocit\`{a}
+	\item precisione
+	\item potenza
+	\item contrasto
+\end{itemize}
 
-Ogni giocatore in campo deve essere in grado di decidere autonomamente in base alla situazione di gioco ed alle direttive dell'allenatore, e le azioni possibili si possono suddividere in tre gruppi: movimento nel campo, in ogni direzione per raggiungere la posizione desiderata; interagire con la palla, quindi prenderla, spostarla quando ci si muove, passarla e tirarla in porta, ed infine operazioni che comprendono un altro giocatore, per contrastare o driblare un avversario.
+Ogni giocatore in campo deve essere in grado di decidere autonomamente, in base alla situazione di gioco ed alle direttive dell'allenatore, le azioni da effettuare. Queste  si possono suddividere in tre gruppi: movimento nel campo, in ogni direzione, per raggiungere la posizione desiderata; interagire con la palla, quindi prenderla, spostarla con se', passarla e tirarla in porta; infine, operazioni che comprendono un altro giocatore, per contrastare o scartare un avversario.\\
 
-\subsection{L'arbitro}
+\subsubsection{L'arbitro}
 \label{sec:analisi_arbitro}
 
-L'arbitro deve essere in grado di avere il controllo della situazione di gioco e valutare le azioni effettuate dai giocatori per decidere se rispettano il regolamento o se sono passibili di sanzione. Piu' nel dettaglio, l'arbitro controlla la partita, determinandone fine primo tempo e fine secondo tempo, ferma il gioco in caso di necessita' e permette le sostituzioni. Controlla le singole mosse dei giocatori quando vanno ad interagire tra di loro, in modo tale da rilevare eventuali scorrettezze come per esempio un fallo. Infine monitora la posizione della palla per fermare il gioco quando la palla esce o se finisce in porta, aggiornando cosi' il risultato della partita e riportando le squadre al centro del campo.
+Il corretto svolgimento della partita viene garantito dalla presenza di un arbitro, che provvede ad interrompere il gioco non appena si verifica un'infrazione (ad esempio un fallo) e a farlo ripartire non appena le condizioni lo permettono. Inoltre, l'arbitro ha il compito di sancire l'inizio e la fine di ciascun tempo, facendo opportunamente entrare in campo ed uscire in panchina tutti i giocatori. Infine, egli monitora la posizione della palla per fermare il gioco quando esce o se finisce in porta, aggiornando cosi' il risultato della partita e riportando le squadre al centro del campo.\\
 
-\subsection{Il campo}
+\subsubsection{Il campo}
 \label{sec:analisi_campo}
 
-Il campo da gioco deve essere suddiviso in celle per permettere una migliore gestione del movimento dei giocatori ed evitare che si trovino nella stessa posizione contemporaneamente. Le dimensioni del campo rispetta le proporzioni dettate dalle regole del gioco. Lungo uno dei lati lunghi e' necessaria la presenza delle panchine per i giocatori disponibili per la sostituzione.
+Il campo da gioco deve essere suddiviso in celle, cosi' da permettere una migliore gestione del movimento dei giocatori ed evitare che due di essi si trovino nella stessa posizione contemporaneamente. Le dimensioni del campo rispettano le proporzioni dettate dalle regole ufficiali del gioco, e contano XXX celle in lunghezza e YY in larghezza. Le panchine di entrambe le squadre sono adiacenti al campo, dove sono posizionati tutti i giocatori o solamente quelli di riserva a seconda del caso in cui ci sia una partita in corso o meno. E' possibile assistere allo svolgimento della partita attraverso l'interfaccia grafica del campo di gioco, nella quale vengono visualizzate tutte le informazioni piu' importanti relativi alla partita (~\ref{sec:struttura_field}). Lo stato della partita puo' inoltre essere modificato, mettendola in pausa e facendola riprendere in un secondo momento, oppure terminarla prima della fine del tempo regolamentare. A partita terminata, \`{e} possibile iniziarne una nuova.\\
 
-\section*{Entita' coinvolte}
+\subsubsection{Allenatori e squadra}
+\label{sec:analisi_allenatori}
 
-In questo capitolo viene ripresa l'analisi fatta nella sezione precedente e rielaborata per identificare le entita' e la loro tipologia, quindi se sono entita' attive, reattive oppure risorsa protetta, ed il loro ruolo all'interno dello scenario in cui si svolge la partita.\\
+Gli allenatori hanno il compito di gestire le squadre ed i relativi giocatori in campo. Una decisione presa dall'allenatore si ripercuote sul gioco, andando a modificare le posizioni in campo dei giocatori ed il loro atteggiamento in fase offensiva e difensiva. Inoltre, entro i limiti imposti dalle regole di gioco, puo' effettuare delle sostituzioni tra un giocatore in campo ed uno in panchina. E' l'utente ad agire come allenatore, ogni qual volta lo ritiene opportuno, per effettuare le operazioni appena citate. In questo caso si necessita di una visione generale delle statistiche di ogni giocatore per rendere piu' facile prendere decisioni su quali sostituzioni attuare.
 
-Per entità attive si considerano componenti dello scenario che necessitano di un proprio flusso di controllo, eseguendo ciclicamente le proprie azioni in modo autonomo. Le entità reattive non possiedono un proprio flusso di esecuzione, ma sono in attesa sui canali esposti per reagire alle richieste da parte di altre entità. Infine la risorsa protetta differisce dall'entità reattiva in quanto risulta meno complessa, ma come essa mette a disposizione meccanismi per garantire mutua esclusione ed accodamento condizionale. La scelta di utilizzo tra le utlime due categorie è tipicamente dettata dalla mole di lavoro che deve essere svolta in risposta ad una richiesta.
+\subsection{Il modello}
+\label{sec:entita_coinvolte}
 
-\subsubsection{Entita' attiva: i giocatori}
+Una volta definite la struttura generale e tutte le funzionalita' del software, e' possibile procedere ad identificare le entita' e la loro tipologia. Per ciascuna di esse verra' quindi stabilito se rappresenta un'entita' attiva, un'entita' reattiva oppure una risorsa protetta, ed il loro ruolo all'interno dello scenario in cui si svolge la partita. Si procedera' quindi a definire le interazioni che legano le suddette entita' l'una con l'altra, cosi' da poterne derivare un modello per il sistema.\\
+
+Per entità attive si considerano componenti dello scenario che necessitano di un proprio flusso di controllo, eseguendo ciclicamente le proprie azioni in modo autonomo. Le entità reattive non possiedono un proprio flusso di esecuzione, ma sono in attesa su canali opportunamente esposti per reagire alle richieste da parte di altre entità. Infine, la risorsa protetta differisce dall'entità reattiva in quanto risulta meno complessa, ma come essa mette a disposizione meccanismi per garantire mutua esclusione ed accodamento condizionale. La scelta di utilizzo tra le utlime due categorie è tipicamente dettata dalla mole di lavoro che deve essere svolta in risposta ad una richiesta da parte di un'altra entita'.
+
+\subsubsection{I giocatori}
 \label{sec:entita_coinvolte_giocatori}
 
-Nel modello che modello che verra' discusso in seguito i giocatori sono identificati da delle entita' attive, quindi dotate di un proprio flusso di controllo che interagisce con le altre entita' in gioco. Essi consisteranno in un numero di task pari al quantià di giocatori in campo, e ripeteranno ciclicamente il proprio corpo di esecuzione fino al termine della partia. Le decisioni che prenderanno sono basate sullo stato circostante e l'andamento dell partita,Nel resto della relazione viene fatto riferimento al concetto di turno, consiste in un singolo ciclo di esecuzione che viene ripetuto fino alla fine della partita. Tale turno e' diviso in fasi, questo aspetto verra' ripreso in seguito nei prossimi capitoli.
+I giocatori vengono identificati come entita' attive, quindi dotate di un proprio flusso di controllo che interagisce con le altre entita' in gioco. Essi consisteranno in un numero di task pari al quantità di giocatori in campo, e ripeteranno ciclicamente il proprio corpo di esecuzione fino al termine della partia. Le decisioni che dovranno prendere saranno basate sullo stato circostante e sull'andamento dell partita. Nella restante parte di questo documento viene fatto riferimento al concetto di turno, inteso come singolo ciclo di esecuzione che viene ripetuto fino alla fine della partita. Tale turno si divide inoltre in piu' fasi, ma questo aspetto verra' ripreso in seguito nei prossimi capitoli.
 
-\subsubsection{Entita' reattiva: l'arbitro}
-\label{sec:entita_coinvolte_arbitro}
+%\subsubsection{Entita' reattiva: l'arbitro}
+%\label{sec:entita_coinvolte_arbitro}
+%
+%All'interno delle dinamiche del gioco l'arbitro reagisce alle azioni effettuate dalle altre entita', interrompendo o meno il gioco a seconda della circostanza e permett%endo, %se il momento e' opportuno, ad entita' esterne alla partita di interagire con le squadre in campo. Il suo scopo è quello di cambiare lo stato del gioco in modo tale da %influenzare il comportamento dei giocatori in campo, per esempio assegnando un fallo oppure una rimessa: cosi' facendo, viene forzato il posizionamento di ognuno di loro ad %una determinata distanza dalla palla.
 
-All'interno delle dinamiche del gioco reagisce alle azioni effettuate dalle altre entita', gestendo per le varie casistiche interrompendo o meno il gioco e permettendo in momenti opportuno ad entita' esterne alla partita di interagire con le squadre in campo. Il suo scopo è quello di cambiare lo stato del gioco in modo tale da influenzare il comportamento dei giocatori in campo, per esempio sancendo un fallo o una rimessa si forza il posizionamento di ognuno di loro ad una determinata distanza dalla palla, in caso di fine tempo i giocatori si avviano verso le rispettive panchine e viceversa in caso di inizio tempo. In questo progetto è stato preferito un arbitro onniscente che reagisce ad ogni singolo tentativo di azione, quindi di modifica dello stato, piuttosto di un arbitro che agisca al pari dei giocatori, dovendo competere con loro nella routine di lettura e scrittura dello stato. Data questa scelta esso ha pieno controllo della situazione, e per garantire anche alle sue azioni un certo livello di indeterminismo le decisioni saranno influenzate da un fattore di casualità, per esempio determinare se un contrasto tra due giocatori è fallo o meno dipende dalle statistiche dei singoli protagonisti più una soglia di errore dipendente da tali valori.
+%\subsubsection{Risorsa protetta: la palla}
+%\label{sec:entita_coinvolte_palla}
+%
+%La palla e' costituita semplicemente da una coppia di coordinate, che rappresenta la posizione del campo (in termini di celle) in cui essa si trova. Al contrario dei giocatori,%che non possono occupare la medesima posizione, essa può trovarsi in una cella libera oppure in una occupata da un giocatore, che probabilmente la controlla. Subisce %spostamenti scaturiti da azioni dei giocatori o a causa di un tiro/passaggio. 
 
-\subsubsection{Risorsa protetta: la palla}
-\label{sec:entita_coinvolte_palla}
+%\subsubsection{Entità attiva: agente di movimento}
+%\label{sec:entita_coinvolte_agente}
+%
+%Durante lo svolgimento del gioco i giocatori interagiscono con la palla, il comportamento che ci si aspetta, salvo interventi da parte di avversa, è quello del gioco reale: %controllo, spostamento e tiro/passaggio. Dopo quest'ultima operazione la palla si sposta verso la direzione decisa con una velocità pari alla potenza impressa al pallone. Dato %che essa è una risorsa protetta, quindi non in grado di effettuare azioni complesse, è necessario introdurre una componente che all'occorrenza esegua spostando la palla da una %cella a quella adiacente fino a raggiungere una determinata posizione e lo faccia una certa velocità, sempre salvo interventi di altri giocatori. Tale entità è l'agente di %movimento, e la spiegazione del suo funzionamento viene rimandata alla parte del documento che parla dell'architettura e delle scelte fatte a livello di concorrenza.
 
-La palla all'interno del gioco risulta essere semplicemente le coordinate in cui essa si trova. Al contrario dei giocatori che non possono occupare la medesima posizione in più di uno, essa può trovarsi in una cella libera o in una occupata da un giocatore, che probabilmente la controlla. Subisce spostamenti scaturiti da azioni dei giocatori o a causa di un tiro/passaggio. Essa di conseguenza e' una risorsa protetta che detiene la posizione in cui si trova il pallone e permette ad una sola entita' alla volta di poterla modificare, garantendo quindi mutua esclusione.
-
-\subsubsection{Entità attiva: agente di movimento}
-\label{sec:entita_coinvolte_agente}
-
-Durante lo svolgimento del gioco i giocatori interagiscono con la palla, il comportamento che ci si aspetta, salvo interventi da parte di avversa, è quello del gioco reale: controllo, spostamento e tiro/passaggio. Dopo quest'ultima operazione la palla si sposta verso la direzione decisa con una velocità pari alla potenza impressa al pallone. Dato che essa è una risorsa protetta, quindi non in grado di effettuare azioni complesse, è necessario introdurre una componente che all'occorrenza esegua spostando la palla da una cella a quella adiacente fino a raggiungere una determinata posizione e lo faccia una certa velocità, sempre salvo interventi di altri giocatori. Tale entità è l'agente di movimento, e la spiegazione del suo funzionamento viene rimandata alla parte del documento che parla dell'architettura e delle scelte fatte a livello di concorrenza.
-
-\subsubsection{Entita' attiva: gli allenatori}
-\label{sec:entita_coinvolte_allenatori}
-
-Gli allenatori non sono un entita' attiva, dato che non prendono decisioni automamente non abbiamo bisogno che essi abbiano un proprio flusso di controllo, bensi' devono reagire a segnali che arrivano dall'esterno. Il loro compito è quello di intermediare tra l'utente e il campo di gioco, influenzando le tattiche assunte dalle squadre e le formazioni in campo. Successivamente questo aspetto sara' piu' chiaro quando verra' dato una visione generale del modello che comprendera' anche componenti di distribuzione. 
+%\subsubsection{Gli allenatori}
+%\label{sec:entita_coinvolte_allenatori}
+%
+%Gli allenatori non sono un entita' attiva, dato che non prendono decisioni automamente non abbiamo bisogno che essi abbiano un proprio flusso di controllo, bensi' devono %reagire a segnali che arrivano dall'esterno. Il loro compito è quello di intermediare tra l'utente e il campo di gioco, influenzando le tattiche assunte dalle squadre e le %formazioni in campo. Successivamente questo aspetto sara' piu' chiaro quando verra' dato una visione generale del modello che comprendera' anche componenti di distribuzione. 
 
 \subsubsection{Lo stato}
 \label{sec:entita_coinvolte_stato}
