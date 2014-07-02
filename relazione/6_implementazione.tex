@@ -18,4 +18,23 @@ Concorrenza.
 \addcontentsline{toc}{subsection}{\protect\numberline{}Distribuzione}%
 \label{sec:implementazione_distribuzione}
 
-Distribuzione.
+In questa sezione viene discussa l'implementazione delle componenti distribuite del software, ovvero \emph{Field} e \emph{Manager}.
+
+La comunicazione tra la componente \emph{Core} e le componenti \emph{Field} e \emph{Manager} e viceversa avviene facendo agire \emph{Core} come un web server. Ci\`{o} viene fatto grazie all'utilizzo di AWS (Ada Web Server). All'avvio del sistema, viene inizializzato un web server all'indirizzo \emph{localhost} alla porta 28000 a cui \emph{Field} e \emph{Manager} si connettono e con il quale successivamente scambiano informazioni.\\\\ 
+La comunicazione tra le componenti distribuite \emph{Field} e \emph{Manager} e la componente centrale \emph{Core} \`{e} stata implementata con un modello di comunicazione tipico di un’architettura client-server. Le richieste provenienti da \emph{Field} e \emph{Manager} sono inizialmente ricevute dal modulo \emph{Soccer.Server.Callbacks} che si occupa di verificare di quale tipo di richiesta si tratta (i metodi a disposizione di delle componenti distribuite sono consultabili in sezione ~\ref{sec:analisi_distribuzione_bridge_input}) per poi inoltrarla correttamente verso la componente \emph{Core} tramite il modulo bridge input. Nel caso in cui il client richiedente attenda una risposta da \emph{Core} (e.g. il client ha chiesto le statistiche dei giocatori) il modulo \emph{Soccer.Server.Callbacks} si occuper\`{a} di fornirla al client.\\\\
+La comunicazione di \emph{Core} con le componenti distribuite \emph{Field} e \emph{Manager} \`{e} invece vista come un modello di comunicazione di tipo publisher-subscriber. Tale server mette infatti a disposizione i seguenti canali di comunicazione (ovvero apre dei socket) ai quali le componenti interessate si iscrivono per ricevere informazioni:
+\begin{itemize}
+\item \emph{/managerVisitors/registerForStatistics} \`{e} il socket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``fuori casa''
+\item \emph{/managerHome/registerForStatistics} \`{e} il socket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``in casa''
+\item \emph{/field/registerForEvents} \`{e} il socket a cui si connette \emph{Field}
+\end{itemize}
+
+\noindent I socket vengono utilizzati da \emph{Core} per mandare eventi ed informazioni alle altre componenti. Le istanze di \emph{Manager} riceveranno informazioni riguardanti le statistiche dei giocatori e la formazione della squadra, mentre \emph{Field} riceve tutti gli eventi correlati con la partita in corso. 
+
+Come spiegato in sezione ~\ref{sec:analisi_distribuzione_bridge_output}, non vi \`{e} un continuo stream di informazioni verso le componenti distribuite, ma viene utilizzato un buffer all'interno di bridge output il cui scopo \`{e} bilanciare l'invio di dati: se da un lato un throughtput troppo basso comprometterebbe la rappresentazione grafica della partita, dall'altro un invio troppo frequente di aggiornamenti potrebbe causare una congestione di rete.
+
+\subsubsection{Codifica delle Informazioni}
+Tutti i messaggi scambiati secondo i modelli appena descritti sono codificati utilizzando il formato JSON, il quale \`{e} un formato di testo completamente indipendente dal linguaggio di programmazione, ma utilizza convenzioni conosciute dai programmatori di linguaggi della famiglia del C, come C, C++, C#, Java, JavaScript, Perl, Python, e molti altri. Questa caratteristica fa di JSON un linguaggio ideale per lo scambio di dati.
+
+\subsubsection{Interfacce Grafiche}
+Le GUI delle componenti \emph{Field} e \emph{Manager} sono state realizzate utilizzando il linguaggio Java. Questa scelta \`{e} stata guidata dal fatto che Java \`{e} un linguaggio che garantisce un certo livello di portabilit\`{a} del sistema. In particolare, la grafica ed il layout sono stati implementati utilizzando il framework Swing di Java.
