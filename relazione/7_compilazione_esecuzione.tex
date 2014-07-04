@@ -5,5 +5,62 @@
 \section*{Compilazione ed esecuzione}
 \addcontentsline{toc}{section}{\protect\numberline{}Compilazione ed esecuzione}%
 \label{sec:compilazione_esecuzione}
+Per la compilazione e l'esecuzione del progetto sono necessari i seguenti software:
+\begin{itemize}
+\item GNAT\_GPL, ambiente di sviluppo;
+\item AWS, web server scritto in ADA;
+\item XMLAda, librerie per il parsing XML;
+\item GNATColl, libreria ADA usata per la gestione di dati in formato JSON; 
+\item Java utilizzato nello sviluppo delle interfacce grafiche;
+\item Prolog, in particolare SWI-Prolog, utilizzato nello sviluppo dell'intelligenza artificiale dei giocatori;
+\item Ada Util, un insieme di packages per Ada che forniscono funzionalit\`{a} aggiuntive.
+\end{itemize}
+\noindent Tutti questi software sono gratuiti e liberamente scaricabili. In particolare GNAT\_GPL, AWS, XMLAda e GNATColl sono sviluppati e supportati da Ada-Core e sono disponibili al sito http://libre.adacore.com sotto licenza GPL. Bisogna inoltre fare attenzione ad avere una versione di Java non inferiore a Java 6. Come detto in precedenza l'implementazione di Prolog utilizzata \`{e} SWI\_prolog, scaricabile gratuitamente dal sito http://www.swi-prolog.org/ in licenza LGPL. Infine Ada Util \`{e} reperibile al sito http://code.google.com/p/ada-util/ in licenza Apache 2.0. 
 
-Compilazione ed esecuzione.
+Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac OS X.
+
+\noindent Di seguito vengono proposti i passaggi da eseguire per avere un ambiente di sviluppo pronto, in grado di compilare il progetto. La distribuzione di riferimento \`{e} Mint desktop 15 i386. Per ulteriori dettagli si pu\`{o} far riferimento ai file README o INSTALL presenti negli archivi dei file scaricati.
+\begin{itemize}
+\item Scompattare [GNAT FILE]
+	\begin{itemize}
+	\item[] installare l'ambiente con il comando ./doinstall
+	\item[] esportare le variabili d'ambiente in questo modo
+	\item[] export PATH=/usr/gnat/bin:\$PATH
+	\item[] export GPR\_PROJECT\_PATH=/usr/gnat/lib/gnat
+	\item[] export ADA\_PROJECT\_PATH=/usr/gnat/lib/gnat
+	\end{itemize}
+\item Scompattare [XML ADA FILE] e lanciare i comandi
+	\begin{itemize}
+	\item[] ./configure --prefix=/usr/gnat
+	\item[] make all
+	\item[] make install (eseguire da root)
+	\end{itemize}
+\item Scompattare [AWS FILE] e lanciare i seguenti comandi
+	\begin{itemize}
+	\item[] make setup
+	\item[] make build
+	\item[] make install (eseguire da root)
+	\end{itemize}
+\item Scompattare [GNATCOLL FILE] e lanciare i seguenti comandi
+	\begin{itemize}
+	\item[] ./configure
+	\item[] make
+	\item[] make prefix=/usr/gnat install (eseguire da root)
+	\end{itemize}
+\item [AUNIT]
+\item [ADA UTIL]
+\item L'installazione di SWI-Prolog \`{e} abbastanza semplice, in quanto gli sviluppatori mettono a disposizione un repository comodamente aggiungibile al package manager di Ubuntu e di tutte le distribuzione basate su Ubuntu 
+	\begin{itemize}
+	\item[] sudo apt-add-repository ppa:swi-prolog/stable
+	\item[] sudo apt-get update
+	\item[] sudo apt-get install swi-prolog
+	\end{itemize}
+\end{itemize}
+
+\noindent A questo punto l'ambiente di sviluppo \`{e} pronto. Per compilare ed eseguire il progetto bisogna aprire un terminale, spostarsi nella cartella del progetto ed eseguire il comando\\
+
+\begin{center}
+	\verb+sh run\_all.sh+\\
+\end{center}
+
+Con tale comando viene lanciato lo script che si occupa di compilare tutto il progetto e di avviarlo. Al termine della compilazione compariranno le GUI di configurazione della squadra dalle quali sar\`{a} poi possibile iniziare la partita.
