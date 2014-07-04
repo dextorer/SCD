@@ -7,7 +7,7 @@
 \label{sec:compilazione_esecuzione}
 Per la compilazione e l'esecuzione del progetto sono necessari i seguenti software:
 \begin{itemize}
-\item GNAT_GPL, ambiente di sviluppo;
+\item GNAT\_GPL, ambiente di sviluppo;
 \item AWS, web server scritto in ADA;
 \item XMLAda, librerie per il parsing XML;
 \item GNATColl, libreria ADA usata per la gestione di dati in formato JSON; 
@@ -15,7 +15,7 @@ Per la compilazione e l'esecuzione del progetto sono necessari i seguenti softwa
 \item Prolog, in particolare SWI-Prolog, utilizzato nello sviluppo dell'intelligenza artificiale dei giocatori;
 \item Ada Util, un insieme di packages per Ada che forniscono funzionalit\`{a} aggiuntive.
 \end{itemize}
-\noindent Tutti questi software sono gratuiti e liberamente scaricabili. In particolare GNAT_GPL, AWS, XMLAda e GNATColl sono sviluppati e supportati da Ada-Core e sono disponibili al sito http://libre.adacore.com sotto licenza GPL. Bisogna inoltre fare attenzione ad avere una versione di Java non inferiore a Java 6. Come detto in precedenza l'implementazione di Prolog utilizzata \`{e} SWI_prolog, scaricabile gratuitamente dal sito http://www.swi-prolog.org/ in licenza LGPL. Infine Ada Util \`{e} reperibile al sito http://code.google.com/p/ada-util/ in licenza Apache 2.0. 
+\noindent Tutti questi software sono gratuiti e liberamente scaricabili. In particolare GNAT\_GPL, AWS, XMLAda e GNATColl sono sviluppati e supportati da Ada-Core e sono disponibili al sito http://libre.adacore.com sotto licenza GPL. Bisogna inoltre fare attenzione ad avere una versione di Java non inferiore a Java 6. Come detto in precedenza l'implementazione di Prolog utilizzata \`{e} SWI\_prolog, scaricabile gratuitamente dal sito http://www.swi-prolog.org/ in licenza LGPL. Infine Ada Util \`{e} reperibile al sito http://code.google.com/p/ada-util/ in licenza Apache 2.0. 
 
 Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac OS X.
 
@@ -26,8 +26,8 @@ Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac
 	\item[] installare l'ambiente con il comando ./doinstall
 	\item[] esportare le variabili d'ambiente in questo modo
 	\item[] export PATH=/usr/gnat/bin:\$PATH
-	\item[] export GPR_PROJECT_PATH=/usr/gnat/lib/gnat
-	\item[] export ADA_PROJECT_PATH=/usr/gnat/lib/gnat
+	\item[] export GPR\_PROJECT\_PATH=/usr/gnat/lib/gnat
+	\item[] export ADA\_PROJECT\_PATH=/usr/gnat/lib/gnat
 	\end{itemize}
 \item Scompattare [XML ADA FILE] e lanciare i comandi
 	\begin{itemize}
@@ -58,5 +58,9 @@ Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac
 \end{itemize}
 
 \noindent A questo punto l'ambiente di sviluppo \`{e} pronto. Per compilare ed eseguire il progetto bisogna aprire un terminale, spostarsi nella cartella del progetto ed eseguire il comando\\
-sh run_all.sh\\
+
+\begin{center}
+	\verb+sh run\_all.sh+\\
+\end{center}
+
 Con tale comando viene lanciato lo script che si occupa di compilare tutto il progetto e di avviarlo. Al termine della compilazione compariranno le GUI di configurazione della squadra dalle quali sar\`{a} poi possibile iniziare la partita.
