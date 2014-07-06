@@ -2,45 +2,45 @@
 %	IMPLEMENTAZIONE
 %----------------------------------------------------------------------------------------
 
-\section*{Implementazione}
-\addcontentsline{toc}{section}{\protect\numberline{}Implementazione}%
+\section{Implementazione}
 \label{sec:implementazione}
 
 Paragrafo introduttivo.
 
-\subsection*{Concorrenza}
-\addcontentsline{toc}{subsection}{\protect\numberline{}Concorrenza}%
+\subsection{Concorrenza}
 \label{sec:implemetazione_concorrenza}
 
 Concorrenza.
 
-\subsection*{Distribuzione}
-\addcontentsline{toc}{subsection}{\protect\numberline{}Distribuzione}%
+\subsection{Distribuzione}
 \label{sec:implementazione_distribuzione}
 
-In questa sezione viene discussa l'implementazione delle componenti distribuite del software, ovvero \emph{Field} e \emph{Manager}.
+La comunicazione tra la componente \emph{Core} e le componenti \emph{Field} e \emph{Manager} e' stata realizzando aggiungendo un modulo a \emph{Core} che agisce come web server. Per rendere possibile questa interazione si e' ricorsi all'utilizzo di AWS (Ada Web Server). All'avvio del sistema, viene inizializzato un web server su \emph{localhost:28000}, a cui \emph{Field} e \emph{Manager} si connettono e con il quale successivamente scambiano informazioni.\\
 
-La comunicazione tra la componente \emph{Core} e le componenti \emph{Field} e \emph{Manager} e viceversa avviene facendo agire \emph{Core} come un web server. Ci\`{o} viene fatto grazie all'utilizzo di AWS (Ada Web Server). All'avvio del sistema, viene inizializzato un web server all'indirizzo \emph{localhost} alla porta 28000 a cui \emph{Field} e \emph{Manager} si connettono e con il quale successivamente scambiano informazioni.\\\\ 
-La comunicazione tra le componenti distribuite \emph{Field} e \emph{Manager} e la componente centrale \emph{Core} \`{e} stata implementata con un modello di comunicazione tipico di un’architettura client-server. Ad esempio, ciascuna istanza di \emph{Manager}, una volta avviata, invia una richiesta HTTP GET a \emph{Core} richiedendo le statistiche dei giocatori della squadra. La componente \emph{Field} effettua invece chiamate  HTTP GET verso \emph{Core} per richiedere azioni quali l'avvio di una nuova partita, l'avvio del secondo tempo della partita corrente, la messa in pausa della partita corrente, ma anche la terminazione forzata della partita.
+Come gia' illustrato in Sezione~\ref{sec:analisi_client_server}, la comunicazione tra le componenti distribuite \emph{Field} e \emph{Manager} e la componente centrale \emph{Core} \`{e} stata implementata con un modello di comunicazione tipico di un’architettura client-server. Si ha quindi che ciascuna istanza di \emph{Manager}, una volta avviata, invia una richiesta HTTP di tipo GET a \emph{Core}, richiedendo le statistiche dei giocatori della squadra. La componente \emph{Field} effettua invece chiamate HTTP di tipo GET verso \emph{Core} al fine di richiedere azioni quali l'avvio di una nuova partita, l'avvio del secondo tempo della partita corrente, la messa in pausa della partita corrente, ed infine la terminazione forzata della partita.\\
 
-Per permettere tale tipo di comunicazione a partire dalle componenti distribuite scritte in Java \`{e} stata utilizzata la libreria open source Apache HttpComponents, la quale fornisce una completa implementazione del protocollo HTTP in Java e consente di avere accesso a maggiori funzionalit\`{a} e flessibilit\`{a} rispetto al package standard \emph{java.net} di Java.
+Dal momento che \textit{Manager} e \textit{Field} sono state realizzate in Java, per facilitare tale tipo di comunicazione \`{e} stata utilizzata la libreria open source Apache HttpComponents, che fornisce una completa implementazione del protocollo HTTP in Java e consente di avere accesso a funzionalit\`{a} avanzate e maggiore flessibilit\`{a} rispetto al package standard \emph{java.net} di Java.\\
 
-In generale, le richieste provenienti da \emph{Field} e \emph{Manager} sono inizialmente ricevute dal modulo \emph{Soccer.Server.Callbacks} che si occupa di verificare di quale tipo di richiesta si tratta (i metodi a disposizione di delle componenti distribuite sono consultabili in sezione ~\ref{sec:analisi_distribuzione_bridge_input}) per poi inoltrarla correttamente verso la componente \emph{Core} tramite il modulo bridge input. Nel caso in cui il client richiedente attenda una risposta da \emph{Core} (e.g. il client ha chiesto le statistiche dei giocatori) il modulo \emph{Soccer.Server.Callbacks} si occuper\`{a} di fornirla al client.\\\\
-La comunicazione di \emph{Core} con le componenti distribuite \emph{Field} e \emph{Manager} \`{e} invece vista come un modello di comunicazione di tipo publisher-subscriber. Tale server mette infatti a disposizione i seguenti canali di comunicazione (ovvero apre dei websocket) ai quali le componenti interessate si iscrivono per ricevere informazioni:
+In generale, le richieste provenienti da \emph{Field} e \emph{Manager} sono inizialmente ricevute dal modulo \emph{Soccer.Server.Callbacks} che si occupa di verificare di quale tipo di richiesta si tratta (i metodi a disposizione di delle componenti distribuite sono consultabili in sezione ~\ref{sec:analisi_distribuzione_bridge_input}), per poi inoltrarla correttamente verso la componente \emph{Core} tramite il modulo bridge input. Nel caso in cui il client richiedente attenda una risposta da \emph{Core} (e.g. il client ha chiesto le statistiche dei giocatori), il modulo \emph{Soccer.Server.Callbacks} si occuper\`{a} di fornirla al client.\\
+
+La comunicazione di \emph{Core} con le componenti distribuite \emph{Field} e \emph{Manager} \`{e} invece vista come un modello di comunicazione di tipo publisher-subscriber. Tale server mette infatti a disposizione i seguenti canali di comunicazione ai quali le componenti interessate si iscrivono per ricevere informazioni:
+
 \begin{itemize}
-\item \emph{/managerVisitors/registerForStatistics} \`{e} il websocket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``fuori casa''
-\item \emph{/managerHome/registerForStatistics} \`{e} il websocket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``in casa''
-\item \emph{/field/registerForEvents} \`{e} il websocket a cui si connette \emph{Field}
+	\item \emph{/managerVisitors/registerForStatistics} \`{e} il socket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``fuori casa''
+	\item \emph{/managerHome/registerForStatistics} \`{e} il socket su cui una delle istanze di \emph{Manager} rimane in ascolto, in particolare l'istanza che rappresenta la squadra che gioca ``in casa''
+	\item \emph{/field/registerForEvents} \`{e} il socket a cui si connette \emph{Field}
 \end{itemize}
-\noindent I websocket vengono utilizzati da \emph{Core} per mandare eventi ed informazioni alle altre componenti. Le istanze di \emph{Manager} riceveranno informazioni riguardanti le statistiche dei giocatori e la formazione della squadra, mentre \emph{Field} riceve tutti gli eventi correlati con la partita in corso. 
 
-Tramite l'utilizzo dei websocket viene mantenuto attivo un canale di comunicazione tra \emph{Core} e le componenti distribuite, permettendo cos\`{i} la fruizione di contenuti verso \emph{Field} e \emph{Manager}. Il principale vantaggio nell'utilizzo dei websocket  \`{e} sta nel fatto che l'invio di nuovi contenuti disponibili da parte dell'entit \`{a} produttore verso le entit \`{a} consumatori avviene senza alcuna richiesta o sollecitazione da parte dei consumatori: non appena  \`{e}  disponibile un nuovo contenuto, il produttore lo invia autonomamente ai consumatori, i quali sono in ascolto sui corrispondenti websocket aperti.
+\noindent Per realizzare questo tipo di comunicazione si e' deciso di utilizzare la tecnologia dei WebSocket. Questo particolare tipo di socket mantiene attivo un canale di comunicazione tra due componenti, ad esempio \emph{Core} e \emph{Field}, permettendo cos\`{i} la fruizione di contenuti di \emph{Core} da parte di \emph{Field}. Il principale vantaggio nell'utilizzo dei WebSocket \`{e} consiste nel fatto che l'invio di nuovi contenuti disponibili da parte dell'entit \`{a} produttore verso le entit \`{a} consumatori avviene senza alcuna richiesta o sollecitazione da parte dei consumatori: non appena \`{e} disponibile un nuovo contenuto, il produttore lo invia autonomamente ai consumatori, i quali sono in ascolto sui corrispondenti WebSocket aperti. I WebSocket vengono utilizzati da \emph{Core} per mandare eventi ed informazioni alle altre componenti. Le istanze di \emph{Manager} riceveranno informazioni riguardanti le statistiche dei giocatori e la formazione della squadra, mentre \emph{Field} riceve tutti gli eventi correlati con la partita in corso.\\
 
-Ada Web Server mette a disposizione una serie di API per facilitare l'uso dei websocket. Per aprire un nuovo websocket \`{e} sufficiente utilizzare la funzione \emph{Register} passando come parametro l'indirizzo su cui renderlo disponibile. Per inviare dei dati vi \`{e} la funzione \emph{Send}, alla quale \`{e} possibile specificare il websocket sul quale spedire i dati e anche il tipo di dati spedito.\\\\
-Come spiegato in sezione ~\ref{sec:analisi_distribuzione_bridge_output}, non vi \`{e} un continuo stream di informazioni verso le componenti distribuite, ma viene utilizzato un buffer all'interno di bridge output il cui scopo \`{e} bilanciare l'invio di dati: se da un lato un throughtput troppo basso comprometterebbe la rappresentazione grafica della partita, dall'altro un invio troppo frequente di aggiornamenti potrebbe causare una congestione di rete.
+In fase decisionale si e' osservato che l'accoppiamento tra la componente \emph{Core} e il server per la comunicazione con le altre componenti potesse non essere desiderabile. Ad ogni modo, si e' deciso di procedere ugualmente con questa decisione, sacrificando una parte di disaccoppiamento del sistema in favore dell'uso di una tecnologia relativamente nuova ed interessante come quella dei WebSocket, che e' risultata essere estremamente affidabile e di facile utilizzo.\\
+
+Ada Web Server mette a disposizione una serie di API per facilitare l'uso dei WebSocket. Per aprire un nuovo socket \`{e} sufficiente utilizzare la funzione \emph{Register}, passando come parametro l'indirizzo su cui renderlo disponibile. Per inviare informazioni viene messa a disposizione \`{e} la funzione \emph{Send}, specificando il WebSocket sul quale spedire i dati e assieme alla tipologia di dato che si sta trasmettendo.\\\\
+
+Come spiegato in sezione ~\ref{sec:analisi_distribuzione_bridge_output}, non vi \`{e} un continuo stream di informazioni verso le componenti distribuite, ma viene utilizzato un buffer all'interno di bridge output, il cui scopo \`{e} bilanciare l'invio di dati: se da un lato un throughtput troppo basso comprometterebbe la rappresentazione grafica della partita, dall'altro un invio troppo frequente di aggiornamenti potrebbe causare una congestione di rete.
 
 \subsubsection{Codifica delle Informazioni}
-Tutti i messaggi scambiati secondo i modelli appena descritti sono codificati utilizzando il formato JSON, il quale \`{e} un formato di testo completamente indipendente dal linguaggio di programmazione, ma utilizza convenzioni conosciute dai programmatori di linguaggi della famiglia del C, come C, C++, C\#, Java, JavaScript, Perl, Python, e molti altri. Questa caratteristica fa di JSON un linguaggio ideale per lo scambio di dati. 
+Tutti i messaggi scambiati secondo i modelli appena descritti sono codificati utilizzando il formato JSON, un formato di testo completamente indipendente dal linguaggio di programmazione, ma utilizza convenzioni conosciute dai programmatori di linguaggi della famiglia del C (come C/C++/C\#, Java/JavaScript e molti altri). Questa caratteristica fa di JSON un linguaggio ideale per lo scambio di dati.\\
 
 La componente \emph{Core} processa i dati ricevuti in formato JSON utilizzando\emph{GNATColl}, o GNAT Component Collection, una libreria che mette a disposizione degli ADA package general purpose aggiuntivi. Tra di essi vi \`{e} il package \emph{GNATColl.JSON}, il quale permette sia la creazione di oggetti JSON che il parsing di tale tipo di dati ricevuti da \emph{Core}.
 
