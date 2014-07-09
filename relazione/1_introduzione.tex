@@ -5,14 +5,14 @@
 \section{Introduzione}
 \label{sec:introduzione}
 
-Il seguente progetto e' il frutto del lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto \`{e} stato tratto da un concorso annuale chiamato \emph{The Ada Way} ed organizzato da Ada-Europe. In particolare, viene fatto riferimento all'edizione del concorso 2010/2011, anno in cui il tema proposto \`{e} stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente e al tempo stesso concorrente. L'utente ha la possibilit\`{a} di interagire con la partita in corso, assumendo il ruolo di allenatore delle squadre.\\
+Il seguente progetto è il frutto del lavoro svolto nell'ambito del corso di \emph{Sistemi Concorrenti e Distribuiti}. Il progetto proposto è stato tratto da un concorso annuale chiamato \emph{The Ada Way} ed organizzato da Ada-Europe. In particolare, viene fatto riferimento all'edizione del concorso 2010/2011, anno in cui il tema proposto è stato lo sviluppo di un simulatore di una partita di calcio in cui gli attori della partita, ovvero giocatori e arbitri, sono interamente controllati dal computer e devono agire in maniera indipendente e al tempo stesso concorrente. L'utente ha la possibilità di interagire con la partita in corso, assumendo il ruolo di allenatore delle squadre.\\
 
 Questo documento ha lo scopo di descrivere l'approccio utilizzato per risolvere il problema e si concentra prevalentemente sulle problematiche di concorrenza e distribuzione incontrate durante lo sviluppo del software.
 
 \subsection{Scopo del progetto}
 \label{sec:scopo_del_progetto}
 
-Lo scopo del progetto consiste nel realizzare un software che simuli lo svolgimento di una partita di calcio secondo il relativo regolamento. Il software \`{e} presenta una componente principale, nella quale avvengono le dinamiche di concorrenza che vedranno le entit\`{a} in gioco interagire tra di loro, ed alcune componenti di distribuzione, che interagiscono con la componente principale e che vengono pilotate dall'utente.
+Lo scopo del progetto consiste nel realizzare un software che simuli lo svolgimento di una partita di calcio secondo il relativo regolamento. Il software è presenta una componente principale, nella quale avvengono le dinamiche di concorrenza che vedranno le entità in gioco interagire tra di loro, ed alcune componenti di distribuzione, che interagiscono con la componente principale e che vengono pilotate dall'utente.
 
 \subsection{Struttura del documento}
 \label{sec:struttura_del_documento}
