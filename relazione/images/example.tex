@@ -1,0 +1,163 @@
+\newcommand{\exampleOne}{%
+\begin{tikzpicture}[
+  yscale = 0.8,
+  normal/.style={ fill=black!30},
+  resource/.style={ fill=black!80},
+  waiting/.style={fill=white},
+  busywait/.style={fill=black!10, postaction={pattern=north east lines, very thin}},
+  release/.style={-latex},
+  request/.style={-o},
+  complet/.style={-|},
+  every text node part/.style={align=center},
+  arrow/.style={->,>=stealth, blue}
+]
+%general params
+\def\th{.4} %task height
+\def\tyDown{0} %task a asse y
+\def\blockdim{(.4,.4)}
+\def\arrowdim{(0,.5)}
+\def\arrowdimB{(0,.4)}
+\coordinate (legend) at (1,2.5);
+
+%tasklines
+\draw[thin, gray] (-.7,\tyDown)node[above,left,black]{CPU} -- +(12.2,0);
+\draw[thick, black, ->] (-1,-.5) -- (12, -.5) node[below] {{\footnotesize time}};
+
+\draw[thick, black, -] (0,-.65) -- (0, -0.35);
+\draw[thick, black, -] (2,-.65) -- (2, -0.35);
+\draw[thick, black, -] (4,-.65) -- (4, -0.35);
+\draw[thick, black, -] (6,-.65) -- (6, -0.35);
+\draw[thick, black, -] (8,-.65) -- (8, -0.35);
+\draw[thick, black, -] (10,-.65) -- (10, -0.35);
+
+\path(0,-.6)node[below]{{\footnotesize $t_i$}};
+\path(2,-.6)node[below]{{\footnotesize $t_i + 8$}};
+\path(4,-.6)node[below]{{\footnotesize $t_i + 16$}};
+\path(6,-.6)node[below]{{\footnotesize $t_i + 24$}};
+\path(8,-.6)node[below]{{\footnotesize $t_i + 32$}};
+\path(10,-.6)node[below]{{\footnotesize $t_{i+1}$}};
+
+\draw[thick, red, dashed, -] (0,-0.7) -- (0, 2);
+\draw[thick, red, <->] (0,1.5) -- (10, 1.5) node[midway, fill=white, xshift=-1.75] {{\scriptsize \textbf{T = 40}}};
+\draw[thick, red, dashed, -] (10,-0.7) -- (10, 2);
+
+\draw[release] (0,   \tyDown) -- +(0,0.8);
+\draw[normal]  (0,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (0.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (0.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (2,0.85);
+
+\draw[release] (2,   \tyDown) -- +(0,0.8);
+\draw[normal]  (2,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (2.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (2.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (4,0.85);
+
+\draw[release] (4,   \tyDown) -- +(0,0.8);
+\draw[normal]  (4,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (4.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (4.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (6,0.85);
+
+\draw[release] (6,   \tyDown) -- +(0,0.8);
+\draw[normal]  (6,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (6.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (6.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (8,0.85);
+
+\draw[release] (8,   \tyDown) -- +(0,0.8);
+\draw[normal]  (8,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (8.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (8.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (10,0.85);
+
+\draw[normal]   ($(   1.5,0.5) + (legend)$) node[below, xshift=0.2cm]{\tiny executing} rectangle +\blockdim;
+\fill[busywait] ($( 3.2,0.5) + (legend)$) node[below, xshift=0.2cm]{\tiny other players} rectangle +\blockdim;
+\draw[release]  ($(5.4,0.5) + (legend)$) node[below]{\tiny turn start}      -- +\arrowdim;
+\draw[complet]  ($(7,0.5) + (legend)$) node[below]{\tiny turn ended}   -- +\arrowdimB;
+
+\end{tikzpicture}
+}
+
+\newcommand{\exampleTwo}{%
+\begin{tikzpicture}[
+  yscale = 0.8,
+  normal/.style={ fill=black!30},
+  resource/.style={ fill=black!80},
+  waiting/.style={fill=white},
+  busywait/.style={fill=black!10, postaction={pattern=north east lines, very thin}},
+  release/.style={-latex},
+  request/.style={-o},
+  complet/.style={-|},
+  every text node part/.style={align=center},
+  arrow/.style={->,>=stealth, blue}
+]
+%general params
+\def\th{.4} %task height
+\def\tyDown{0} %task a asse y
+\def\blockdim{(.4,.4)}
+\def\arrowdim{(0,.5)}
+\def\arrowdimB{(0,.4)}
+\coordinate (legend) at (1,2.5);
+
+%tasklines
+\draw[thin, gray] (-.7,\tyDown)node[above,left,black]{CPU} -- +(12.2,0);
+\draw[thick, black, ->] (-1,-.5) -- (12, -.5) node[below] {{\footnotesize time}};
+
+\draw[thick, black, -] (0,-.65) -- (0, -0.35);
+\draw[thick, black, -] (2,-.65) -- (2, -0.35);
+\draw[thick, black, -] (4,-.65) -- (4, -0.35);
+\draw[thick, black, -] (6,-.65) -- (6, -0.35);
+\draw[thick, black, -] (8,-.65) -- (8, -0.35);
+\draw[thick, black, -] (10,-.65) -- (10, -0.35);
+
+\path(0,-.6)node[below]{{\footnotesize $t_i$}};
+\path(2,-.6)node[below]{{\footnotesize $t_i + 8$}};
+\path(4,-.6)node[below]{{\footnotesize $t_i + 16$}};
+\path(6,-.6)node[below]{{\footnotesize $t_i + 24$}};
+\path(8,-.6)node[below]{{\footnotesize $t_i + 32$}};
+\path(10,-.6)node[below]{{\footnotesize $t_{i+1}$}};
+
+\draw[thick, red, dashed, -] (0,-0.7) -- (0, 2);
+\draw[thick, red, <->] (0,1.5) -- (10, 1.5) node[midway, fill=white, xshift=-1.75] {{\scriptsize \textbf{T = 40}}};
+\draw[thick, red, dashed, -] (10,-0.7) -- (10, 2);
+
+\draw[release] (0,   \tyDown) -- +(0,0.8);
+
+\fill[busywait] (0, \tyDown) rectangle +(1.75, \th);
+
+
+\draw[release] (2,   \tyDown) -- +(0,1);
+\draw[normal]  (1.75,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (2.25,\tyDown) -- +(0,0.8);
+
+\draw[normal]  (2.25,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (2.75,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (2.75,0.85) to[out=45,in=135]node[below]{\tiny delay} (4,0.85);
+
+\draw[release] (4,   \tyDown) -- +(0,0.8);
+\draw[normal]  (4,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (4.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (4.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (6,0.85);
+
+\draw[release] (6,   \tyDown) -- +(0,0.8);
+\draw[normal]  (6,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (6.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (6.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (8,0.85);
+
+\draw[release] (8,   \tyDown) -- +(0,0.8);
+\draw[normal]  (8,   \tyDown) rectangle +(0.5, \th) node[midway] {{\footnotesize $P_i$}};
+\draw[complet] (8.5,\tyDown) -- +(0,0.8);
+
+\draw[arrow] (8.5,0.85) to[out=45,in=135]node[below]{\tiny delay} (10,0.85);
+
+\draw[normal]   ($(   1.5,0.5) + (legend)$) node[below, xshift=0.2cm]{\tiny executing} rectangle +\blockdim;
+\fill[busywait] ($( 3.2,0.5) + (legend)$) node[below, xshift=0.2cm]{\tiny other players} rectangle +\blockdim;
+\draw[release]  ($(5.4,0.5) + (legend)$) node[below]{\tiny turn start}      -- +\arrowdim;
+\draw[complet]  ($(7,0.5) + (legend)$) node[below]{\tiny turn ended}   -- +\arrowdimB;
+
+\end{tikzpicture}
+}

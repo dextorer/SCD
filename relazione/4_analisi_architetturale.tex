@@ -175,11 +175,23 @@ Il calcolo di $T$ e' di importanza cruciale. Esso deve permettere ad ogni giocat
 
 Da questo ragionamento si ottiene che $T$ e' pari alla somma di tutti questi tempi, ovvero alla somma del tempo di tutte le esecuzioni di $C$ da parte di ogni giocatore in campo. In questo modo si garantisce ad ogni giocatore un tempo di esecuzione sufficiente per portare a termine i propri turni: spettera' poi ad ognuno di essi distribuirli in modo uniforme nell'arco di $T$, tramite un sistema di delay che scandisce il tempo.\\
 
-Si consideri il seguente esempio. Posto $T$ pari a 40 unita' di tempo ed iniziato al tempo $t_i$, $C$ uguale a 2 e la velocita' pari a 5: il giocatore, tra il turno corrente e il successivo, tentera' di eseguire il suo turno entro le prime 8 (40 diviso 5) unita' di tempo, per poi attendere fino a $t_i$ + 8 il prossimo turno. Non e' detto che esso riesca ad eseguire per 2 unita' di tempo nel periodo di 8, dato che i giocatori iniziano ad eseguire tutti insieme, ma di sicuro eseguira' 5 volte il tempo $C$ (2) all'interno dell'iperperiodo $T$ (40).\\
+Si consideri il seguente esempio. Posto $T$ pari a 40 unita'di tempo, calcolato secondo gli accorgimenti appena discussi, ed iniziato al tempo $t_i$, $C$ uguale a 2 e la velocita' pari a 5: il giocatore ($P_i$), tra il turno corrente e il successivo, tentera' di eseguire il suo turno entro le prime 8 (40 diviso 5) unita' di tempo, per poi attendere fino a $t_i$ + 8 il prossimo turno. Tale comportamento e' illustrato nella figura \ref{fig:hyperperiod_normal}. Non e' detto che esso riesca ad eseguire per 2 unita' di tempo nel periodo di 8, dato che i giocatori iniziano ad eseguire tutti insieme, ma di sicuro eseguira' 5 volte il tempo $C$ (2) all'interno dell'iperperiodo $T$ (40). La figura \ref{fig:hyperperiod_interference} porta un esempio di questo tipo, al tempo $t_i$ il giocatore non e' il primo ad eseguire, attende il proprio turno e, se gia' passato, non aspettera' il quanto di tempo successivo.\\
 
 Dato $C$ come stima fatta a priori, in questo meccanismo il controller ha il compito di calcolare $T$ e tenere aggiornato il tempo $t_i$ di riferimento. All'inizio del gioco $T$ e' pari alla somma di tutti i turni di ogni giocatore, ma sara' il controllore a dover poi mantenerlo aggiornato ogni qual volta ce ne sia bisogno; questo succede, ad esempio, nel caso di una sostituzione tra due giocatori, in quanto non e' detto che abbiano la stessa velocita'. Per quanto riguarda $t_i$, in una normale esecuzione della partita viene calcolato partendo da un tempo di riferimento all'avvio del software, al quale viene aggiunto ogni volta $T$. Nel caso di un'interruzione del gioco da parte dell'utente, invece, tale valore di riferimento viene aggiornato con l'istante in cui il gioco puo' riprendere.\\
 
-[TODO esempio di iperperiodo grafico]
+\begin{figure}[htp!]
+	\centering
+	\exampleOne
+	\caption{Esecuzione del giocatore con distribuzione dei turni.}
+	\label{fig:hyperperiod_normal}
+\end{figure}
+
+\begin{figure}[htp!]
+	\centering
+	\exampleTwo
+	\caption{Esecuzione del giocatore con interferenza.}
+	\label{fig:hyperperiod_interference}
+\end{figure}
 
 \subsection{Distribuzione}
 \label{sec:analisi_distribuzione}
