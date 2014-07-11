@@ -2,14 +2,13 @@
 %	CONCLUSIONI
 %----------------------------------------------------------------------------------------
 
-\section*{Conclusioni}
-\addcontentsline{toc}{section}{\protect\numberline{}Conclusioni}%
+\section{Conclusioni}
 \label{sec:conclusioni}
 
 Il progetto ha avuto come obiettivo quello di creare una simulazione di una partita di calcio con componenti di concorrenza e di distribuzione.\\
 
-Per quanto concerne la concorrenza abbiamo appreso come sia importante creare in fase di desigh un'architettura che sia a prova di deadlock e di starvation, e che allo stesso permetta un certo livello di controllo all'interno del sistema. La scelta di avere un unico punto di sincronizzazione ha ridotto il potenziale parallelismo tra le entita' aumentando il livello di contesa nell'ottenere le risorse. In fase di sviluppo e' stato complicato trovare gli errori quando le dinamiche non rispettavano le attese, il modello di concorrenza di Ada ha permesso di utilizzare meccanismi che rispecchiassero i comportamenti che volevamo ottenere.\\
+Per quanto concerne la concorrenza, abbiamo appreso come sia importante creare in fase di design un'architettura che esente dalle condizioni di deadlock e di starvation, ma che permetta allo tempo stesso un certo livello di controllo all'interno del sistema. La scelta di avere un unico punto di sincronizzazione ha ridotto il potenziale parallelismo tra le entità, aumentando il livello di contesa nell'ottenere le risorse. In fase di sviluppo è stato complicato trovare gli errori quando le dinamiche non rispettavano le attese, tuttavia il modello di concorrenza di Ada ha permesso di utilizzare meccanismi che rispecchiassero i comportamenti che volevamo ottenere.\\
 
-Distribuzione, che pacco.\\
+Diversamente, la distribuzione ha messo il luce le difficoltà nel coordinare entità remote che molto spesso sono regolate dall'interazione con l'utente. La scelta di utilizzare i WebSocket si è rivelata efficace e non ha presentato particolari problemi, salvo un maggiore accoppiamento all'interno del sistema. La parte che riguarda l'invio dei dati da parte di \emph{Core} e la loro successiva rappresentazione grafica si è rivelata invece più problematica, in quanto ha reso evidenti le necessità di adottare un filtro sugli eventi e un buffer di eventi regolato da un timer, sia per regolare il flusso di rete (riducendo quindi il rischio di congestioni) che per garantire una certa fluidità di visualizzazione della partita.\\
 
-IA in Prolog, croce e delizia, genio e sregolatezza.
+Infine, la scelta di usare Prolog per realizzare l'intelligenza artificiale dei giocatori ha avuto due effetti. Se da un lato ha permesso di esplorare un linguaggio appositamente progettato per questo tipo di compito e di avere quindi un'espressività maggiore da parte dei giocatori, dall'altro ha inficiato notevolmente la velocità di esecuzione del software. Quest'ultimo aspetto non era stato né previsto né tantomeno esplorato in fase di analisi, di conseguenza non c'è stato altro da fare che cercare di ridurlo quanto più possibile. Alla luce di ciò, l'uso di Prolog si è rivelato controproducente.\\

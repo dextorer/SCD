@@ -38,6 +38,7 @@
 \renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
 
 \renewcommand{\contentsname}{Indice} % Rename TOC default title
+\renewcommand{\figurename}{Figura} % Rename Figure default title
 
 \renewcommand{\maketitle}{ % Customize the title - do not edit title and author name here, see the TITLE block below
 \begin{flushright} % Right align
@@ -51,6 +52,8 @@
 \vspace{40pt} % Some vertical space between the author block and abstract
 \end{flushright}
 }
+
+\setlength{\parindent}{0pt} % Disables automatic paragraph indentation
 
 %\setcounter{tocdepth}{5}
 \usepackage{hyperref} % Enables hyperlinking (e.g., ToC)

@@ -11,7 +11,7 @@
 \label{sec:modello_interazione_giocatori}
 
 %Interazione tra giocatori: il controllore.
-I giocatori sono i principali attori del sistema. Un giocatore si sposta dentro e fuori dal campo, è in grado di compiere diversi tipi di azioni (Sezione~\ref{sec:entita_giocatori}), che decide sia sulla base del proprio stato che dello stato della propria squadra e della partita. Un aspetto fondamentale vede i giocatori, così come avviene nel mondo reale, operare in maniera parallela e concorrente tra di loro: questo implica che i risultati delle loro azioni debbano riflettersi sullo stato di gioco, che come descritto in Sezione~\ref{sec:entita_stato}, detiene tutte le informazioni che definiscono la partita in un dato istante. Si pone però un problema: i giocatori, per poter conoscere le informazioni che permetteranno loro di decidere la prossima azione da compiere, i giocatori devono accedere allo stato, che tuttavia è unico. E' dunque necessario regolamentare l'accesso a tale risorsa, in maniera tale da preservarne la consistenza e la correttezza.\\
+I giocatori sono i principali attori del sistema. Un giocatore si sposta dentro e fuori dal campo, è in grado di compiere diversi tipi di azioni (Sezione~\ref{sec:analisi_giocatori}), che decide sia sulla base del proprio stato che dello stato della propria squadra e della partita. Un aspetto fondamentale vede i giocatori, così come avviene nel mondo reale, operare in maniera parallela e concorrente tra di loro: questo implica che i risultati delle loro azioni debbano riflettersi sullo stato di gioco, che come descritto in Sezione~\ref{sec:entita_coinvolte_stato}, detiene tutte le informazioni che definiscono la partita in un dato istante. Si pone però un problema: i giocatori, per poter conoscere le informazioni che permetteranno loro di decidere la prossima azione da compiere, i giocatori devono accedere allo stato, che tuttavia è unico. E' dunque necessario regolamentare l'accesso a tale risorsa, in maniera tale da preservarne la consistenza e la correttezza.\\
 
 L'organo che si occupa di permettere l'interazione tra diversi giocatori è il \textit{controllore}. In quanto entità centrale di controllo, i suoi molteplici compiti possono essere raggruppati come segue:
 
@@ -97,7 +97,7 @@ Le decisioni prese da un allenatore hanno come precondizione necessaria il gioco
 
 Il comportamento sopra descritto vale anche nel caso di più sostituzioni simultanee, che vedono i giocatori uscire ed entrare nel campo allo stesso tempo.\\
 
-Ciascun allenatore ha inoltre una visione meno precisa del gioco e riceve pertanto un sottoinsieme degli eventi che caratterizzano una partita: dal punto di vista decisionale è infatti poco interessante per un allenatore conoscere ogni singolo movimento di ogni giocatore. Si ha quindi che l'allenatore viene notificato solo in caso di eventi ``salientì', che come descritto nel Capitolo~\ref{sec:analisi_architetturale}, sono stati denominati \textit{Game Events}.
+Ciascun allenatore ha inoltre una visione meno precisa del gioco e riceve pertanto un sottoinsieme degli eventi che caratterizzano una partita: dal punto di vista decisionale è infatti poco interessante per un allenatore conoscere ogni singolo movimento di ogni giocatore. Si ha quindi che l'allenatore viene notificato solo in caso di eventi ``salienti'', che come descritto nel Capitolo~\ref{sec:analisi_architetturale}, sono stati denominati \textit{Game Events}.
 
 %\subsubsection{Gestione delle fasi di gioco: entità di gioco}
 %\label{sec:modello_fasi_game_entity}
