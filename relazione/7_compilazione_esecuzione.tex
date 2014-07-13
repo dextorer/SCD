@@ -49,8 +49,18 @@ Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac
 			\item[] make
 			\item[] make prefix=/usr/gnat install (eseguire da root)
 		\end{itemize}
-	\item [AUNIT]
-	\item [ADA UTIL]
+	\item Scompattare [AUNIT FILE] e lanciare i seguenti comandi
+		\begin{itemize}
+			\item[] ./configure
+			\item[] make
+			\item[] make install (eseguire da root)
+		\end{itemize}
+	\item Scompattare [ADA UTIL FILE] e lanciare i seguenti comandi
+		\begin{itemize}
+			\item[] ./configure
+			\item[] make
+			\item[] make install (eseguire da root)
+		\end{itemize}
 	\item L'installazione di SWI-Prolog \`{e} abbastanza semplice, in quanto gli sviluppatori mettono a disposizione un repository comodamente aggiungibile al package manager di Ubuntu e di tutte le distribuzione basate su Ubuntu 
 		\begin{itemize}
 			\item[] sudo apt-add-repository ppa:swi-prolog/stable
@@ -66,3 +76,22 @@ Il progetto \`{e} stato testato nelle distribuzioni Linux Ubuntu e Mint e in Mac
 \end{center}
 
 Con tale comando viene lanciato lo script che si occupa di compilare tutto il progetto e di avviarlo. Al termine della compilazione compariranno le GUI di configurazione della squadra dalle quali sar\`{a} poi possibile iniziare la partita.
+
+\subsection{Repository}
+Tutto il codice generato viene versionato in un apposito repository ospitato dal servizio github ed è accessibile liberamente. \`{E} quindi possibile scaricare tutto il progetto e la relativa documentazione. 
+
+Il repository è stato strutturato in moduli rappresentanti le varie componenti del progetto:
+\begin{itemize}
+\item \emph{GUISoccerField} contiene il codice relativo alla GUI del campo di gioco, sviluppata in Java
+\item \emph{ManagerGUI} contiene il codice relativo alle GUI dei manager, sviluppate in Java
+\item \emph{Players-Generator} contiene il codice relativo alle GUI di configurazione delle squadre, sviluppate in Java
+\item \emph{SCDCommunication} contiene il codice relativo allo scambio di informazioni tra le componenti distribuite \emph{Field} e \emph{Manager} e la componente \emph{Core}, anch'esso sviluppato in Java
+\item \emph{Soccer-SCD} contiene il codice del progetto vero e proprio, sviluppato in Ada
+\item \emph{relazione} contiene la documentazione del progetto
+\end{itemize} 
+
+\noindent Per scaricare in locale tutto il progetto è sufficiente aprire un terminale e lanciare il comando\\
+\begin{center}
+	\verb+git clone --recursive https://github.com/dextorer/SCD.git+\\
+\end{center}
+
