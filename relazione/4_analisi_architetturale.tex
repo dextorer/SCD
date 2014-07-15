@@ -114,7 +114,7 @@ La parte iniziale di ogni turno del giocatore risulta suddivisa come segue:
 
 Queste operazioni, in quanto letture, vengono effettuate potenzialmente in modo parallelo rispetto agli altri task.\\
 
-La seconda fase consiste nella parte di intelligenza artificiale, nella quale viene decisa la prossima mossa da effettuare. Una volta decisa, viene creato il relativo evento a cui viene automaticamente abbinato un certo livello di priorità: questo valore determina quanto sia importante per il giocatore l'azione appena decisa (ad esempio, l'azione di tiro nell'area di porta avversaria assume un'importanza maggiore rispetto ad un passaggio in fase di impostazione della prossima azione). L'azione composta da evento e priorità viene sottoposta al controllore tramite una chiamata in mutua esclusione con accodamento. Tale canale viene sfruttato dal sistema per fermare il gioco e farlo riprendere, per esempio quando l'utente mette in pausa il gioco.\\
+La seconda fase consiste nella parte di intelligenza artificiale, nella quale viene decisa la prossima mossa da effettuare. Una volta decisa, viene creato il relativo evento a cui viene automaticamente abbinato un certo livello di utilità: questo valore determina quanto sia importante per il giocatore l'azione appena decisa (ad esempio, l'azione di tiro nell'area di porta avversaria assume un'importanza maggiore rispetto ad un passaggio in fase di impostazione della prossima azione). L'azione composta da evento e utilità viene sottoposta al controllore tramite una chiamata in mutua esclusione con accodamento.\\
 
 Antecedente al ciclo di turni che caratterizzano la normale esecuzione di un giocatore è presente una fase di inizializzazione nella quale il giocatore attende che tutti i giocatori siano attivi, recupera il proprio identificativo ed attende l'inizio della partita.\\
 
@@ -139,17 +139,19 @@ Il controllore, avvalendosi del suo duplice ruolo di arbitro, è in grado di ges
 
 Ogni richiesta viene presa in cosiderazione dalla componente che rappresenta l'arbitro, il quale valuta la correttezza o meno dell'azione. In caso di fallo, l'arbitro ferma il gioco dal punto di vista logico e determina a quale squadra assegnare il possesso della palla. A questo punto, prima che il gioco possa riprendere, l'arbitro attende che le squadre si riposizionino correttamente per garantire le giuste distanze dal punto di battuta. Il gioco riprende quindi al momento di battuta da parte di un giocatore designato dall'arbitro, basato sulla vicinanza alla palla.\\
 
+Inoltre tale canale viene sfruttato dal sistema per fermare il gioco e farlo riprendere, per esempio quando l'utente mette in pausa il gioco.
+
 \textbf{Processare eventi}\\
 
-Nel sistema esistono diversi tipi di eventi e di azioni che un giocatore può effettuare, che dal punto di vista del controllore vengono gestite in maniera differente: una volta accettata la richiesta del giocatore, il controllore ne determina il tipo e cerca di soddisfarla, così da aggiornare lo stato con l'azione richiesta. Il fatto che il giocatore divida il suo turno in fasi fa in modo che i presupposti secondo cui ha scelto una determinata mossa al momento non vi siano più.\\
+Nel sistema esistono diversi tipi di eventi e di azioni che un giocatore può effettuare, che dal punto di vista del controllore vengono gestiti in maniera differente: una volta accettata la richiesta del giocatore, il controllore ne determina il tipo e cerca di soddisfarla, così da aggiornare lo stato con l'azione richiesta. D'altro canto, il fatto che il giocatore divida il suo turno in fasi fa sì che i presupposti secondo cui ha scelto una determinata mossa al momento della scrittura non siano ancora validi.\\
 
-Si consideri la situazione in cui un giocatore tenta di prendere la palla che è in una certa posizione, ma dal momento in cui riceve le informazioni sulla posizione e quando tenta effettivamente di prenderne il possesso, la palla si è spostata. Questo comportamento, come anche in altri casi in cui ha senso applicarlo, è dettato dal desiderio di creare una simulazione realistica, in cui un giocatore non sufficientemente veloce o tardivo nell'accorgersi di una certa circostanza veda la propria azione fallire.\\
+Si consideri la situazione in cui un giocatore tenta di prendere la palla che si trova in una certa posizione, ma dal momento in cui riceve le informazioni sulla posizione e quando tenta effettivamente di prenderne il possesso, la palla si è spostata. Questo comportamento, come anche in altri casi in cui ha senso applicarlo, è dettato dal desiderio di creare una simulazione realistica, in cui un giocatore non sufficientemente veloce o tardivo nell'accorgersi di una certa circostanza veda la propria azione fallire.\\
 
-In caso di fallimento dell'operazione, ovvero a seguito di un'azione che non può più essere applicata allo stato, il controllore si comporta in modo differente in base al tipo di richiesta:
+In caso di fallimento dell'operazione, ovvero a seguito di un'azione che non può più essere applicata allo stato senza creare inconsistenze, il controllore si comporta in modo differente in base al tipo di richiesta:
 
 \begin{itemize}
 	\item Azioni come il passaggio, il tiro, il tentativo di prendere la palla (sia essa controllata da un avversario o meno) se non vanno a buon fine falliscono semplicemente; al turno successivo il giocatore, essendo privo di un proprio stato locale, elaborerà una nuova azione basandosi sulle informazioni fornite dal controllore
-	\item Le azioni di movimento possono fallire per diverse ragioni (e.g., la cella di destinazione potrebbe essere stata occupata), ma possono essere riprovate e rivalutate se soddisfano determinate condizioni
+	\item Le azioni di movimento possono fallire per diverse ragioni (e.g., la cella di destinazione potrebbe essere stata occupata), ma possono essere riprovate in un secondo momento, o rivalutate se si verificano determinate condizioni
 \end{itemize}
 
 L'utilità che un giocatore assegna alla propria azione determina il comportamento del controllore nel secondo caso. Al momento dell'accettazione, la richiesta ha una certo valore di utilità (lo stesso assegnatogli dal giocatore): tuttavia, se non dovesse andare a buon fine, questo valore viene decrementato e la mossa viene messa in attesa di una nuova occasione di esecuzione. Ad ogni tentativo di esecuzione il valore di utilità decresce fino a che non diventa minore di una certa soglia fissata a priori, sotto la quale l'azione richiesta viene rivalutata dal controllore.\\
