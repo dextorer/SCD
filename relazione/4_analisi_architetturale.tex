@@ -137,7 +137,21 @@ Il controllore, avvalendosi del suo duplice ruolo di arbitro, è in grado di ges
 
 \textbf{Arbitro}\\
 
-Ogni richiesta viene presa in cosiderazione dalla componente che rappresenta l'arbitro, il quale valuta la correttezza o meno dell'azione. In caso di fallo, l'arbitro ferma il gioco dal punto di vista logico e determina a quale squadra assegnare il possesso della palla. A questo punto, prima che il gioco possa riprendere, l'arbitro attende che le squadre si riposizionino correttamente per garantire le giuste distanze dal punto di battuta. Il gioco riprende quindi al momento di battuta da parte di un giocatore designato dall'arbitro, basato sulla vicinanza alla palla.\\
+Riprendendo quanto detto in Sezione~\ref{sec:modello_verifica_arbitro}, l'arbitro non è altro che un insieme di funzioni che il controllore svolge per garantire il rispetto delle regole del calcio.\\
+
+In particolare, si consideri il corpo di esecuzione del controllore all'arrivo di una nuova richiesta da parte di un giocatore. In questo flusso, l'arbitro viene chiamato a seguito dell'esecuzione della mossa del giocatore ed effettua due tipologie di controlli, chiamati simbolicamente \emph{PreCheck} e \emph{PostCheck}.\\
+
+I controlli effettuati nella fase di PreCheck sono volti principalmente a verificare, in presenza di gioco fermo, che le condizioni per la ripartenza siano soddisfatte (e.g., che tutti i giocatori siano nella loro posizione di riferimento), andando conseguentemente ad aggiornare lo stato di gioco. Inoltre, questa fase viene utilizzata anche per verificare che la sostituzione tra due o più giocatori sia stata terminata con successo.\\
+
+La fase di PostCheck mira invece a verificare se le condizioni attuali, a seguito della mossa del giocatore, hanno i presupposti per fermare il gioco. Nell'ordine, questa fase effettua i seguenti controlli:
+
+\begin{enumerate}
+	\item Verifica se l'ultima azione ha causato un fallo su un altro giocatore
+	\item Controlla se ci sono eventi provenienti dalle componenti distribuite (e.g., una sostituzione) e, in caso di gioco fermo, le prende in carico
+	\item Controlla se la palla è uscita dal campo e determina l'azione conseguente
+\end{enumerate}
+
+Al termine di questa seconda fase viene impostato il nuovo stato di gioco, sulla base del quale i giocatori sceglieranno l'azione nel loro prossimo turno.
 
 \textbf{Processare eventi}\\
 
