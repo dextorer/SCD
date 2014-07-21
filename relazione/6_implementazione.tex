@@ -49,7 +49,7 @@ La terminazione del sistema viene richiesta dall'utente, attraverso i comandi me
 	\label{fig:sequence_diagram}
 \end{figure}
 
-Il diagramma di sequenza mostrato in Figura~\ref{fig:sequence_diagram} schematizza il flusso base della simulazione. In esso viene rappresentato l'avvio del sistema, che comprende la creazione dei task per i giocatori e l'assegnamento dei loro identificativi. Con il loop centrale si identifica il turno di un giocatore.
+Il diagramma di sequenza mostrato in Figura~\ref{fig:sequence_diagram} schematizza il flusso base della simulazione. In esso viene rappresentato l'avvio del sistema, che comprende la creazione dei task per i giocatori e l'assegnamento dei loro identificativi. Con il loop centrale si identifica il turno di un giocatore, comprensivo di lettura dello stato, decisione della mossa e sua successiva scrittura attraverso il controllore; la mossa viene successivamente aggiunta nel buffer ed eventualmente inviata alla distribuzione. Viene infine rappresentata la terminazione del sistema, intesa come la terminazione delle entità distribuite unitamente alla successiva terminazione di \emph{Core}.\\
 
 \subsection{Distribuzione}
 \label{sec:implementazione_distribuzione}
