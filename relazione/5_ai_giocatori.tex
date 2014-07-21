@@ -17,7 +17,7 @@ Prolog risolve le clausole utilizzando l'inferenza logica in maniera molto effic
 
 \subsection{Struttura dell'IA}
 \label{sec:struct_ia}
-In questa sezione viene analizzata la struttura dell'intelligenza artificale creata in Prolog.
+In questa sezione viene analizzata la struttura dell'intelligenza artificiale creata in Prolog.
 
 Il sistema \`{e} diviso in due parti principali ciascuna delle quali \`{e} composta da una serie di predicati logici scritti in Prolog. La prima parte \`{e} formata da predicati che descrivono quello che il giocatore sa riguardo a ci\`{o} che lo circonda, detta anche \emph{base di conoscenza}. Per costruirsi tali predicati ciascun giocatore deve procurarsi informazioni riguardanti la situazione in prossimit\`{a} della sua posizione (la sua posizione, quale squadra ha la palla, quali giocatori sono vicini a lui e cos\`{i} via) interrogando lo stato.
 
@@ -47,14 +47,14 @@ Il processo decisionale che porta il giocatore ad eseguire un'azione \`{e} quind
  \item Il giocatore interroga lo stato per ottenere informazioni riguardanti le sue immediate vicinanze e lo stato complessivo della partita
  \item L'algoritmo di conversione delle informazioni da tipo di dato Ada a stringhe contenenti i predicati scritti secondo i formalismi di Prolog elabora i dati ottenuti dallo stato
  \item Viene lanciato, tramite un apposito script, il motore Prolog fornendo come input la concatenazione di predicati ottenuta al passo precedente
- \item Prolog esegue un inferenza logica sull'input ricevuto al passo precedente e fornisce in ouput la mossa ottimale per il giocatore data la situazione corrente
+ \item Prolog esegue un inferenza logica sull'input ricevuto al passo precedente e fornisce in output la mossa ottimale per il giocatore data la situazione corrente
  \end{enumerate} 
 \noindent La mossa ottenuta in output \`{e} ricevuta sotto forma di stringa Ada contenente un predicato Prolog costituito dalla mossa da effettuare e una coppia di interi (x,y) che rappresentano la coordinata sulla quale il giocatore andr\`{a} ad effettuare la mossa. Questa stringa viene scomposta in tre sottostringhe: una contenente la mossa da effettuare (ad esempio \emph{shot}, il che sta ad indicare che il giocatore ``ha deciso'' di tirare), una stringa per la componente x della coordinata e infine una per la componente y. A partire da queste sottostringhe viene creata la mossa che il giocatore cercher\`{a} di scrivere sullo stato, avendo cura di creare un oggetto di tipo \emph{Coordinate} a partire dalle due sottostringhe contenenti le componenti della coordinata finale.
 
 \subsection{Problematiche}
 \label{sec:ai_problematiche}
 
-Verso la fase finale del progetto ci si è resi conto di un problema prestazionale che vedeva i giocatori impiegare un tempo esageratamente alto per completare il proprio turno. Dopo un'analisi inziale, il collo di bottiglia è stato identificato con la parte che riguarda la scelta della prossima mossa, quindi il processo decisionale che riguarda Prolog.\\
+Verso la fase finale del progetto ci si è resi conto di un problema prestazionale che vedeva i giocatori impiegare un tempo esageratamente alto per completare il proprio turno. Dopo un'analisi iniziale, il collo di bottiglia è stato identificato con la parte che riguarda la scelta della prossima mossa, quindi il processo decisionale che riguarda Prolog.\\
 
 Inizialmente, l'approccio naîve adottato consisteva nell'invocare il motore di Prolog attraverso una libreria Java, dove sia input che output passavano attraverso dei file temporanei. Questo comportava un overhead dovuto all'istanziazione di una JVM (Java Virtual Machine) per giocatore, unita all'input/output su disco. Successivamente, si è optato per la generazione di eseguibili a partire dalle clausole di Prolog, opportunamente generate in Ada. Questo approccio ha notevolmente ridotto il tempo di esecuzione di ciascun turno, ma tale tempo continuava ad essere alto. Il problema sembra quindi essere dovuto all'elevato numero di istanze del motore di inferenze di Prolog (una per giocatore), che in alcuni casi porta ad un aumento sensibile del tempo di calcolo.\\
 
