@@ -59,7 +59,7 @@ Il dispatching dei thread che identificano i giocatori non e' modificata a livel
 \begin{itemize}
 	\item CFS si serve di un albero rosso-nero inserendo i nuovi a destra, quindi i thread che hanno appena eseguito, e prelevandoli da sinistra, quelli con meno utilizzo della cpu;
 	\item Multilevel feddback queue utilizza code FIFO multiple, precisamente 100, ed i thread sono accodati in coda e prelevati in testa.\\
-\begin{itemize}
+\end{itemize}
 
 Quello che emerge e' che i thread eseguono per una quantita' di tempo prestabilita e poi vengono riaccodati e, nel caso baso, rieseguono una volta che tutti gli altri thread in attesa hanno avuto accesso alla CPU. Alcuni casi particolari vengono applicati in presenza di job molto brevi, utilizzo di I/O, etc.\\
 
