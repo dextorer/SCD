@@ -281,11 +281,20 @@ Questo approccio risulta particolarmente vantaggioso in quanto mantiene una stru
 \subsubsection{Workflow}
 \label{sec:analisi_workflow}
 
-In Figura~\ref{fig:distribuzione_analisi_workflow} viene fornita una schematizzazione del modello di comunicazione tra le componenti distribuite. Si è cercato di enfatizzare l'uso dei due diversi pattern utilizzati (client/server e publisher/subscriber) anche per quanto riguarda il flusso di informazioni: si ha infatti che nel primo caso le componenti \emph{Field} e \emph{Manager} possono sia richiedere informazioni sulla partita che modificarle (e.g., un cambio di formazione); diversamente, nel secondo caso \emph{Core} si occupa semplicemente di notificare le altre componenti sui recenti avvenimenti della partita.
+In Figura~\ref{fig:distribuzione_analisi_workflow} viene fornita una schematizzazione del modello di comunicazione tra le componenti distribuite. Si è cercato di enfatizzare l'uso dei due diversi pattern utilizzati (client/server e publisher/subscriber) anche per quanto riguarda il flusso di informazioni: si ha infatti che nel primo caso le componenti \emph{Field} e \emph{Manager} possono sia richiedere informazioni sulla partita che modificarle (e.g., un cambio di formazione); diversamente, nel secondo caso \emph{Core} si occupa semplicemente di notificare le altre componenti sui recenti avvenimenti della partita.\\
+
+In Figura~\ref{fig:distribuzione_analisi_scambio_eventi} viene invece fornita una rappresentazione visiva delle varie tipologie di eventi (descritti in Sezione~\ref{sec:analisi_eventi}) che vengono scambiate tra le componenti.
 
 \begin{figure}[htp!]
 	\centering
 	\includegraphics[scale=.21]{images/distribution_model}
 	\caption{Diagramma della comunicazione tra le componenti distribuite.}
 	\label{fig:distribuzione_analisi_workflow}
+\end{figure}
+
+\begin{figure}[htp!]
+	\centering
+	\includegraphics[scale=.21]{images/event_exchanging_diagram}
+	\caption{Diagramma che rappresenta lo scambio delle diverse tipologie di eventi tra le componenti.}
+	\label{fig:distribuzione_analisi_scambio_eventi}
 \end{figure}
